@@ -1,0 +1,92 @@
+{% extends "base_generic.html" %}
+{% block content %}
+    {{ form.errors }}
+    <script>
+        {#Script for the "scrolling image"#}
+        function creature_preview(e, url) {
+            if (!e) e = window.event;
+            var y = e.clientY;
+            var topdiv = document.getElementById('fixcard');
+            var div = document.getElementById('cpreview');
+            var rect1 = topdiv.getBoundingClientRect();
+            var rect2 = div.getBoundingClientRect();
+            var overlap = !(rect1.right < rect2.left ||
+                rect1.left > rect2.right ||
+                rect1.bottom < rect2.top ||
+                rect1.top > rect2.bottom)
+            img = document.getElementById('ipreview');
+            img.src = url;
+            div.style.visibility = "visible";
+            var abs_top = div.getBoundingClientRect().top
+            var scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+            if (abs_top <= 0 && !overlap) {
+                div.style.position = "fixed";
+                div.style.top = "0px";
+            } else if (overlap){
+                div.style.position = "relative";
+            }
+        }
+
+    </script>
+    {% load widget_tweaks %}
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header ">
+                        <h4 class="card-title">Link Bestiary with Creatures</h4>
+                        <p class="card-category">Type how many creatures you want to add.</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="container">
+                            {%  for q in qs %}
+                                <div class="form-row" onmouseover="creature_preview(event, '{{ q.img_url }}')">
+                                    <div class="col col-md-2">
+                                        <input name="{{ q.id }}" id="n_{{ q.id }}" type="number" class="form-control creature-quantity">
+                                    </div>
+                                    <div class="col col-md-10">
+                                        <input onclick="var nf = document.getElementById('n_{{ q.id }}'); if (!nf.value){nf.value = 0;}; nf.value = parseInt(nf.value) + 1;" type="text" readonly class="form-control-plaintext creature-name" value="{{ q.name }} ({{ q.size }})" data-search="{{ q.name }} ({{ q.size }}) {{ q.get_creature_type_display }} CR:{{ q.CR }} {{ q.get_position_display }}">
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <div class="form-row">
+                                    <p>No Creatures found.</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div id="fixcard" class="card">
+                    <div class="card-header ">
+                        <h4 class="card-title">Form Controls</h4>
+                        <p class="card-category">You can type creature types, creatures sizes, movement types or challenge ratings as filters (try for example 'CR:1')</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group container">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                              </div>
+                            <input class="form-control" type="search" id="search_bar" onkeyup="live_search('div')" placeholder="Search for names..">
+                        </div>
+                        <input class="btn btn-fill btn-block mt-4 mb-3" type="submit" value="Add Creatures" />
+                    </div>
+                </div>
+                <div id="cpreview" class="card" style="visibility: hidden">
+                    <div class="card-body">
+                        <div class="container text-center">
+                            <img id="ipreview" src="" class="rounded img-fluid" alt="Creature preview." style="z-index: 999">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+{% endblock %}

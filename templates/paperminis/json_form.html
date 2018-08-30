@@ -1,0 +1,59 @@
+{% extends "base_generic.html" %}
+{% block content %}
+    {% load widget_tweaks %}
+    {% if form.file.errors %}
+        <script>
+            $.notify({
+                message: '{{ form.file.errors }}'
+            },{
+                type: 'danger',
+                delay: 10000
+            },{
+                animate: {
+                    enter: 'animated fadeInRight',
+                    exit: 'animated fadeOutRight'
+                }
+            });
+        </script>
+    {% endif %}
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header ">
+                    <h4 class="card-title">Upload .json File</h4>
+                    <p class="card-category">Choose a .json file with name, size and img_url attributes. The upload can take a while; be patient!</p>
+                </div>
+                <div class="card-body">
+                    <div class="container">
+                        <form action="" method="post" class="md-form" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="{{ form.file.id_for_label }}">File:</label>
+                                {% render_field form.file class+="form-control-file" %}
+                            </div>
+                            <input class="btn btn-fill btn-block mt-4 mb-3" type="submit" value="Submit" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header ">
+                    <h4 class="card-title">Where to get .json files?</h4>
+                    <p class="card-category">Check our subreddit!</p>
+                </div>
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row mt-3">
+                            <div class="col-sm-12 text-center">
+                                <p>Visit our subreddit <a href="https://www.reddit.com/r/monsterforge/" target="_blank">r/monsterforge</a> to find and share your creature collections.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

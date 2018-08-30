@@ -1,0 +1,122 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <script>
+        function creature_preview(e,url) {
+            if (!e) e = window.event;
+            var y = e.clientY;
+            var topdiv = document.getElementById('fixcard');
+            var div = document.getElementById('cpreview');
+            var rect1 = topdiv.getBoundingClientRect();
+            var rect2 = div.getBoundingClientRect();
+            var overlap = !(rect1.right < rect2.left ||
+                rect1.left > rect2.right ||
+                rect1.bottom < rect2.top ||
+                rect1.top > rect2.bottom)
+            img = document.getElementById('ipreview');
+            img.src = url;
+            div.style.visibility = "visible";
+            var abs_top = div.getBoundingClientRect().top
+            var scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+            if (abs_top <= 0 && !overlap) {
+                div.style.position = "fixed";
+                div.style.top = "0px";
+            } else if (overlap){
+                div.style.position = "relative";
+            }
+        };
+
+        function empty_bestiary() {
+            $.notify({
+                message: 'Your bestiary is empty. You first have to LINK creatures to your bestiary.'
+            }, {
+                type: 'warning',
+                delay: 10000
+            }, {
+                animate: {
+                    enter: 'animated fadeInRight',
+                    exit: 'animated fadeOutRight'
+                }
+            });
+        };
+
+    </script>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card strpied-tabled-with-hover">
+                <div class="card-header ">
+                    <h4 class="card-title">{{ bestiary.name }}</h4>
+                    <p class="card-category">There are <strong>{% if bestiary.total_creatures %}{{ bestiary.total_creatures }}{% else %}0{% endif %}</strong> creatures in this bestiary.</p>
+                </div>
+                <div class="card-body table-full-width table-responsive">
+                    {% if bestiary.creaturequantity_set.count > 0 %}
+                        <table class="table table-hover table-striped">
+                            <thead>
+                            <th scope="col" style="width: 10%">#</th>
+                            <th scope="col" style="width: 75%">Name</th>
+                            <th scope="col" style="width: 10%">Size</th>
+                            <th scope="col" style="width: 5%"></th>
+                            </thead>
+                            <tbody>
+                            {%  for  quantity_creature in bestiary.creaturequantity_set.all %}
+                                <tr class="clickable-row" data-href="{{ quantity_creature.creature.get_absolute_url }}" onmouseover="creature_preview(event,'{{ quantity_creature.creature.img_url }}')">
+                                    <td>{{ quantity_creature.quantity }}</td>
+                                    <td>{{ quantity_creature.creature.name }}</td>
+                                    <td>{{ quantity_creature.creature.size }}</td>
+                                    <td>
+                                        <form id="remove{{ quantity_creature.creature.id }}" name="test" action="{% url 'bestiary-unlink' pk=bestiary.id ci=quantity_creature.creature.id %}" method="POST">
+                                            {% csrf_token %}
+{#                                            javascript:document.getElementById('remove_{{ quantity_creature.creature.id }}').submit();#}
+                                            <a href="javascript:document.getElementById('remove{{ quantity_creature.creature.id }}').submit();"><i style="cursor: pointer;color:dimgray;" class="fas fa-minus-circle"></i></a>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div id="fixcard" class="card">
+                <div class="card-header ">
+                    <h4 class="card-title">Modify {{ bestiary.name }}</h4>
+                    <p class="card-category">Deleting a bestiary does not delete the attached creatures.</p>
+                </div>
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row mt-3">
+                            <div class="col-sm-6 text-center">
+                                <a href="{% url 'bestiary-update' pk=bestiary.id %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Change Name</a>
+                            </div>
+                            <div class="col-sm-6  text-center">
+                                <a href="{% url 'bestiary-delete' pk=bestiary.id %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Delete Bestiary</a>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-sm-6 text-center">
+                                <a href="{% url 'bestiary-link' pk=bestiary.id %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Link Creatures</a>
+                            </div>
+                            <div class="col-sm-6  text-center">
+                                <a href="{% url 'bestiary-unlink' pk=bestiary.id %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Unlink all Creatures</a>
+                            </div>
+                        </div>
+                        <div class="row mt-4 mb-3">
+                            <div class="col-sm-12 text-center">
+                                <a id="print_link" href="{% if bestiary.creatures.count > 0 %}{% url 'bestiary-print' pk=bestiary.id %}{% else %}javascript:empty_bestiary();{% endif %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Generate Minis for this Bestiary!</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="cpreview" class="card" style="visibility: hidden">
+                <div class="card-body">
+                    <div class="container text-center">
+                        <img id="ipreview" src="" class="rounded img-fluid" alt="Creature preview." style="z-index: 999">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

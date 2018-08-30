@@ -1,0 +1,111 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    {% load staticfiles %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header ">
+                    <h4 class="card-title">Welcome to Monster Forge</h4>
+                    <p class="card-category">A free website featuring tools for DMs and Players.</p>
+                </div>
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row mt-4 mb-3">
+                            <p>The first tool is a quick, easy and powerful Paper Miniature Creator.
+                                Here is what it can do:</p>
+                            <ul>
+                                <li>Create, upload and modify your own or official creatures</li>
+                                <li>Gather the creatures you need for a session in a bestiary</li>
+                                <li>Print minis for all the creatures in your bestiaries with a single click</li>
+                                <li>The Base color and shape can be customized</li>
+                                <li>Miniatures of the same type can be numbered</li>
+                                <li>The minis have a foldable base that can be reinforced with a coin to make them wind-resistant</li>
+                                <li>The optional name label on the miniature is sized to use all the space optimally</li>
+                                <li>The miniatures can be printed for 1-inch, 3/4-inch or 1/2-inch grids</li>
+                                <li>The height of the minis can be dynamically adjusted, based on creature size and source image</li>
+                                <li>The minis are nicely arranged on A4 or A3 sheets in a way to minimize the required cuts</li>
+
+                            </ul>
+                            <a href="{% url 'signup' %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Get started now!</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header ">
+                    <h4 class="card-title">About Monster Forge</h4>
+                    <p class="card-category">And how you can support this project.</p>
+                </div>
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row mt-4 mb-3">
+                            <div class="col-sm-12">
+                                <p>I would like to offer this website for free to everyone and without ads. To keep up with the server cost and to cover part of the development effort I will try to rely on a <a href="{% url 'patreon' %}">Patreon Campaign</a>.
+                                    The main benefit for Patreons supporting this project will be a few weeks of early access to new in-development features and a vote in my development schedule.</p>
+                                <p>If you would like to support me, head over to the Patreon Section and pledge at any tier. I am very grateful for any support, thank you!</p>
+                                <p>If you have questions or want to get in contact with me, head over to our subreddit at <a href="https://www.reddit.com/r/monsterforge/" target="_blank">r/monsterforge</a>.</p>
+                                <p><strong>Disclaimer:</strong> This website is still under heavy development and a lot of features are missing; but I decided to launch it as early as possible to share the mini creator with you. Feel free to report bugs and errors at <a href="https://www.reddit.com/r/monsterforge/" target="_blank">r/monsterforge</a>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row align-items-center">
+        <div class="col-md-2 h-100 align-items-center">
+        </div>
+        <div class="col-md-8 h-100 align-items-center">
+            <div class="card">
+                <div class="card-body">
+                    <div class="container ">
+                        <div class="embed-responsive embed-responsive-16by9">
+                          <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/S3eJGpURLJs?rel=0" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 h-100 align-items-center">
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row my-2 text-center">
+                            <img src="{% static 'assets/img/grid_tn.jpg' %}" class="rounded mx-auto d-block" alt="Minis in action.">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row my-2 text-center">
+                            <img src="{% static 'assets/img/mini_1_tn.jpg' %}" class="rounded mx-auto d-block" alt="Minis Assembly.">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row my-2 text-center">
+                            <img src="{% static 'assets/img/mini_2_tn.jpg' %}" class="rounded mx-auto d-block" alt="Finished Mini.">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

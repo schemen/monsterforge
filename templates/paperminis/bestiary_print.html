@@ -1,0 +1,111 @@
+{% extends "base_generic.html" %}
+{% block content %}
+    <script>
+        jQuery(document).ready(function($) {
+            $('#print_form').one('submit', function() {
+                $(this).find('input[type="submit"]').attr('disabled','disabled');
+            });
+        });
+    </script>
+    {% load widget_tweaks %}
+    {% load auth_extras %}
+    {% if form.non_field_errors %}
+        <script>
+            $.notify({
+                message: '{{ form.non_field_errors }}'
+            },{
+                type: 'danger',
+                delay: 10000
+            },{
+                animate: {
+                    enter: 'animated fadeInRight',
+                    exit: 'animated fadeOutRight'
+                }
+            });
+
+
+        </script>
+    {% endif %}
+    <script>
+        function patreon_info() {
+            $.notify({
+                title: 'Beta Feature',
+                message: 'This feature is still under development and beta testing is reserved for Patreons. It will become available for everyone on 20.08.2018.'
+            }, {
+                type: 'info',
+                delay: 8000
+            }, {
+                animate: {
+                    enter: 'animated fadeInRight',
+                    exit: 'animated fadeOutRight'
+                }
+            });
+        };
+    </script>
+    <form name="print" id="print_form" action="" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header ">
+                            <h4 class="card-title">Print Bestiary</h4>
+                            <p class="card-category">Adjust these settings according to your preferences</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="container">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        {{ form.paper_format.errors }}
+                                        <label for="{{ form.paper_format.id_for_label }}">Paper Format:</label>
+                                        {% render_field form.paper_format class+="form-control" %}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ form.grid_size.errors }}
+                                        <label for="{{ form.grid_size.id_for_label }}">Grid Size:</label>
+                                        {% render_field form.grid_size class+="form-control" %}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ form.base_shape.errors }}
+                                        <label for="{{ form.base_shape.id_for_label }}">Base Shape:</label>
+                                        {% render_field form.base_shape class+="form-control" %}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ form.enumerate.errors }}
+                                        <label for="{{ form.enumerate.id_for_label }}">Add numbers to the base of minis where you have more than one?</label>
+                                        {% render_field form.enumerate class+="form-control" %}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ form.fixed_height.errors }}
+                                        <label for="{{ form.fixed_height.id_for_label }}">Use fixed height for minis of the same size category?</label>
+                                        {% render_field form.fixed_height class+="form-control" %}
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header ">
+                        <h4 class="card-title">File Controls</h4>
+                        <p class="card-category">Pressing start will generate a .zip file with your minis and serve it to you. Please be patient!</p>
+                    </div>
+                    <div class="card-body">
+                        {% if file %}
+                            <div class="row mt-3">
+                                <div class="col-sm-12 text-center">
+                                    <a href="{{ file }}">Download your zip file here.</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <div class="row mt-4 mb-3">
+                            <div class="col-sm-12 text-center">
+                                <input class="btn btn-fill btn-block mt-4 mb-3" type="submit" value="Start generating the Minis"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

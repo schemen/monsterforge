@@ -1,0 +1,25 @@
+{% extends "base_generic.html" %}
+{% block content %}
+    {% load widget_tweaks %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header ">
+                    <h4 class="card-title">{% if creature %}Delete {{ creature }}?{% else %}Delete ALL creatures?{% endif %}</h4>
+                    <p class="card-category">
+                        {% if creature %}Are you sure you want to delete {{ creature }}? This will remove it from all bestiaries.
+                        {% else %}This action can't be undone and will delete all your creatures and remove them from your bestiaries!
+                        {% endif %}</p>
+                </div>
+                <div class="card-body">
+                    <div class="container">
+                        <form action="" method="post" class="md-form" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input class="btn btn-fill btn-block mt-4 mb-3" type="submit" value="Yes, delete." />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

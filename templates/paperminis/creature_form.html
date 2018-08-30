@@ -1,0 +1,124 @@
+{% extends "base_generic.html" %}
+{% block content %}
+    <script>
+        function update_color() {
+            var x = document.getElementById("id_color").value;
+            document.getElementById("color_label").style.backgroundColor = "#"+x;
+        }
+    </script>
+    {% load widget_tweaks %}
+    {% load auth_extras %}
+    {% if form.non_field_errors %}
+        <script>
+            $.notify({
+                message: '{{ form.non_field_errors }}'
+            },{
+                type: 'danger',
+                delay: 10000
+            },{
+                animate: {
+                    enter: 'animated fadeInRight',
+                    exit: 'animated fadeOutRight'
+                }
+            });
+
+
+        </script>
+    {% endif %}
+    <script>
+        function patreon_info() {
+            $.notify({
+                title: 'Beta Feature',
+                message: 'This feature is still under development and beta testing is reserved for Patreons. It will become available for everyone after the testing period.'
+            }, {
+                type: 'info',
+                delay: 8000
+            }, {
+                animate: {
+                    enter: 'animated fadeInRight',
+                    exit: 'animated fadeOutRight'
+                }
+            });
+        };
+    </script>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header ">
+                    <h4 class="card-title">{% if object %}Update Creature{% else %}Add new Creature{% endif %}</h4>
+                    <p class="card-category">It is good practice to only use images you have the rights to use.</p>
+                </div>
+                <div class="card-body">
+                    <div class="container">
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                {{ form.name.errors }}
+                                <label for="{{ form.name.id_for_label }}">Name:</label>
+                                {% render_field form.name class+="form-control" %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.show_name.errors }}
+                                <label for="{{ form.show_name.id_for_label }}">Show the name on the printed mini?</label>
+                                {% if request.user|has_group:"Patrons" %}
+                                    {% render_field form.show_name class+="form-control" %}
+                                {% else %}
+                                    <div onclick="patreon_info();">
+                                        <input type="checkbox" name="show_name" class="form-control" id="id_show_name" style="pointer-events: none" checked disabled>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.img_url.errors }}
+                                <label for="{{ form.img_url.id_for_label }}">URL to your image:</label>
+                                {% render_field form.img_url class+="form-control" rows="3" %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.creature_type.errors }}
+                                <label for="{{ form.creature_type.id_for_label }}">Creature Type:</label>
+                                {% render_field form.creature_type class+="form-control" %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.CR.errors }}
+                                <label for="{{ form.CR.id_for_label }}">Challenge Rating:</label>
+                                {% render_field form.CR class+="form-control" %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.size.errors }}
+                                <label for="{{ form.size.id_for_label }}">Creature Size:</label>
+                                {% render_field form.size class+="form-control" %}
+                            </div>
+                            <div class="form-group" {% if not request.user|has_group:"Patrons" %}onclick="patreon_info();" {% endif %}>
+                                {{ form.position.errors }}
+                                <label for="{{ form.position.id_for_label }}">Type of Movement / Position of Image on Mini:</label>
+                                <div class="input-group mb-3">
+                                    <select name="position" id="id_position" class="custom-select" onchange="update_color()" {% if not request.user|has_group:"Patrons" %}style="pointer-events: none" disabled{% endif %}>
+                                        {% for pos, descr in form.position.field.choices %}
+                                            <option class="form-control" {% if pos == form.position.initial %}selected{% endif %} value="{{ pos }}">{{ descr }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ form.color.errors }}
+                                <label for="{{ form.color.id_for_label }}">Base Color:</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label id="color_label" class="input-group-text" for="color_picker" style="background-color: #{{ form.color.initial }}">&nbsp;</label>
+                                    </div>
+                                    <select name="color" id="id_color" class="custom-select" onchange="update_color()">
+                                        {% for hex, col in form.color.field.choices %}
+                                            <option class="form-control" {% if hex == form.color.initial %}selected{% endif %} value="{{ hex }}">{{ col }}</option>
+                                        {% endfor %}
+                                    </select>
+
+                                </div>
+                            </div>
+                            <input class="btn btn-fill btn-block mt-4 mb-3" type="submit" value="Submit" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

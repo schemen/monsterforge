@@ -1,0 +1,42 @@
+{% extends "base_generic.html" %}
+{% block content %}
+    {% load widget_tweaks %}
+    {% if form.non_field_errors %}
+        <script>
+            $.notify({
+                message: '{{ form.non_field_errors }}'
+            },{
+                type: 'danger',
+                delay: 10000
+            },{
+                animate: {
+                    enter: 'animated fadeInRight',
+                    exit: 'animated fadeOutRight'
+                }
+            });
+        </script>
+    {% endif %}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header ">
+                    <h4 class="card-title">{% if object %}Update Bestiary{% else %}Add new Bestiary{% endif %}</h4>
+                    <p class="card-category">Bestiaries are collections of creatures that you can print.</p>
+                </div>
+                <div class="card-body">
+                    <div class="container">
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                {{ form.name.errors }}
+                                <label for="{{ form.name.id_for_label }}">Name:</label>
+                                {% render_field form.name class+="form-control" %}
+                            </div>
+                            <input class="btn btn-fill btn-block mt-4 mb-3" type="submit" value="Submit" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

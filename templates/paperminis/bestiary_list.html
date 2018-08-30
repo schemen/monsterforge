@@ -1,0 +1,54 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card strpied-tabled-with-hover">
+            <div class="card-header ">
+                <h4 class="card-title">Your Bestiaries</h4>
+                <p class="card-category">Bestiaries are collections of creatures that you can print.</p>
+            </div>
+            <div class="card-body table-full-width table-responsive">
+                {% if bestiary_list %}
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <th>Name</th>
+                        <th>Number of creatures</th>
+                    </thead>
+                    <tbody>
+                        {% for bestiary in bestiary_list %}
+                        <tr class="clickable-row" data-href="{% url 'bestiary-detail' pk=bestiary.id %}">
+                            <td>{{ bestiary.name }}</td>
+                            <td>{% if bestiary.total_creatures == None %}0{% else %}{{ bestiary.total_creatures }}{% endif %}</td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+                {% else %}
+                    <div class="card-body">
+                        <p>You don't own any bestiaries yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header ">
+                <h4 class="card-title">Manage Bestiaries</h4>
+                <p class="card-category">Clicking on any bestiary will bring you to their detail page with more options.</p>
+            </div>
+            <div class="card-body">
+                <div class="container">
+                    <div class="row mt-4 mb-3">
+                        <div class="col-sm-12 text-center">
+                            <a href="{% url 'bestiary-create' %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Create a new Bestiary</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

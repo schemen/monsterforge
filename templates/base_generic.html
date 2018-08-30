@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+
+    {% block title %}<title>Monster Forge</title>{% endblock %}
+    <meta charset="utf-8">
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <!--     Fonts and icons     -->
+    <link rel="shortcut icon" type="image/png" href="{% static 'assets/img/favicon.ico' %}"/>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+    <!-- Add additional CSS in static file -->
+    
+    {#  <link rel="stylesheet" href="{% static 'css/styles.css' %}">#}
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/light-bootstrap-dashboard.css' %}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <!--   Core JS Files   -->
+    <script src="{% static 'assets/js/core/jquery.3.2.1.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/js/core/popper.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/js/core/bootstrap.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'assets/js/core/bootstrap-notify.js' %}"></script>
+    <!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
+    <script src="{% static 'assets/js/plugins/bootstrap-switch.js' %}"></script>
+    <!--  Google Maps Plugin    -->
+    {#<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>#}
+    <!--  Chartist Plugin  -->
+    {#<script src="../assets/js/plugins/chartist.min.js"></script>#}
+    <!--  Notifications Plugin    -->
+    {#<script src="../assets/js/plugins/bootstrap-notify.js"></script>#}
+    <!-- Control Center for Light Bootstrap Dashboard: scripts for the example pages etc -->
+    {#<script src="{% static 'assets/js/light-bootstrap-dashboard.js' %}" type="text/javascript"></script>#}
+    <script src="{%  static 'assets/js/light-bootstrap-dashboard.js' %}" type="text/javascript"></script>
+    <script>
+        jQuery(document).ready(function($) {
+            $(".clickable-row").click(function() {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="sidebar" data-image="{% static 'assets/img/sidebar-5.jpg' %}" data-color="black">
+        <!--
+    Tip 1: You can change the color of the sidebar using: data-color="purple | blue | green | orange | red"
+
+    Tip 2: you can also add an image using data-image tag
+-->
+        <div class="sidebar-wrapper">
+            <div class="logo">
+                <a href="{% url 'index' %}" class="simple-text">
+                    Monster Forge
+                </a>
+            </div>
+            <ul class="nav">
+                {% url 'index' as url %}
+                <li {% if request.path == url %} class="nav-item active"{% endif %}>
+                    <a class="nav-link" href="{{ url }}">
+                        <i class="fas fa-home"></i>
+                        <p>Home</p>
+                    </a>
+                </li>
+                {% url 'bestiaries' as url %}
+                <li {% if request.path == url %} class="nav-item active"{% endif %}>
+                    <a class="nav-link" href="{{ url }}">
+                        <i class="fas fa-feather-alt"></i>
+                        <p>Bestiaries</p>
+                    </a>
+                </li>
+                {% url 'creatures' as url %}
+                <li {% if request.path == url %} class="nav-item active"{% endif %}>
+                    <a class="nav-link" href="{{ url }}">
+                        <i class="fas fa-frog"></i>
+                        <p>Creatures</p>
+                    </a>
+                </li>
+                <br>
+                {% url 'patreon' as url %}
+                <li {% if request.path == url %} class="nav-item active"{% endif %}>
+                    <a class="nav-link" href="{{ url }}">
+                        <i class="fab fa-patreon"></i>
+                        <p>Patreon</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="main-panel">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg " color-on-scroll="500">
+            <div class=" container-fluid  ">
+                {#<span class="navbar-brand" >.</span>#}
+                <button href="" class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-bar burger-lines"></span>
+                    <span class="navbar-toggler-bar burger-lines"></span>
+                    <span class="navbar-toggler-bar burger-lines"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="navigation">
+                                            <ul class="nav navbar-nav mr-auto">
+                                                <li class="nav-item">
+                                                    <a href="https://reddit.com/r/monsterforge" class="nav-link tex" target="_blank">
+                                                        <i class="fab fa-reddit-alien"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="nav-item">
+                                                    <a href="https://twitter.com/monsterforgeorg" class="nav-link" target="_blank">
+                                                        <i class="fab fa-twitter"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            {% if user.is_authenticated %}
+                                Logged in as: {{ user.get_username }}
+                            {% endif %}
+                        </li>
+                        <li class="nav-item">
+                                <span class="no-icon">
+                                    {% if user.is_authenticated %}
+                                        <a class="nav-link" href="{% url 'logout'%}">Logout</a>
+                                    {% else %}
+                                        <a class="nav-link" href="{% url 'login'%}">Login</a>
+                                    {% endif %}
+                                </span>
+                        </li>
+
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+        <!-- End Navbar -->
+        <div class="content">
+            <div class="container-fluid">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+        <footer class="footer">
+            <div class="container">
+                <nav>
+                    <p class="copyright text-center">
+                        Matthias N.,
+                        <script>
+                            document.write(new Date().getFullYear())
+                        </script>
+                    </p>
+                </nav>
+            </div>
+        </footer>
+    </div>
+</div>
+</body>
+
+
+</html>

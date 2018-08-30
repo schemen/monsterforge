@@ -1,0 +1,99 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+    {% if form.errors %}
+        {#  <p>Your username and password didn't match. Please try again.</p>#}
+        <script>
+            $.notify({
+                message: 'Your e-mail and password didn\'t match. E-mail is case sensitive. Please try again.'
+            },{
+                type: 'danger',
+                delay: 10000
+            },{
+                animate: {
+                    enter: 'animated fadeInRight',
+                    exit: 'animated fadeOutRight'
+                }
+            });
+        </script>
+    {% endif %}
+
+    {% if next %}
+        {% if user.is_authenticated %}
+            <script>
+                $.notify({
+                    message: 'Your account doesn\'t have access to this page. To proceed, please login with an account that has access.'
+                },{
+                    type: 'danger',
+                    delay: 6000
+                },{
+                    animate: {
+                        enter: 'animated fadeInRight',
+                        exit: 'animated fadeOutRight'
+                    }
+                });
+            </script>
+
+        {% else %}
+            <script>
+                $.notify({
+                    message: 'Please login to see this page.'
+                },{
+                    type: 'danger',
+                    delay: 4000
+                },{
+                    animate: {
+                        enter: 'animated fadeInRight',
+                        exit: 'animated fadeOutRight'
+                    }
+                });
+            </script>
+        {% endif %}
+    {% endif %}
+
+    {% load widget_tweaks %}
+    <br>
+    <div class="col-md-12">
+        <div class="card col-md-3 bg-light mx-auto">
+            <div class="card-header bg-light bg-light">
+                <h3 class="card-title bg-light">Login</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                {{ form.username.label_tag }}
+                                {{ form.username|add_class:"form-control" }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                {{ form.password.label_tag }}
+                                {{ form.password|add_class:"form-control" }}
+                                <a class="text-secondary pull-right mt-1" href="{% url 'password_reset' %}">Lost password?</a>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mt-2">
+                            <button type="submit" class="btn btn-basic btn-fill btn-block">Login</button>
+                            <p><a class="text-secondary pull-right mt-1" href="{% url 'signup' %}" >You don't have a login yet?</p>
+                        </div>
+                    </div>
+                    &nbsp;&nbsp;
+                    <div class="clearfix"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {# Assumes you setup the password_reset view in your URLconf #}
+
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+    {% load staticfiles %}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header ">
+                    <h4 class="card-title">Patreon</h4>
+                    <p class="card-category">Help to keep the website running and moving forward.</p>
+                </div>
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row mt-3">
+                            <p>I'm in the process of creating a free, ad-less website with tools aimed at Dungeon & Dragons Players and Dungeon Masters.</p>
+                            <p> The first application features a quick, easy and powerful way to generate Miniatures: Player Characters, NPCs and of course Monsters. Your Patronage will help me cover server costs - my first goal - and allow me to dedicate more time developing the website.</p>
+                            <p>As a Patron you will have early access to in-development features where you can test them and provide feedback if you want. You also get to decide the development schedule!</p>
+                            <p>Thank you for supporting me and this great community!</p>
+                            <br>
+                        </div>
+                        <style type="text/css">
+                            .patreon-widget {
+                                width: 178px !important;
+                            }
+                        </style>
+                        <div class="row mt-3">
+                            <p><a href="https://www.patreon.com/monsterforge/" target="_blank">Check out my Patreon page here!</a></p><br><br>
+                        </div>
+                        <div class="row mb-3">
+                            <a href="https://www.patreon.com/bePatron?u=939078" data-patreon-widget-type="become-patron-button">Become a Patron!</a><script async src="https://c6.patreon.com/becomePatronButton.bundle.js"></script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "base_generic.html" %}
+{% block content %}
+    <div class="row" xmlns="http://www.w3.org/1999/html">
+        <div class="col-md-6">
+            <div class="card strpied-tabled-with-hover">
+                <div class="card-header ">
+                    <h4 class="card-title">{{ creature.name }}</h4>
+                    <p class="card-category">Rawwr</p>
+                </div>
+                <div class="card-body ">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p><strong>Print Name?</strong></p>
+                            </div>
+                            <div class="col-md-8">
+                                <p>{% if creature.show_name %}<strong>Yes.</strong> This name will be printed on the mini.{% else %}<strong>No.</strong> This name will not be printed on the mini.{% endif %}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p><strong>Bestiaries:</strong></p>
+                            </div>
+                            <div class="col-md-8">
+                                <p>This creature is in {{ creature.creaturequantity_set.count }} bestiaries.</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p><strong>Creature Type:</strong></p>
+                            </div>
+                            <div class="col-md-8">
+                                <p>{{ creature.get_creature_type_display }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p><strong>Challenge Rating:</strong></p>
+                            </div>
+                            <div class="col-md-8">
+                                <p>{{ creature.CR|floatformat:"-2" }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p><strong>Movement / Position:</strong></p>
+                            </div>
+                            <div class="col-md-8">
+                                <p>{{ creature.get_position_display }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p><strong>Size:</strong></p>
+                            </div>
+                            <div class="col-md-8">
+                                <p>{{ creature.size }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p><strong>Image Url:</strong></p>
+                            </div>
+                            <div class="col-md-8">
+                                <p><a href="{{ creature.img_url }}" target="_blank">{{ creature.img_url }}</a></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <span><strong>Base Color:</strong></span>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" style="background-color: #{{ creature.color }}">&nbsp;</span>
+                                        <span class="input-group-text">{{ creature.get_color_display }}</span>
+                                    </div>
+                                    {#                                    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">#}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header ">
+                    <h4 class="card-title">Manage Creature</h4>
+                    <p class="card-category">To add this creature to a Bestiary, click "link creatures" in the Bestiary detail view.</p>
+                </div>
+                <div class="card-body">
+                    <div class="container">
+                        <div class="row mt-4 mb-3">
+                            <div class="col-sm-6 text-center">
+                                <a href="{% url 'creature-update' pk=creature.id%}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Update Creature</a>
+                            </div>
+                            <div class="col-sm-6 text-center">
+                                <a href="{% url 'creature-delete' pk=creature.id%}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Delete Creature</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body text-center" style="padding-left: 0px;  padding-right: 0px;">
+                    <img class="img-responsive" src="{{ creature.img_url }}" alt="{{ creature.name }}">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
