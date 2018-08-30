@@ -13,3 +13,7 @@ Using the provided venv is up to you. There is nothing special in it. Please alw
 ## Collaboration
 If you wish to collaborate with me on anything, please contact me here or on reddit /u/Newti.
 I am open to any type of collaboration: Development, Graphics artist for website design or even for creature images, UI/UX, hosting (is currently fine), idea sharing, etc!
+
+## Setup
+If you want to run and develop the project locally, you can use PyCharm. Create your own settings_secret.py file according to the template and generate the folder 'paperminis/generate_minis/users/' manually. Finally create an sqlite3 DB in the root of the project called 'db.sqlite3' and run all the migrations (manage.py or ctrl + alt + R in PyCharm and run 'makemigrations' and 'migrate').
+If you are having issues, let me know.
