@@ -41,7 +41,7 @@ register = template.Library()
 
 @register.filter(name='has_group')
 def has_group(user, group_name):
-    """Function to check Patreon status."""
+    """Function to check Patreon status in templates."""
     group =  Group.objects.get(name=group_name)
     return group in user.groups.all()
 
@@ -179,7 +179,7 @@ def bestiary_serve_minis(request, minis):
     response = HttpResponse(content_type='application/force-download')  # mimetype is replaced by content_type for django 1.7
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(minis.zip_fn)
     response['X-Accel-Redirect'] = smart_str(minis.zip_static_path )
-    #response = serve(request, os.path.basename(minis.zip_fn), os.path.dirname(minis.zip_path)) # for local testing!!
+    response = serve(request, os.path.basename(minis.zip_fn), os.path.dirname(minis.zip_path)) # for local testing!!
     #print(minis.zip_static_path)
     return response
 
@@ -207,18 +207,25 @@ def bestiary_print(request, pk):
             minis = MiniBuilder(user=request.user)
             # update settings
             new_settings = formset.save(commit=False)
+
+            # patreon early access backend validation
+            if user.groups.filter(name='Patrons').count() < 1:
+                new_settings.darken = 0
+
             print_settings.paper_format = new_settings.paper_format
             print_settings.grid_size = new_settings.grid_size
             print_settings.base_shape = new_settings.base_shape
             print_settings.enumerate = new_settings.enumerate
             print_settings.fixed_height = new_settings.fixed_height
+            print_settings.darken = new_settings.darken
             print_settings.save()
             # load settings into the mini builder
             minis.load_settings(paper_format=print_settings.paper_format,
                             grid_size=print_settings.grid_size,
                             base_shape=print_settings.base_shape,
                             enumerate=print_settings.enumerate,
-                            fixed_height = print_settings.base_shape  )
+                            fixed_height = print_settings.base_shape,
+                            darken= print_settings.darken)
             # load creatures into the mini builder
             minis.add_bestiary(pk)
             # build minis

@@ -30,7 +30,7 @@
         function patreon_info() {
             $.notify({
                 title: 'Beta Feature',
-                message: 'This feature is still under development and beta testing is reserved for Patreons. It will become available for everyone on 20.08.2018.'
+                message: 'This feature is still under development and beta testing is reserved for Patreons. It will become available for everyone soon.'
             }, {
                 type: 'info',
                 delay: 8000
@@ -46,42 +46,57 @@
         {% csrf_token %}
         <div class="row">
             <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header ">
-                            <h4 class="card-title">Print Bestiary</h4>
-                            <p class="card-category">Adjust these settings according to your preferences</p>
-                        </div>
-                        <div class="card-body">
-                            <div class="container">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        {{ form.paper_format.errors }}
-                                        <label for="{{ form.paper_format.id_for_label }}">Paper Format:</label>
-                                        {% render_field form.paper_format class+="form-control" %}
+                <div class="card">
+                    <div class="card-header ">
+                        <h4 class="card-title">Print Bestiary</h4>
+                        <p class="card-category">Adjust these settings according to your preferences</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="container">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                {{ form.paper_format.errors }}
+                                <label for="{{ form.paper_format.id_for_label }}">Paper Format:</label>
+                                {% render_field form.paper_format class+="form-control" %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.grid_size.errors }}
+                                <label for="{{ form.grid_size.id_for_label }}">Grid Size:</label>
+                                {% render_field form.grid_size class+="form-control" %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.base_shape.errors }}
+                                <label for="{{ form.base_shape.id_for_label }}">Base Shape:</label>
+                                {% render_field form.base_shape class+="form-control" %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.enumerate.errors }}
+                                <label for="{{ form.enumerate.id_for_label }}">Add numbers to the base of minis where you have more than one?</label>
+                                {% render_field form.enumerate class+="form-control" %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.fixed_height.errors }}
+                                <label for="{{ form.fixed_height.id_for_label }}">Use fixed height for minis of the same size category?</label>
+                                {% render_field form.fixed_height class+="form-control" %}
+                            </div>
+                            <div class="form-group">
+                                {{ form.darken.errors }}
+                                <label for="{{ form.darken.id_for_label }}">How much darker should the backside of your mini be? The maximum gives you a black silhouette.</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="amount">{% if form.darken.value != None %} {{ form.darken.value|stringformat:'s' }}{% endif %}</span>
                                     </div>
-                                    <div class="form-group">
-                                        {{ form.grid_size.errors }}
-                                        <label for="{{ form.grid_size.id_for_label }}">Grid Size:</label>
-                                        {% render_field form.grid_size class+="form-control" %}
+                                    <div {% if not request.user|has_group:"Patrons" %}onclick="patreon_info();"{% endif %} class="form-control">
+                                        <input type="range" name="{{ form.darken.name }}" class="form-control" id="{{ form.darken.auto_id }}"
+                                                {% if form.darken.value != None %} value="{{ form.darken.value|stringformat:'s' }}"{% endif %}
+                                               oninput="amount.innerHTML={{ form.darken.auto_id }}.value" {% if not request.user|has_group:"Patrons" %}style="pointer-events: none"{% endif %}/>
                                     </div>
-                                    <div class="form-group">
-                                        {{ form.base_shape.errors }}
-                                        <label for="{{ form.base_shape.id_for_label }}">Base Shape:</label>
-                                        {% render_field form.base_shape class+="form-control" %}
-                                    </div>
-                                    <div class="form-group">
-                                        {{ form.enumerate.errors }}
-                                        <label for="{{ form.enumerate.id_for_label }}">Add numbers to the base of minis where you have more than one?</label>
-                                        {% render_field form.enumerate class+="form-control" %}
-                                    </div>
-                                    <div class="form-group">
-                                        {{ form.fixed_height.errors }}
-                                        <label for="{{ form.fixed_height.id_for_label }}">Use fixed height for minis of the same size category?</label>
-                                        {% render_field form.fixed_height class+="form-control" %}
-                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
+                </div>
             </div>
 
             <div class="col-md-6">

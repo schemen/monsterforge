@@ -249,3 +249,4 @@ class PrintSettings(models.Model):
     base_shape = models.CharField(max_length=50, choices=BASE_SHAPE_CHOICES, default=SQUARE)
     enumerate = models.BooleanField(default=False)
     fixed_height = models.BooleanField(default=False)
+    darken = models.IntegerField(default=0)

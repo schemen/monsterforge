@@ -59,7 +59,8 @@ class MiniBuilder():
                       grid_size=24,
                       base_shape='square',
                       enumerate=False,
-                      fixed_height=False):
+                      fixed_height=False,
+                      darken=0):
 
         self.print_margin = print_margin
         self.dpmm = 10 # not fully supported setting yet, leave at 10
@@ -67,6 +68,7 @@ class MiniBuilder():
         self.enumerate = enumerate
         self.base_shape = base_shape
         self.fixed_height = fixed_height
+        self.darken = darken
         self.font = cv.FONT_HERSHEY_SIMPLEX
         self.paper_format = paper_format
         paper = {'a3': np.array([297, 420]),
@@ -76,6 +78,7 @@ class MiniBuilder():
                  'tabloid': np.array([279, 432])}
         self.canvas = (paper[paper_format] - 2 * print_margin) * self.dpmm
         self.header = {'User-Agent': str(UserAgent().chrome)}
+
 
     def build_all_and_zip(self):
         if self.enumerate:
@@ -298,6 +301,20 @@ class MiniBuilder():
         #draw border
         cv.rectangle(m_img, (0, 0), (m_img.shape[1] - 1, m_img.shape[0] - 1), (0, 0, 0), thickness=1)
 
+        ## flipped miniature image
+        m_img_flipped = np.flip(m_img, 0)
+        if self.darken:
+            # change Intensity (V-Value) in HSV color space
+            hsv = cv.cvtColor(m_img_flipped, cv.COLOR_BGR2HSV)
+            h, s, v = cv.split(hsv)
+            # darkening factor between 0 and 1
+            factor = max(min((1-self.darken/100),1),0)
+            v[v < 255] = v[v < 255] * (factor)
+            final_hsv = cv.merge((h, s, v))
+            m_img_flipped = cv.cvtColor(final_hsv, cv.COLOR_HSV2BGR)
+
+
+
         ## base
         bgr_color = tuple(int(creature.color[i:i + 2], 16) for i in (4, 2, 0))
         demi_base = base_height // 2
@@ -341,7 +358,8 @@ class MiniBuilder():
 
         ## construct full miniature
         img = np.concatenate((m_img, n_img, b_img), axis=0)
-        m_img_flipped = np.flip(m_img, 0)
+        # m_img_flipped = np.flip(m_img, 0)
+
         nb_flipped = np.rot90(np.concatenate((n_img,b_img), axis=0), 2)
         img = np.concatenate((nb_flipped, m_img_flipped, img), axis=0)
 

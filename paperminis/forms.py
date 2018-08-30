@@ -7,7 +7,6 @@ from django.conf import settings
 from django.template.defaultfilters import filesizeformat
 import os
 from django.core.exceptions import ValidationError
-
 from .models import Creature, Bestiary, CreatureQuantity, PrintSettings
 
 from django.contrib.auth.forms import UserCreationForm
@@ -48,9 +47,9 @@ class CreatureModifyForm(forms.ModelForm):
                 raise forms.ValidationError(('This creature already exists. Use a different name or image url.'), code='exists',)
 
             # patreon early access backend validation
-            if self.user.groups.filter(name='Patrons').count() <= 0:
-                cleaned_data['show_name'] = True
-                cleaned_data['position'] = Creature.WALKING
+            # if self.user.groups.filter(name='Patrons').count() <= 0:
+            #     cleaned_data['show_name'] = True
+            #     cleaned_data['position'] = Creature.WALKING
 
             # validate CR
             if not isinstance(cr, float) or cr < 0 or cr > 1000:
@@ -76,12 +75,20 @@ class QuantityForm(forms.ModelForm):
         fields = ['name',]
 
 
-
 class PrintForm(forms.ModelForm):
     """Simple Form for print settings."""
     class Meta:
         model = PrintSettings
         exclude = ['user']
+
+    def clean_darken(self):
+        darken = self.cleaned_data['darken']
+        if not 0 <= darken <= 100:
+            raise forms.ValidationError("Enter a value between 0 and 100")
+
+        if not darken % 1 == 0:
+            raise forms.ValidationError("Enter a multiple of 1")
+        return darken
 
 def validate_file_extension(value):
     """Function to validate json file extension and size."""

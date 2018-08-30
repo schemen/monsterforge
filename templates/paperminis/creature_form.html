@@ -60,13 +60,14 @@
                             <div class="form-group">
                                 {{ form.show_name.errors }}
                                 <label for="{{ form.show_name.id_for_label }}">Show the name on the printed mini?</label>
-                                {% if request.user|has_group:"Patrons" %}
-                                    {% render_field form.show_name class+="form-control" %}
-                                {% else %}
-                                    <div onclick="patreon_info();">
-                                        <input type="checkbox" name="show_name" class="form-control" id="id_show_name" style="pointer-events: none" checked disabled>
-                                    </div>
-                                {% endif %}
+{#                                {% if request.user|has_group:"Patrons" %}#}
+{#                                    {% render_field form.show_name class+="form-control" %}#}
+{#                                {% else %}#}
+{#                                    <div onclick="patreon_info();">#}
+{#                                        <input type="checkbox" name="show_name" class="form-control" id="id_show_name" style="pointer-events: none" checked disabled>#}
+{#                                    </div>#}
+{#                                {% endif %}#}
+                                {% render_field form.show_name class+="form-control" %}
                             </div>
                             <div class="form-group">
                                 {{ form.img_url.errors }}
@@ -88,17 +89,17 @@
                                 <label for="{{ form.size.id_for_label }}">Creature Size:</label>
                                 {% render_field form.size class+="form-control" %}
                             </div>
-                            <div class="form-group" {% if not request.user|has_group:"Patrons" %}onclick="patreon_info();" {% endif %}>
+{#                            <div class="form-group" {% if not request.user|has_group:"Patrons" %}onclick="patreon_info();" {% endif %}>#}
                                 {{ form.position.errors }}
                                 <label for="{{ form.position.id_for_label }}">Type of Movement / Position of Image on Mini:</label>
                                 <div class="input-group mb-3">
-                                    <select name="position" id="id_position" class="custom-select" onchange="update_color()" {% if not request.user|has_group:"Patrons" %}style="pointer-events: none" disabled{% endif %}>
+                                    <select name="position" id="id_position" class="custom-select" onchange="update_color()"> {#{% if not request.user|has_group:"Patrons" %}style="pointer-events: none" disabled{% endif %}>#}
                                         {% for pos, descr in form.position.field.choices %}
                                             <option class="form-control" {% if pos == form.position.initial %}selected{% endif %} value="{{ pos }}">{{ descr }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
-                            </div>
+{#                            </div>#}
                             <div class="form-group">
                                 {{ form.color.errors }}
                                 <label for="{{ form.color.id_for_label }}">Base Color:</label>
