@@ -23,7 +23,7 @@
         <div class="col-md-6">
             <div class="card col-md-8 bg-light mx-auto pull-right">
                 <div class="card-header bg-light bg-light">
-                    <h3 class="card-title bg-light">Sign Up</h3>
+                    <h3 class="card-title bg-light">Convert to full account</h3>
                 </div>
                 <div class="card-body">
                     <form method="post">
@@ -57,7 +57,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12 mt-2">
-                                <button type="submit" class="btn btn-basic btn-fill btn-block">Sign Up</button>
+                                <button type="submit" class="btn btn-basic btn-fill btn-block">Convert</button>
                             </div>
                         </div>
                         &nbsp;&nbsp;
@@ -69,23 +69,13 @@
         <div class="col-md-6">
             <div class="card col-md-8 bg-light mx-auto pull-left">
                 <div class="card-header bg-light bg-light">
-                    <h3 class="card-title bg-light">Continue without a login?</h3>
+                    <h3 class="card-title bg-light">Converting your account</h3>
                 </div>
                 <div class="card-body">
-                    <p>You can continue to use this website and all its tools for free without creating an account.<br><br>
-                        Click the button below to get started with a temporary account. You can convert the temporary account to
-                        a real account at any time by clicking on the link in the top right corner. If you don't, all your work will be lost permanently after a few days.
-                    </p>
-                    <div class="row">
-                        <div class="col-md-12 mt-2">
-                            <form name="temp_acc" action="{% url 'temp-account' %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-basic btn-fill btn-block">I understand, give me a temporary account.</button>
-                            </form>
-                        </div>
-                    </div>
-                    &nbsp;
-                    <div class="clearfix"></div>
+                    <p>Don't worry, everything is and will stay 100% free!<br><br>
+                        By converting your temporary account to a real account your collections will be stored and you can come back and work on them anytime.
+                        If you don't convert your account, everything will be permanently lost after a few days.
+                    </p>&nbsp;
                 </div>
             </div>
         </div>

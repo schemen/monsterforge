@@ -8,6 +8,8 @@ from django.forms.models import modelformset_factory
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.db.models import Sum
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import Group
 #from django.shortcuts import get_object_or_404
 from django.http import Http404
 from django.http import HttpResponseRedirect
@@ -20,13 +22,16 @@ from django import forms
 from dndtools.settings import STATIC_URL
 from django.utils.encoding import smart_str
 from django.views.static import serve
+from django.db import connection
 import os
 import json
 from fractions import Fraction
+import uuid
 
 from django import template
 from django.contrib.auth.models import Group
 
+from .models import User
 from .models import Creature
 from .models import Bestiary
 from .models import CreatureQuantity
@@ -45,7 +50,6 @@ def has_group(user, group_name):
     group =  Group.objects.get(name=group_name)
     return group in user.groups.all()
 
-
 def signup(request):
     """To register new users."""
     if request.method == 'POST':
@@ -61,29 +65,72 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
 
-# file handling
+
+def temp_account(request):
+    """Create temporary account."""
+    if request.method == 'POST':
+        # generate random username and password
+        password = make_password(uuid.uuid4())
+        email = uuid.uuid4()
+        user = User(email=email, password=password)
+        user.save()
+        # add to group 'temp'
+        temp_grp = Group.objects.get(name='temp')
+        temp_grp.user_set.add(user)
+        # log the user in (this can never be done manually)
+        login(request, user)
+        return render(request, 'temp_account.html')
+
+    return reverse('signup')
+
+@login_required()
+def convert_account(request):
+    """Convert temporary account to full account."""
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            # validation should take care of any issues like duplicate email
+            # update user info
+            email = form.cleaned_data.get('email')
+            raw_password = form.cleaned_data.get('password1')
+            user = request.user
+            user.email = email
+            user.password = make_password(raw_password)
+            user.save()
+            # remove from temp group
+            temp_grp = Group.objects.get(name='temp')
+            temp_grp.user_set.remove(user)
+            login(request, user)
+            return HttpResponseRedirect(reverse('index'))
+    else:
+        form = SignUpForm()
+    return render(request, 'convert.html', {'form': form})
+
 def handle_json(f, user):
     """Load and process .json file.
-    Some improvements can be made here, like updating a creature if the same name + img_url is used.
-    Problem is, we can't have one database query per entry, or we have to limit the json file size.
-    Otherwise the webserver will time out for large (~1k+) files."""
+    This version will update creatures if the json has more/different information.
+    A creature is uniquely identified by the tuple (name, img_url).
+    The update is still kind of slow for large files, but I can't see a better way to do it currently."""
+
     try:
         data = json.loads(f['file'].read().decode('utf-8'))
     except:
         return -1
-    # build tuple list (name, img_url) for current creatures and then check if a new creature is in that tuple list
+
     current = Creature.objects.filter(owner=user)
-    current_tuple_list = [(x.name, x.img_url) for x in current]
+    current_name_url = [(x.name, x.img_url) for x in current]
+    current_full = [(x.name, x.img_url, x.size, x.CR, x.creature_type) for x in current]
     size_map = {v: k for k, v in dict(Creature.CREATURE_SIZE_CHOICES).items()}
     creature_type_map = {v: k for k, v in dict(Creature.CREATURE_TYPE_CHOICES).items()}
     skip = 0
-    new_tuple_list = []
     obj_list = []
     for k,i in data.items():
-        tup = (i['name'], i['img_url'])
-
-        # check duplicates
-        if tup in current_tuple_list or tup in new_tuple_list:
+        # mandatory fields
+        try:
+            name = i['name']
+            img_url = i['img_url']
+            name_url = (name,img_url)
+        except:
             skip += 1
             continue
 
@@ -106,8 +153,22 @@ def handle_json(f, user):
         except:
             cr = 0
 
-        # save tuple to prevent duplicates in same file
-        new_tuple_list.append(tup)
+        # check if unique
+        if name_url in current_name_url:
+            full_tup = (name, img_url, short_size, cr, short_type)
+            if full_tup in current_full:
+                # excact duplicate
+                skip += 1
+                continue
+            else:
+                # updated attributes
+                # this is kinda slow :(
+                Creature.objects.filter(owner=user, name=name, img_url=img_url).update(size=short_size, CR=cr, creature_type=short_type)
+                current_full.append(full_tup)
+                continue
+
+        current_name_url.append(name_url)
+
         # if everything is ok, generate the object and store it
         obj = Creature(owner=user, name=i['name'], size=short_size, img_url=i['img_url'], CR=cr, creature_type=short_type)
         obj_list.append(obj)
@@ -179,7 +240,7 @@ def bestiary_serve_minis(request, minis):
     response = HttpResponse(content_type='application/force-download')  # mimetype is replaced by content_type for django 1.7
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(minis.zip_fn)
     response['X-Accel-Redirect'] = smart_str(minis.zip_static_path )
-    response = serve(request, os.path.basename(minis.zip_fn), os.path.dirname(minis.zip_path)) # for local testing!!
+    # response = serve(request, os.path.basename(minis.zip_fn), os.path.dirname(minis.zip_path)) # for local testing!!
     #print(minis.zip_static_path)
     return response
 
@@ -318,6 +379,7 @@ class CreatureCreate(LoginRequiredMixin, CreateView):
     model = Creature
     initial={'size':Creature.MEDIUM,'color': Creature.DARKGRAY,'position': Creature.WALKING,'show_name': True}
     form_class = CreatureModifyForm
+
     def get_form_kwargs(self):
         kwargs = super(CreatureCreate, self).get_form_kwargs()
         kwargs.update({'user': self.request.user})
@@ -325,6 +387,8 @@ class CreatureCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         user = self.request.user
         form.instance.owner = user
+        if self.request.POST.get('save_and_next'):
+            self.success_url = reverse('creature-create')
         return super(CreatureCreate, self).form_valid(form)
 
 class CreatureUpdate(LoginRequiredMixin, UpdateView):

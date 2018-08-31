@@ -42,4 +42,6 @@ urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += [
     path('accounts/', include('django.contrib.auth.urls')),
     path('signup/', paperminis_view.signup, name='signup'),
+    path('convert/', paperminis_view.convert_account, name='convert-account'),
+    path('tempaccount/', paperminis_view.temp_account, name='temp-account'),
 ]

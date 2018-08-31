@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     {% load static %}
+    {% load widget_tweaks %}
+    {% load auth_extras %}
 
     {% block title %}<title>Monster Forge</title>{% endblock %}
     <meta charset="utf-8">
@@ -13,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
     <!-- Add additional CSS in static file -->
-    
+
     {#  <link rel="stylesheet" href="{% static 'css/styles.css' %}">#}
     <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/light-bootstrap-dashboard.css' %}">
@@ -100,29 +102,35 @@
                     <span class="navbar-toggler-bar burger-lines"></span>
                 </button>
                 <div class="collapse navbar-collapse justify-content-end" id="navigation">
-                                            <ul class="nav navbar-nav mr-auto">
-                                                <li class="nav-item">
-                                                    <a href="https://reddit.com/r/monsterforge" class="nav-link tex" target="_blank">
-                                                        <i class="fab fa-reddit-alien"></i>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a href="https://twitter.com/monsterforgeorg" class="nav-link" target="_blank">
-                                                        <i class="fab fa-twitter"></i>
-                                                    </a>
-                                                </li>
-                                            </ul>
+                    <ul class="nav navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a href="https://reddit.com/r/monsterforge" class="nav-link tex" target="_blank">
+                                <i class="fab fa-reddit-alien"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://twitter.com/monsterforgeorg" class="nav-link" target="_blank">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </li>
+                    </ul>
 
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
                             {% if user.is_authenticated %}
-                                Logged in as: {{ user.get_username }}
+                                {% if user|has_group:"temp" %}
+                                    <a href="{% url 'convert-account' %}">Convert your temporary account to a real account.</a>
+                                {% else %}
+                                    Logged in as: {{ user.get_username }}
+                                {% endif %}
                             {% endif %}
                         </li>
                         <li class="nav-item">
                                 <span class="no-icon">
                                     {% if user.is_authenticated %}
-                                        <a class="nav-link" href="{% url 'logout'%}">Logout</a>
+                                        {% if not user|has_group:"temp" %}
+                                            <a class="nav-link" href="{% url 'logout'%}">Logout</a>
+                                        {% endif %}
                                     {% else %}
                                         <a class="nav-link" href="{% url 'login'%}">Login</a>
                                     {% endif %}
