@@ -1,0 +1,18 @@
+version: '3'
+services:
+  # Postgres
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+
+  web:
+    build: .
+    environment:
+      - PRODUCTION=True
+      - DJANGO_SECRET_KEY=asdfmovie
+    ports:
+      - "8000:8000"
+

@@ -81,13 +81,6 @@
                     </a>
                 </li>
                 <br>
-                {% url 'patreon' as url %}
-                <li {% if request.path == url %} class="nav-item active"{% endif %}>
-                    <a class="nav-link" href="{{ url }}">
-                        <i class="fab fa-patreon"></i>
-                        <p>Patreon</p>
-                    </a>
-                </li>
             </ul>
         </div>
     </div>
@@ -152,7 +145,7 @@
             <div class="container">
                 <nav>
                     <p class="copyright text-center">
-                        Matthias N.,
+                        DNDBox,
                         <script>
                             document.write(new Date().getFullYear())
                         </script>
