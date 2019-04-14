@@ -1,0 +1,8 @@
+Django==2.1.3
+django-constrainedfilefield==3.2.0
+django-widget-tweaks==1.4.3
+fake-useragent==0.1.11
+numpy==1.15.4
+opencv-python==3.4.3.18
+Pillow==5.3.0
+sortedcontainers==2.0.5

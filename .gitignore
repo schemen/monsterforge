@@ -61,3 +61,10 @@ fabric.properties
 
 # Editor-based Rest Client
 .idea/httpRequests
+
+# VENV & VSCODE
+venv
+.vscode
+*pycache*
+dndtools/settings_secret.py
+db.sqlite3
