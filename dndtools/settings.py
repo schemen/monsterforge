@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.getenv('PRODUCTION', False):
+if os.getenv('PRODUCTION', False) == "True":
     DEBUG = False
 else:
     DEBUG = True
@@ -88,7 +88,7 @@ WSGI_APPLICATION = 'dndtools.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-if os.getenv('PRODUCTION', False):
+if os.getenv('PRODUCTION', False) == "True":
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -145,7 +145,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-MEDIA_ROOT = (BASE_DIR)
+MEDIA_URL = '/media/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AUTH_USER_MODEL = 'paperminis.User'
 

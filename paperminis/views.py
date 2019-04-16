@@ -239,8 +239,8 @@ def bestiary_serve_minis(request, minis):
     """Serve zip file to browser."""
     response = HttpResponse(content_type='application/force-download')  # mimetype is replaced by content_type for django 1.7
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(minis.zip_fn)
-    response['X-Accel-Redirect'] = smart_str(minis.zip_static_path )
-    # response = serve(request, os.path.basename(minis.zip_fn), os.path.dirname(minis.zip_path)) # for local testing!!
+    response['X-Accel-Redirect'] = smart_str(minis.nginx_url + "/" + minis.zip_fn)
+    #response = serve(request, os.path.basename(minis.zip_fn), os.path.dirname(minis.zip_path)) # for local testing!!
     #print(minis.zip_static_path)
     return response
 

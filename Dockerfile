@@ -5,14 +5,15 @@ RUN apt-get install -y \
     net-tools \
     vim
 # Project Files and Settings
-ARG PROJECT=monsterforge
-ARG PROJECT_DIR=/var/www/${PROJECT}
-RUN mkdir -p $PROJECT_DIR
-WORKDIR $PROJECT_DIR
-COPY . ./
+RUN mkdir -p /app && mkdir -p /app/static && mkdir -p /app/media
+VOLUME ["/app/static", "/app/media"]
+WORKDIR /app
+COPY requirements.txt ./
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
+COPY . ./
 # Server
-EXPOSE 8000
+EXPOSE 8080
 STOPSIGNAL SIGINT
-ENTRYPOINT ["python", "manage.py"]
-CMD ["runserver", "0.0.0.0:8000"]
+ENTRYPOINT ["gunicorn", "--bind", "0.0.0.0:8080"]
+CMD ["--workers=4", "dndtools.wsgi"]

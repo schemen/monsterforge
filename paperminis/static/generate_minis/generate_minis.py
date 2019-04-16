@@ -1,5 +1,6 @@
 import numpy as np
 import cv2 as cv
+from django.conf import settings
 from PIL import Image, ImageDraw, ImageFont
 from urllib.request import Request, urlopen
 from fake_useragent import UserAgent
@@ -19,8 +20,12 @@ class MiniBuilder():
         self.user = user
         self.sanitize = re.compile('[^a-zA-Z0-9\(\)\_@]', re.UNICODE)  # sanitize user input
         self.clean_email = self.sanitize.sub('',self.user.email)
-        self.user_dir = 'paperminis/static/generate_minis/users/' + self.clean_email
+        self.user_dir = settings.MEDIA_ROOT + '/generate_minis/users/' + self.clean_email
+        self.nginx_url = settings.MEDIA_URL + 'generate_minis/users/' + self.clean_email
 
+        # Make sure media folder path exists
+        if not os.path.isdir(self.user_dir):
+                os.makedirs(self.user_dir)
 
         self.file_name_body = self.clean_email
         self.creatures = []

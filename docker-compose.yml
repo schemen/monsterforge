@@ -7,12 +7,25 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
-
-  web:
+  app:
     build: .
+    volumes:
+      - staticfiles:/app/static
+      - mediafiles:/app/media
     environment:
       - PRODUCTION=True
       - DJANGO_SECRET_KEY=asdfmovie
     ports:
-      - "8000:8000"
+      - "8080:8080"
+  web:
+    image: nginx
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - staticfiles:/static
+      - mediafiles:/media
+    ports:
+      - "80:80"
 
+volumes:
+  mediafiles:
+  staticfiles:
