@@ -44,4 +44,5 @@ urlpatterns += [
     path('signup/', paperminis_view.signup, name='signup'),
     path('convert/', paperminis_view.convert_account, name='convert-account'),
     path('tempaccount/', paperminis_view.temp_account, name='temp-account'),
+    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 ]

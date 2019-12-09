@@ -45,6 +45,7 @@ DEFAULT_FROM_EMAIL = 'Monsterforge Password Recovery <noreply@monsterforge.org>'
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'oauth2_provider',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',

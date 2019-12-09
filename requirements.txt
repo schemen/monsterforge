@@ -8,3 +8,4 @@ Pillow==5.3.0
 sortedcontainers==2.0.5
 psycopg2==2.8.1
 gunicorn==19.9.0
+django-oauth-toolkit==1.2.0
