@@ -4,7 +4,7 @@ from django.conf import settings
 from PIL import Image, ImageDraw, ImageFont
 from urllib.request import Request, urlopen
 from fake_useragent import UserAgent
-from ..greedypacker import greedypacker
+from greedypacker import BinManager, Item
 import os, shutil, re
 from collections import Counter
 
@@ -376,13 +376,13 @@ class MiniBuilder():
         return img
 
     def build_sheets(self,minis):
-        M = greedypacker.BinManager(self.canvas[0], self.canvas[1], pack_algo='guillotine', heuristic='best_shortside',
+        M = BinManager(self.canvas[0], self.canvas[1], pack_algo='guillotine', heuristic='best_shortside',
                                     wastemap=True, rotation=True)
         its = {}
         item_id = 0
         for m in minis:
             its[item_id] = m
-            item = greedypacker.Item(m.shape[1], m.shape[0], item_id)
+            item = Item(m.shape[1], m.shape[0], item_id)
             M.add_items(item)
             item_id += 1
 

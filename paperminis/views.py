@@ -36,7 +36,7 @@ from .models import Creature
 from .models import Bestiary
 from .models import CreatureQuantity
 from .models import PrintSettings
-from .static.generate_minis.generate_minis import MiniBuilder
+from .generate_minis import MiniBuilder
 from .forms import QuantityForm
 from .forms import UploadFileForm
 from .forms import SignUpForm
