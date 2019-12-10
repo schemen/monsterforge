@@ -106,7 +106,7 @@ def convert_account(request):
             temp_grp = Group.objects.get(name='temp')
             temp_grp.user_set.remove(user)
             login(request, user)
-            logger.info("Temporary user converted to full user: %s" % user.email)
+            logger.info("Temporary user converted to full user: %s" % user.id)
             return HttpResponseRedirect(reverse('index'))
     else:
         form = SignUpForm()
@@ -271,7 +271,7 @@ def bestiary_print(request, pk):
         user = request.user
         formset = PrintForm(request.POST)
         if formset.is_valid():
-            logger.info("Building minis from bestiary %s for %s..." % (pk, user.email))
+            logger.info("Building minis from bestiary %s for user with ID %s..." % (pk, user.id))
             minis = MiniBuilder(user=request.user)
             # update settings
             new_settings = formset.save(commit=False)
