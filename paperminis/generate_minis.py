@@ -4,7 +4,8 @@ from django.conf import settings
 from PIL import Image, ImageDraw, ImageFont
 from urllib.request import Request, urlopen
 from fake_useragent import UserAgent
-from greedypacker import BinManager, Item
+from greedypacker import BinManager
+from .items import Item
 import os, shutil, re
 from collections import Counter
 
