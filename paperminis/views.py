@@ -277,6 +277,7 @@ def bestiary_print(request, pk):
             print_settings.grid_size = new_settings.grid_size
             print_settings.base_shape = new_settings.base_shape
             print_settings.enumerate = new_settings.enumerate
+            print_settings.force_name = new_settings.force_name
             print_settings.fixed_height = new_settings.fixed_height
             print_settings.darken = new_settings.darken
             print_settings.save()
@@ -285,6 +286,7 @@ def bestiary_print(request, pk):
                             grid_size=print_settings.grid_size,
                             base_shape=print_settings.base_shape,
                             enumerate=print_settings.enumerate,
+                            force_name=print_settings.force_name,
                             fixed_height = print_settings.base_shape,
                             darken= print_settings.darken)
             # load creatures into the mini builder

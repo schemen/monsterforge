@@ -242,11 +242,22 @@ class PrintSettings(models.Model):
         (CIRCLE, 'Circle')
     )
 
+    # Name behaviour
+    NO_FORCE = 'no_force'
+    FORCE_NAME = 'force_name'
+    FORCE_BLANK = 'force_blank'
+    NAME_BEHAVIOUR_CHOICES = (
+        (NO_FORCE, 'Leave it to the Creature (default)'),
+        (FORCE_NAME, 'Force printing of all names'),
+        (FORCE_BLANK, 'Force printing no names')
+    )
+
     # fields
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     paper_format = models.CharField(max_length=50, choices=PAPER_FORMAT_CHOICES, default=A4)
     grid_size = models.IntegerField(choices=GRID_SIZE_CHOICES, default=GRID24)
     base_shape = models.CharField(max_length=50, choices=BASE_SHAPE_CHOICES, default=SQUARE)
     enumerate = models.BooleanField(default=False)
+    force_name = models.CharField(max_length=50, choices=NAME_BEHAVIOUR_CHOICES, default=NO_FORCE)
     fixed_height = models.BooleanField(default=False)
     darken = models.IntegerField(default=0)

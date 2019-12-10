@@ -65,6 +65,7 @@ class MiniBuilder():
                       grid_size=24,
                       base_shape='square',
                       enumerate=False,
+                      force_name='no_force',
                       fixed_height=False,
                       darken=0):
 
@@ -72,6 +73,7 @@ class MiniBuilder():
         self.dpmm = 10 # not fully supported setting yet, leave at 10
         self.grid_size = grid_size
         self.enumerate = enumerate
+        self.force_name = force_name
         self.base_shape = base_shape
         self.fixed_height = fixed_height
         self.darken = darken
@@ -220,7 +222,16 @@ class MiniBuilder():
         #     # img = cv.circle(img, (100, 400), 20, (255,0,0), 3)
 
         ## nameplate
-        if creature.show_name:
+        show_name = ""
+
+        if self.force_name == "force_name":
+            show_name = True
+        elif self.force_name == "force_blank":
+            show_name = False
+        else:
+            show_name = creature.show_name
+        
+        if show_name:
             # PIL fix for utf-8 characters
             n_img_pil = Image.new("RGB", (width, name_height), (255, 255, 255))
             x_margin = 0
