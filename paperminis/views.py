@@ -27,6 +27,7 @@ import os
 import json
 from fractions import Fraction
 import uuid
+import logging
 
 from django import template
 from django.contrib.auth.models import Group
@@ -44,6 +45,8 @@ from .forms import PrintForm
 
 register = template.Library()
 
+logger = logging.getLogger("django")
+
 @register.filter(name='has_group')
 def has_group(user, group_name):
     """Function to check Patreon status in templates."""
@@ -60,6 +63,7 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(email=email, password=raw_password)
             login(request, user)
+            logger.info("New user created! Email: %s" % email)
             return HttpResponseRedirect(reverse('index'))
     else:
         form = SignUpForm()
@@ -79,6 +83,7 @@ def temp_account(request):
         temp_grp.user_set.add(user)
         # log the user in (this can never be done manually)
         login(request, user)
+        logger.info("New temp user created! Email: %s" % email)
         return render(request, 'temp_account.html')
 
     return reverse('signup')
@@ -101,6 +106,7 @@ def convert_account(request):
             temp_grp = Group.objects.get(name='temp')
             temp_grp.user_set.remove(user)
             login(request, user)
+            logger.info("Temporary user converted to full user: %s" % user.email)
             return HttpResponseRedirect(reverse('index'))
     else:
         form = SignUpForm()
@@ -265,6 +271,7 @@ def bestiary_print(request, pk):
         user = request.user
         formset = PrintForm(request.POST)
         if formset.is_valid():
+            logger.info("Building minis from bestiary %s for %s..." % (pk, user.email))
             minis = MiniBuilder(user=request.user)
             # update settings
             new_settings = formset.save(commit=False)
@@ -296,6 +303,7 @@ def bestiary_print(request, pk):
             # serve file
             serve = bestiary_serve_minis(request, minis)
             #context = {'pk': pk, 'file': minis.zip_path}
+            logger.info("Finished building, serving now.")
             return serve
 
     # seed form with loaded settings
