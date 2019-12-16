@@ -13,13 +13,12 @@
     <!--     Fonts and icons     -->
     <link rel="shortcut icon" type="image/png" href="{% static 'assets/img/favicon.ico' %}"/>
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
     <!-- Add additional CSS in static file -->
 
     {#  <link rel="stylesheet" href="{% static 'css/styles.css' %}">#}
     <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/light-bootstrap-dashboard.css' %}">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.0/css/all.css" integrity="sha384-fMIl+DMvzZmtx9GDehIVtSMLgyR04fJqC3rZ0f3vENQeKvr7VYVD4zCnw56V+Q92" crossorigin="anonymous">
     <!--   Core JS Files   -->
     <script src="{% static 'assets/js/core/jquery.3.2.1.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'assets/js/core/popper.min.js' %}" type="text/javascript"></script>
@@ -67,14 +66,14 @@
                 {% url 'bestiaries' as url %}
                 <li {% if request.path == url %} class="nav-item active"{% endif %}>
                     <a class="nav-link" href="{{ url }}">
-                        <i class="fas fa-feather-alt"></i>
+                        <i class="fas fa-book"></i>
                         <p>Bestiaries</p>
                     </a>
                 </li>
                 {% url 'creatures' as url %}
                 <li {% if request.path == url %} class="nav-item active"{% endif %}>
                     <a class="nav-link" href="{{ url }}">
-                        <i class="fas fa-frog"></i>
+                        <i class="fas fa-dragon"></i>
                         <p>Creatures</p>
                     </a>
                 </li>
