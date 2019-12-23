@@ -12,6 +12,7 @@ COPY requirements.txt ./
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 COPY . ./
+COPY dndtools/settings_secret.py.template ./dndtools/settings_secret.py
 # Server
 EXPOSE 8080
 STOPSIGNAL SIGINT
