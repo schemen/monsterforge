@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from .models import User
 from .models import Bestiary
 from .models import Creature
+from .models import CreatureQuantity
 
 # Register your models here.
 # admin.site.register(Creature)
@@ -31,6 +32,10 @@ class UserAdmin(DjangoUserAdmin):
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('email',)
 
+class BestiaryInline(admin.TabularInline):
+    model = CreatureQuantity
+    extra = 1
+
 @admin.register(Creature)
 class CreatureAdmin(admin.ModelAdmin):
     list_display = ('owner', 'id', 'name', 'size', 'img_url')
@@ -41,3 +46,4 @@ class CreatureAdmin(admin.ModelAdmin):
 class CreatureAdmin(admin.ModelAdmin):
     list_display = ('owner', 'id', 'name')
     fields = ['owner', 'name']
+    inlines = [BestiaryInline]
