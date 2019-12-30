@@ -2,13 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.utils.translation import ugettext_lazy as _
 
-from .models import User
-from .models import Bestiary
-from .models import Creature
-from .models import CreatureQuantity
-
-# Register your models here.
-# admin.site.register(Creature)
+from .models import User, Bestiary, Creature, CreatureQuantity
 
 
 @admin.register(User)
@@ -35,6 +29,19 @@ class UserAdmin(DjangoUserAdmin):
 class BestiaryInline(admin.TabularInline):
     model = CreatureQuantity
     extra = 1
+    exclude = ('owner',)
+
+    def get_formset(self, request, obj=None, **kwargs):
+        self.parent_obj = obj
+        return super(BestiaryInline, self).get_formset(request, obj, **kwargs)
+
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        parent = self.parent_obj
+        if db_field.name == "creature":
+            kwargs["queryset"] = Creature.objects.filter(owner=parent.owner)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 @admin.register(Creature)
 class CreatureAdmin(admin.ModelAdmin):
