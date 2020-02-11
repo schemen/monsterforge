@@ -66,5 +66,7 @@ fabric.properties
 venv
 .vscode
 *pycache*
-dndtools/settings_secret.py
+#dndtools/settings_secret.py
 db.sqlite3
+paperminis/static/generate_minis
+media/

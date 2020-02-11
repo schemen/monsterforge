@@ -27,6 +27,7 @@ import os
 import json
 from fractions import Fraction
 import uuid
+import logging
 
 from django import template
 from django.contrib.auth.models import Group
@@ -36,13 +37,15 @@ from .models import Creature
 from .models import Bestiary
 from .models import CreatureQuantity
 from .models import PrintSettings
-from .static.generate_minis.generate_minis import MiniBuilder
+from .generate_minis import MiniBuilder
 from .forms import QuantityForm
 from .forms import UploadFileForm
 from .forms import SignUpForm
 from .forms import PrintForm
 
 register = template.Library()
+
+logger = logging.getLogger("django")
 
 @register.filter(name='has_group')
 def has_group(user, group_name):
@@ -60,6 +63,7 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(email=email, password=raw_password)
             login(request, user)
+            logger.info("New user created! Email: %s" % email)
             return HttpResponseRedirect(reverse('index'))
     else:
         form = SignUpForm()
@@ -79,6 +83,7 @@ def temp_account(request):
         temp_grp.user_set.add(user)
         # log the user in (this can never be done manually)
         login(request, user)
+        logger.info("New temp user created! Email: %s" % email)
         return render(request, 'temp_account.html')
 
     return reverse('signup')
@@ -101,6 +106,7 @@ def convert_account(request):
             temp_grp = Group.objects.get(name='temp')
             temp_grp.user_set.remove(user)
             login(request, user)
+            logger.info("Temporary user converted to full user: %s" % user.id)
             return HttpResponseRedirect(reverse('index'))
     else:
         form = SignUpForm()
@@ -239,8 +245,8 @@ def bestiary_serve_minis(request, minis):
     """Serve zip file to browser."""
     response = HttpResponse(content_type='application/force-download')  # mimetype is replaced by content_type for django 1.7
     response['Content-Disposition'] = 'attachment; filename="{}"'.format(minis.zip_fn)
-    response['X-Accel-Redirect'] = smart_str(minis.zip_static_path )
-    # response = serve(request, os.path.basename(minis.zip_fn), os.path.dirname(minis.zip_path)) # for local testing!!
+    response['X-Accel-Redirect'] = smart_str(minis.nginx_url + "/" + minis.zip_fn)
+    #response = serve(request, os.path.basename(minis.zip_fn), os.path.dirname(minis.zip_path)) # for local testing!!
     #print(minis.zip_static_path)
     return response
 
@@ -265,6 +271,7 @@ def bestiary_print(request, pk):
         user = request.user
         formset = PrintForm(request.POST)
         if formset.is_valid():
+            logger.info("Building minis from bestiary %s for user with ID %s..." % (pk, user.id))
             minis = MiniBuilder(user=request.user)
             # update settings
             new_settings = formset.save(commit=False)
@@ -277,6 +284,7 @@ def bestiary_print(request, pk):
             print_settings.grid_size = new_settings.grid_size
             print_settings.base_shape = new_settings.base_shape
             print_settings.enumerate = new_settings.enumerate
+            print_settings.force_name = new_settings.force_name
             print_settings.fixed_height = new_settings.fixed_height
             print_settings.darken = new_settings.darken
             print_settings.save()
@@ -285,6 +293,7 @@ def bestiary_print(request, pk):
                             grid_size=print_settings.grid_size,
                             base_shape=print_settings.base_shape,
                             enumerate=print_settings.enumerate,
+                            force_name=print_settings.force_name,
                             fixed_height = print_settings.base_shape,
                             darken= print_settings.darken)
             # load creatures into the mini builder
@@ -294,6 +303,7 @@ def bestiary_print(request, pk):
             # serve file
             serve = bestiary_serve_minis(request, minis)
             #context = {'pk': pk, 'file': minis.zip_path}
+            logger.info("Finished building, serving now.")
             return serve
 
     # seed form with loaded settings
