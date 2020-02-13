@@ -34,11 +34,12 @@ ALLOWED_HOSTS =  ['*']
 
 # Email
 
-EMAIL_HOST = 'smtp.mailgun.org'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'postmaster@mg.monsterforge.org'
+EMAIL_HOST = os.getenv('EMAIL_HOST', "CHANGEME!")
+EMAIL_PORT = os.getenv('EMAIL_PORT', "CHANGEME!")
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', "CHANGEME!")
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', "CHANGEME!")
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'Monsterforge Password Recovery <noreply@monsterforge.org>'
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', "CHANGEME!")
 
 # Application definition
 
