@@ -361,7 +361,7 @@ def bestiary_link(request, pk):
             else: quantity_obj = CreatureQuantity(creature=creature, bestiary=bestiary, owner=request.user, quantity=q)
             # save
             quantity_obj.save()
-
+        logger.info("Expanded bestiary %s %s from user %s with new creatures!" % (bestiary.id, bestiary.name, bestiary.owner.id))
         return HttpResponseRedirect(reverse('bestiary-detail', kwargs={'pk':pk}))
 
     else:
@@ -399,6 +399,7 @@ class CreatureCreate(LoginRequiredMixin, CreateView):
         form.instance.owner = user
         if self.request.POST.get('save_and_next'):
             self.success_url = reverse('creature-create')
+        logger.info("Creature %s created for user %s" % (form.instance.name, user.id))
         return super(CreatureCreate, self).form_valid(form)
 
 class CreatureUpdate(LoginRequiredMixin, UpdateView):
@@ -425,6 +426,7 @@ class CreatureUpdate(LoginRequiredMixin, UpdateView):
         #print(form_color, db_color, self.request.user.groups.filter(name='Patrons').count())
         # if db_color != form_color and self.request.user.groups.filter(name='Patrons').count() <= 0:
         #     creature_form.color = db_color
+        logger.info("Creature %s updated for user %s" % (form.instance.name, self.request.user.id))
         return super(CreatureUpdate, self).form_valid(form)
 
 class CreatureDelete(LoginRequiredMixin, DeleteView):
@@ -453,6 +455,7 @@ class BestiaryCreate(LoginRequiredMixin, CreateView):
     model = Bestiary
     def form_valid(self, form):
         form.instance.owner = self.request.user
+        logger.info("Bestiary %s created for user %s" % (form.instance.name, self.request.user.id))
         return super(BestiaryCreate, self).form_valid(form)
 
 class BestiaryUpdate(LoginRequiredMixin, UpdateView):
