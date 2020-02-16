@@ -122,7 +122,16 @@ class MiniBuilder():
         # after the change to how the font is handled, some settings here are obsolete
         # I will keep them in for now
         min_height_mm = 40
-        if creature.size in ['M', 'S', 'T']:
+        if creature.size in ['S', 'T']:
+            m_width = int(self.grid_size/2)
+            max_height_mm = 30
+            n_height = 6
+            font_size = 1.15 # opencv "height"
+            font_height = 40 # PIL drawing max height for n_height = 8
+            font_width = 1
+            enum_size = 1.2
+            enum_width = 3
+        elif creature.size == 'M':
             m_width = self.grid_size
             max_height_mm = 40
             n_height = 8
