@@ -266,8 +266,12 @@ class MiniBuilder():
         except:
             return 'Image could not be found or loaded.'
         # fix grayscale images
-        if len(m_img.shape) == 2:
-            m_img = cv.cvtColor(m_img, cv.COLOR_GRAY2RGB)
+
+        try:
+            if len(m_img.shape) == 2:
+                m_img = cv.cvtColor(m_img, cv.COLOR_GRAY2RGB)
+        except:
+            return 'Image could not be found or loaded.'
 
         # replace alpha channel with white for pngs (with fix for grayscale images)
         if m_img.shape[2] == 4:
