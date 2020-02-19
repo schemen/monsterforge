@@ -174,3 +174,6 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 MAX_UPLOAD_SIZE = 2621440
+
+# Due to BestiaryLink we need to set this value higher
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 2500
