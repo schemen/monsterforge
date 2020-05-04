@@ -380,9 +380,15 @@ class MiniBuilder():
             x_margin = b_img.shape[1] - textsize[0]
             y_margin = b_img.shape[0] - textsize[1]
 
+            # Number color
+            if creature.color ==  'ffffff':
+                enum_color = (0, 0, 0)
+            else:
+                enum_color = (255, 255, 255)
+
             textX = np.floor_divide(x_margin, 2)
             textY = np.floor_divide(demi_base + textsize[1], 2)
-            cv.putText(b_img, text, (textX, textY), self.font, enum_size, (255, 255, 255), enum_width, cv.LINE_AA)
+            cv.putText(b_img, text, (textX, textY), self.font, enum_size, enum_color, enum_width, cv.LINE_AA)
 
             self.creature_counter[creature.name] -= 1
 
