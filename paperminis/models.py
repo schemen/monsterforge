@@ -84,6 +84,7 @@ class Creature(models.Model):
     LIGHTGRAY = 'd3d3d3'
     DARKGRAY = 'a9a9a9'
     BLACK = '000000'
+    WHITE = 'ffffff'
 
     COLOR_CHOICES = (
         (GREEN, 'Green'),
@@ -91,7 +92,8 @@ class Creature(models.Model):
         (BLUE, 'Blue'),
         (LIGHTGRAY, 'Light Gray'),
         (DARKGRAY, 'Dark Gray'),
-        (BLACK, 'Black')
+        (BLACK, 'Black'),
+        (WHITE, 'White')
     )
 
     # Alignment
