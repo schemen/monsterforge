@@ -1,8 +1,8 @@
-FROM python:3.6
+FROM python:3.9
 # Install Python and Package Libraries
 RUN apt-get update && apt-get upgrade -y && apt-get autoremove && apt-get autoclean
 RUN apt-get install -y \
-    net-tools \
+    net-tools libgl1-mesa-dev \
     vim
 # Project Files and Settings
 RUN mkdir -p /app && mkdir -p /app/static && mkdir -p /app/media
