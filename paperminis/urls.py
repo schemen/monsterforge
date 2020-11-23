@@ -23,6 +23,7 @@ urlpatterns += [
 # bestiary management
 urlpatterns += [
     path('bestiary/create/', views.BestiaryCreate.as_view(), name='bestiary-create'),
+    path('bestiary/ddbcreate/', views.create_ddb_enc_bestiary, name='ddb-enc-bestiary-create'),
     path('bestiary/<int:pk>/update/', views.BestiaryUpdate.as_view(), name='bestiary-update'),
     path('bestiary/<int:pk>/delete/', views.BestiaryDelete.as_view(), name='bestiary-delete'),
     path('bestiary/<int:pk>/link/', views.bestiary_link, name='bestiary-link'),

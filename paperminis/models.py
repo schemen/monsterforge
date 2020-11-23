@@ -161,6 +161,7 @@ class Creature(models.Model):
     show_name = models.BooleanField(default=True)
     creature_type = models.CharField(max_length=100, choices=CREATURE_TYPE_CHOICES, default=UNDEFINED)
     CR = models.FloatField(default=0)
+    from_ddb = models.BooleanField(default=False)
 
 
     # Metadata
@@ -185,6 +186,7 @@ class Bestiary(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=150)
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    from_ddb = models.BooleanField(default=False)
     creatures = models.ManyToManyField(Creature, through='CreatureQuantity',
                                       help_text='A list of creatures belonging to this bestiary.')
     class Meta:

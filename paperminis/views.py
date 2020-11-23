@@ -28,6 +28,8 @@ import json
 from fractions import Fraction
 import uuid
 import logging
+import requests
+from urllib.parse import urlparse, urljoin
 
 from django import template
 from django.contrib.auth.models import Group
@@ -42,6 +44,7 @@ from .forms import QuantityForm
 from .forms import UploadFileForm
 from .forms import SignUpForm
 from .forms import PrintForm
+from .forms import DDBEncounterBestiaryCreate
 
 register = template.Library()
 
@@ -457,6 +460,114 @@ class BestiaryCreate(LoginRequiredMixin, CreateView):
         form.instance.owner = self.request.user
         logger.info("Bestiary %s created for user %s" % (form.instance.name, self.request.user.id))
         return super(BestiaryCreate, self).form_valid(form)
+
+
+
+@login_required()
+def create_ddb_enc_bestiary(request):
+    """Dndbeyond Encounter bestiary create view."""
+    if request.method == 'POST':
+        form = DDBEncounterBestiaryCreate(request.POST)
+        if form.is_valid():
+            logger.info("Creating Dndbeyond Encounter Bestiary!")
+            # DDB API Endpoints
+            DDB_ENCOUTNER_ENDPOINT = "https://encounter-service.dndbeyond.com/v1/encounters/"
+            DDB_MONSTER_ENDPOINT = "https://monster-service.dndbeyond.com/v1/Monster?"
+            
+            # Try to get DDB Encounter data
+            enc_url = form.cleaned_data.get('ddb_enc_url')
+            enc_uuid = str(urlparse(enc_url).path).replace("/encounters/", "")
+            enc_api_url = urljoin(DDB_ENCOUTNER_ENDPOINT, enc_uuid)
+            logger.debug("DDB Enc API URL: %s" % (enc_api_url))
+            try:
+                response = requests.get(enc_api_url)
+                enc_dict = response.json()
+            except requests.RequestException as exception:
+                logger.error("Could not download DDB Enc Data, Error: \n %s" % exception)
+
+            # Try to get monsters data
+            monster_params = []
+            for i in enc_dict["data"]["monsters"]:
+                monster_params.append("ids=" + str(i["id"]) + "&")
+
+            monster_url = DDB_MONSTER_ENDPOINT
+            for i in monster_params:
+                monster_url = "".join(monster_url + i)
+            logger.debug("DDB Monsters API URL: %s" % (monster_url))
+
+            try:
+                response = requests.get(monster_url)
+                monsters_dict = response.json()
+            except requests.RequestException as exception:
+                logger.error("Could not download DDB Monster Data, Error: \n %s" % exception)
+
+
+            # Create a bestiary
+            bestiary = Bestiary()
+            bestiary.name = str(enc_dict["data"]["name"])
+            bestiary.owner = request.user
+            bestiary.from_ddb = True
+            bestiary.save()
+            logger.info("Bestiary %s created for user %s via DDB Enc" % (bestiary.name, request.user.id))
+
+            # Create monsters if they don't exist already and link
+            for i in monsters_dict["data"]:
+                if not Creature.objects.filter(owner=request.user, name=i["name"]).exists():
+                    creature = Creature()
+                    creature.name = i["name"]
+                                    
+                    if i["isReleased"]:
+                        # This is a monster of the SRD or Publicly available
+                        creature.img_url = i["basicAvatarUrl"]
+                    else:
+                        creature.img_url = i["avatarUrl"]
+
+                    # Determin correct size. Be aware this might change on ddb side
+                    if i["sizeId"] == 2:
+                        creature.size = "T"
+                    if i["sizeId"] == 3:
+                        creature.size = "S"
+                    if i["sizeId"] == 4:
+                        creature.size = "M"
+                    if i["sizeId"] == 5:
+                        creature.size = "L"
+                    if i["sizeId"] == 6:
+                        creature.size = "H"
+                    if i["sizeId"] == 7:
+                        creature.size = "G"
+
+                    creature.owner = request.user
+                    creature.from_ddb = True
+                    creature.save()
+                    logger.info("Creature %s created for user %s via DDB Enc" % (creature.name, request.user.id))
+
+                    # Link monster
+                    bestiary_monsters = CreatureQuantity()
+                    bestiary_monsters.creature = creature
+                    bestiary_monsters.bestiary = bestiary
+
+                    for var in enc_dict["data"]["monsters"]:
+                        if i["id"] == var["id"]:
+                            bestiary_monsters.quantity = var["quantity"]
+
+                    bestiary_monsters.save()
+                
+                # If the create already exists, link it
+                else:
+                    # Link monster
+                    bestiary_monsters = CreatureQuantity()
+                    bestiary_monsters.creature = Creature.objects.filter(owner=request.user, name=i["name"]).first()
+                    bestiary_monsters.bestiary = bestiary
+                    for var in enc_dict["data"]["monsters"]:
+                        if i["id"] == var["id"]:
+                            bestiary_monsters.quantity = var["quantity"]                                        
+                    bestiary_monsters.save()
+            return HttpResponseRedirect(reverse('bestiaries'))
+
+    else:
+        form = DDBEncounterBestiaryCreate()
+    return render(request, 'ddb_enc_bestiary.html', {'form': form})        
+
 
 class BestiaryUpdate(LoginRequiredMixin, UpdateView):
     """Generic bestiary update view."""
