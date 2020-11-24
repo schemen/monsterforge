@@ -1,0 +1,53 @@
+{% extends 'base_generic.html' %}
+
+{% block content %}
+    {% load widget_tweaks %}
+    <br>
+    <script>
+        {% for type, error_text in form.errors.items %}
+
+            $.notify({
+                message: '{{ error_text }}'
+            },{
+                type: 'danger',
+                delay: 6000
+            },{
+                animate: {
+                    enter: 'animated fadeInRight',
+                    exit: 'animated fadeOutRight'
+                }
+            });
+        {% endfor %}
+    </script>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card col-md-8 bg-light mx-auto pull-right">
+                <div class="card-header bg-light bg-light">
+                    <h3 class="card-title bg-light">Create Dndbeyond Encounter Bestiary</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <p>Enter a Dndbeyond Encounter URL </p>
+                                    {{  form.ddb_enc_url|add_class:"form-control" }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 mt-2">
+                                <button type="submit" class="btn btn-basic btn-fill btn-block">Create Bestiary!</button>
+                            </div>
+                        </div>
+                        &nbsp;&nbsp;
+                        <div class="clearfix"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

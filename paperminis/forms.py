@@ -1,3 +1,5 @@
+import os
+from urllib.parse import urlparse
 from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
@@ -5,7 +7,6 @@ from django.utils.safestring import mark_safe
 from constrainedfilefield.fields import ConstrainedFileField
 from django.conf import settings
 from django.template.defaultfilters import filesizeformat
-import os
 from django.core.exceptions import ValidationError
 from .models import Creature, Bestiary, CreatureQuantity, PrintSettings
 
@@ -64,6 +65,19 @@ class BestiaryModifyForm(forms.ModelForm):
     class Meta:
         model = Bestiary
         fields = ['name', ]
+
+def validate_ddbenc_url(value):
+    if not value:
+        return  # Required error is done the field
+    obj = urlparse(value)
+    if not 'dndbeyond.com' in obj.netloc or not ('encounters/') in obj.path:
+        raise ValidationError('Only DDB Encounter URLS are allowed!')
+
+
+class DDBEncounterBestiaryCreate(forms.Form):
+    """create bestiary and monsters from ddb encounter"""
+    # URL
+    ddb_enc_url = forms.URLField(help_text="Required. Enter a Dndbeyond Encounter URL.",validators=[validate_ddbenc_url])
 
 
 class QuantityForm(forms.ModelForm):
