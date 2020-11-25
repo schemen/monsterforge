@@ -545,6 +545,7 @@ def create_ddb_enc_bestiary(request):
                     bestiary_monsters = CreatureQuantity()
                     bestiary_monsters.creature = creature
                     bestiary_monsters.bestiary = bestiary
+                    bestiary_monsters.owner = request.user
 
                     for var in enc_dict["data"]["monsters"]:
                         if i["id"] == var["id"]:
@@ -560,7 +561,8 @@ def create_ddb_enc_bestiary(request):
                     bestiary_monsters.bestiary = bestiary
                     for var in enc_dict["data"]["monsters"]:
                         if i["id"] == var["id"]:
-                            bestiary_monsters.quantity = var["quantity"]                                        
+                            bestiary_monsters.quantity = var["quantity"]
+                    bestiary_monsters.owner = request.user                                                            
                     bestiary_monsters.save()
             return HttpResponseRedirect(reverse('bestiaries'))
 
