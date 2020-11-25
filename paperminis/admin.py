@@ -54,3 +54,7 @@ class CreatureAdmin(admin.ModelAdmin):
     list_display = ('owner', 'id', 'name')
     fields = ['owner', 'name']
     inlines = [BestiaryInline]
+
+@admin.register(CreatureQuantity)
+class CreatureQuantityAdmin(admin.ModelAdmin):
+    list_display = ('owner', 'id', 'creature', 'bestiary')
