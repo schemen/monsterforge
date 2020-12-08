@@ -515,12 +515,22 @@ def create_ddb_enc_bestiary(request):
                 if not Creature.objects.filter(owner=request.user, name=i["name"]).exists():
                     creature = Creature()
                     creature.name = i["name"]
-                                    
+
+                    # Figure out which image to use, if none are available use a basic SRD creature image
                     if i["isReleased"]:
                         # This is a monster of the SRD or Publicly available
-                        creature.img_url = i["basicAvatarUrl"]
+                        if i["basicAvatarUrl"]:
+                            creature.img_url = i["basicAvatarUrl"]
+                        else:
+                            if i["avatarUrl"]:
+                                creature.img_url = i["avatarUrl"]
+                            else:
+                                creature.img_url = "https://media-waterdeep.cursecdn.com/avatars/4675/664/636747837303835953.jpeg"
                     else:
-                        creature.img_url = i["avatarUrl"]
+                        if i["avatarUrl"]:
+                            creature.img_url = i["avatarUrl"]
+                        else:
+                            creature.img_url = "https://media-waterdeep.cursecdn.com/avatars/4675/664/636747837303835953.jpeg"
 
                     # Determin correct size. Be aware this might change on ddb side
                     if i["sizeId"] == 2:
