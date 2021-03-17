@@ -1,7 +1,7 @@
 # Monsterforge
 
 ## About the project
-The website at https://forge.dndbox.com provides tools for tabletop gaming. 
+The website at https://forge.dice.quest provides tools for tabletop gaming. 
 The website is free and contains no ads.
 Feel free to contribute anything from commenting to design or new options and tools. If you plan something bigger, please contact me beforehand.
 
