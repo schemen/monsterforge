@@ -4,6 +4,7 @@
     {% load static %}
     {% load widget_tweaks %}
     {% load auth_extras %}
+    {% load version %}
 
     {% block title %}<title>Monster Forge</title>{% endblock %}
     <meta charset="utf-8">
@@ -140,7 +141,7 @@
             <div class="container">
                 <nav>
                     <p class="copyright text-center">
-                        Dice.Quest,
+                        Dice.Quest, Monsterforge Version {% version %},
                         <script>
                             document.write(new Date().getFullYear())
                         </script>
