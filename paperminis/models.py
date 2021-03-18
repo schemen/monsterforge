@@ -155,7 +155,7 @@ class Creature(models.Model):
     name = models.CharField(max_length=100)
     img_url = models.TextField(max_length=500)
     size = models.CharField(max_length=1, choices=CREATURE_SIZE_CHOICES, default=MEDIUM)
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     color = models.CharField(max_length=6, choices=COLOR_CHOICES, default=DARKGRAY)
     position = models.CharField(max_length=50, choices=POSITION_CHOICES, default=WALKING)
     show_name = models.BooleanField(default=True)
@@ -185,7 +185,7 @@ class Bestiary(models.Model):
     # fields
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=150)
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     from_ddb = models.BooleanField(default=False)
     creatures = models.ManyToManyField(Creature, through='CreatureQuantity',
                                       help_text='A list of creatures belonging to this bestiary.')
@@ -208,7 +208,7 @@ class CreatureQuantity(models.Model):
     creature = models.ForeignKey(Creature, on_delete=models.CASCADE)
     bestiary = models.ForeignKey(Bestiary, on_delete=models.CASCADE)
     quantity = models.IntegerField()
-    owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class PrintSettings(models.Model):
