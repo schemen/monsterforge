@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1 (2021-03-18)
+
+### Fixes
+
+* Properly handle deleted objects and cascading
+
 ## 1.0.0 (2021-03-17)
 
 ### Happy 1.0 release
