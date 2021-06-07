@@ -1,5 +1,12 @@
 # Changelog
 
+
+## 1.0.3 (2021-03-18)
+
+### Fixes
+
+* Update Django dependency due to CVEs
+
 ## 1.0.1 (2021-03-18)
 
 ### Fixes
