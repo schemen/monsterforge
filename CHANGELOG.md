@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.5 (2021-08-05)
+
+### features
+
+* Add stats command
 
 ## 1.0.3 (2021-03-18)
 
