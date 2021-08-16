@@ -27,7 +27,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build the Docker image
-      uses: docker/build-push-action@2
+      uses: docker/build-push-action@v2.6.1
       with:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
