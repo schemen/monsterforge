@@ -1,4 +1,5 @@
 FROM python:3.9-slim
+RUN apt update; apt install -y libgl1
 # Project Files and Settings
 RUN mkdir -p /app && mkdir -p /app/static && mkdir -p /app/media
 VOLUME ["/app/static", "/app/media"]
