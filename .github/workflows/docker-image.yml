@@ -33,5 +33,5 @@ jobs:
       uses: docker/build-push-action@v2.6.1
       with:
         push: true
-        tags: ${{ env.REGISTRY }}/schemen/monsterforge:${{ steps.meta.outputs.tags }}
+        tags: ${{ env.REGISTRY }}/${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
