@@ -7,5 +7,5 @@ Pillow==8.3.1
 sortedcontainers==2.4.0
 psycopg2-binary==2.9.1
 gunicorn==20.1.0
-git+https://github.com/ssbothwell/greedypacker.git@f7219917d7b84ad59ee4ed1ab8019cccf4ca3b83
+https://github.com/ssbothwell/greedypacker/archive/f7219917d7b84ad59ee4ed1ab8019cccf4ca3b83.zip
 requests==2.26.0
