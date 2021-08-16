@@ -1,9 +1,5 @@
-FROM python:3.9
-# Install Python and Package Libraries
-RUN apt-get update && apt-get upgrade -y && apt-get autoremove && apt-get autoclean
-RUN apt-get install -y \
-    net-tools libgl1-mesa-dev \
-    vim
+FROM python:3.9-slim
+RUN apt update; apt install -y libgl1 libglib2.0-0
 # Project Files and Settings
 RUN mkdir -p /app && mkdir -p /app/static && mkdir -p /app/media
 VOLUME ["/app/static", "/app/media"]
