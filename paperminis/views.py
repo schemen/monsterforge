@@ -520,7 +520,12 @@ def create_ddb_enc_bestiary(request):
                     if i["isReleased"]:
                         # This is a monster of the SRD or Publicly available
                         if i["basicAvatarUrl"]:
-                            creature.img_url = i["basicAvatarUrl"]
+
+                            # Seems DDB is publishing wrong URLs, fixing those here
+                            if urlparse(i["basicAvatarUrl"]).netloc == "www.dndbeyond.com.com":
+                                creature.img_url = "https://www.dndbeyond.com" + urlparse(i["basicAvatarUrl"]).path
+                            else:
+                                creature.img_url = i["basicAvatarUrl"]
                         else:
                             if i["avatarUrl"]:
                                 creature.img_url = i["avatarUrl"]
