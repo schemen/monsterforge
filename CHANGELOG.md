@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.6 (2021-08-05)
+
+### fixes
+
+* Significantly reduce image size
+* Use github actions and registry
+* Fix DDBs wrongly defined SRD monster image URL
+
 ## 1.0.5 (2021-08-05)
 
 ### features
