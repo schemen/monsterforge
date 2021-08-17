@@ -248,7 +248,7 @@ class MiniBuilder():
             # find optimal font size
             while x_margin < 2 or y_margin < 10:
                 #print(font_height)
-                unicode_font = ImageFont.truetype("./DejaVuSans.ttf", font_height)
+                unicode_font = ImageFont.truetype("paperminis/DejaVuSans.ttf", font_height)
                 font_height = round(font_height - 2, 2)
                 textsize = unicode_font.getsize(text)
                 im_w, im_h = n_img_pil.size
