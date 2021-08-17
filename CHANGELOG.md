@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.7 (2021-08-17)
+
+### fixes
+
+* Fixed a problem where printing Names resulted in a 500 Error (#31)
+
 ## 1.0.6 (2021-08-05)
 
 ### fixes
