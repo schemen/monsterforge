@@ -285,7 +285,9 @@ def bestiary_print(request, pk):
             archive.seek(0)
             logger.info("Finished building, serving now.")
 
-            return FileResponse(archive, as_attachment=True, filename="forged.zip")
+            # Clean bestiary name
+            name = minis.sanitize.sub('',bestiary.name)
+            return FileResponse(archive, as_attachment=True, filename=name + "_forged.zip")
 
 
     # seed form with loaded settings
