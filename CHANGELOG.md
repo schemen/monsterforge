@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.0 (2021-08-18)
+
+### Improvements
+
+* Refactored how images are processed and served, reducing server overhead
+* Implemented some basic image caching for each requested build
+* Add Link to Changelog notes in footer
+
 ## 1.0.7 (2021-08-17)
 
 ### fixes
