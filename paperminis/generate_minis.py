@@ -1,17 +1,24 @@
-import numpy as np
-import cv2 as cv
-from django.conf import settings
-from PIL import Image, ImageDraw, ImageFont
-from urllib.request import Request, urlopen
-from fake_useragent import UserAgent
-from greedypacker import BinManager
-from .items import Item
-import os, shutil, re
+import io
+import logging
+import os
+import re
 from collections import Counter
+from tempfile import TemporaryDirectory
+from urllib.request import Request, urlopen
+from zipfile import ZIP_DEFLATED, ZipFile
 
-from paperminis.models import Creature
-from paperminis.models import Bestiary
-from paperminis.models import CreatureQuantity
+import cv2 as cv
+import numpy as np
+from django.conf import settings
+from greedypacker import BinManager
+from PIL import Image, ImageDraw, ImageFont
+
+from paperminis.models import Bestiary, Creature, CreatureQuantity
+from paperminis.utils import download_image
+
+from .items import Item
+
+logger = logging.getLogger("django")
 
 class MiniBuilder():
 
@@ -21,16 +28,14 @@ class MiniBuilder():
         self.user = user
         self.sanitize = re.compile('[^a-zA-Z0-9\(\)\_@]', re.UNICODE)  # sanitize user input
         self.clean_email = self.sanitize.sub('',self.user.email)
-        self.user_dir = settings.MEDIA_ROOT + '/generate_minis/users/' + self.clean_email
-        self.nginx_url = settings.MEDIA_URL + 'generate_minis/users/' + self.clean_email
 
-        # Make sure media folder path exists
-        if not os.path.isdir(self.user_dir):
-                os.makedirs(self.user_dir)
-
+        #TODO Clear this var
         self.file_name_body = self.clean_email
         self.creatures = []
         self.enumerate = False
+        
+        # clear download cache for each run
+        download_image.cache_clear()
 
     def add_bestiary(self, pk):
         creature_quantities = CreatureQuantity.objects.filter(owner=self.user, bestiary=pk)
@@ -85,7 +90,6 @@ class MiniBuilder():
                  'legal': np.array([216, 356]),
                  'tabloid': np.array([279, 432])}
         self.canvas = (paper[paper_format] - 2 * print_margin) * self.dpmm
-        self.header = {'User-Agent': str(UserAgent().chrome)}
 
 
     def build_all_and_zip(self):
@@ -104,8 +108,8 @@ class MiniBuilder():
 
         self.sheets = self.build_sheets(self.minis)
         self.zip_path = self.save_and_zip(self.sheets)
-        # static fix
-        self.zip_static_path = '/' + '/'.join(self.zip_path.split('/')[1:])
+        logger.info(download_image.cache_info())
+        return self.zip_path
 
     def build_mini(self, creature):
         if not hasattr(self,'grid_size'):
@@ -267,13 +271,8 @@ class MiniBuilder():
 
 
         ## mimiature image
-        try:
-            req = Request(creature.img_url, headers=self.header)
-            with urlopen(req) as resp:
-                arr = np.asarray(bytearray(resp.read()), dtype=np.uint8)
-                m_img = cv.imdecode(arr, -1)  # Load it "as it is"
-        except:
-            return 'Image could not be found or loaded.'
+        m_img = download_image(creature.img_url)
+
         # fix grayscale images
 
         try:
@@ -452,25 +451,20 @@ class MiniBuilder():
 
     def save_and_zip(self, sheets):
         sheet_nr = 1
-        sheet_fns = []
+        temp_dir = TemporaryDirectory()
+        #zip_fn = temp_dir.name + "/forged.zip"
+        zip_memory = io.BytesIO()
+        zipfile = ZipFile(zip_memory, mode='a', compression=ZIP_DEFLATED)
+
         for sheet in sheets:
+            img_buffer = io.BytesIO()
             RGB_img = cv.cvtColor(sheet, cv.COLOR_BGR2RGB)
             im_pil = Image.fromarray(RGB_img)
-            if not os.path.isdir(self.user_dir+ '/sheets'):
-                os.makedirs(self.user_dir+ '/sheets')
-            sheet_fn = self.user_dir + '/sheets/sheet_' + str(sheet_nr) + '.png'
-            im_pil.save(sheet_fn, dpi=(25.4 * self.dpmm, 25.4 * self.dpmm))
-            sheet_fns.append(sheet_fn)
+            sheet_fn = temp_dir.name + '/sheet_' + str(sheet_nr) + '.png'
+            im_pil.save(img_buffer, dpi=(25.4 * self.dpmm, 25.4 * self.dpmm), format='PNG')
+            img_buffer.seek(0)
+            zipfile.writestr('sheet_' + str(sheet_nr) + '.png', img_buffer.getbuffer())
             sheet_nr += 1
-        self.zip_fn = self.file_name_body+'_minis.zip' # for serving
-        zip_fn = self.user_dir+'/'+self.file_name_body+'_minis'
-        shutil.make_archive(zip_fn, 'zip', self.user_dir+ '/sheets')
-        # delete sheets
-        for sheet_fn in sheet_fns:
-            try:
-                if os.path.isfile(sheet_fn):
-                    os.unlink(sheet_fn)
-            except Exception as e:
-                print(e)
 
-        return zip_fn+'.zip'
+        zipfile.close()
+        return zip_memory
