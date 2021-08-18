@@ -11,7 +11,6 @@ services:
     build: .
     volumes:
       - staticfiles:/app/static
-      - mediafiles:/app/media
     environment:
       - PRODUCTION=True
       - DJANGO_SECRET_KEY=asdfmovie
@@ -22,10 +21,8 @@ services:
     volumes:
       - ./nginx:/etc/nginx/conf.d
       - staticfiles:/static
-      - mediafiles:/media
     ports:
       - "80:80"
 
 volumes:
-  mediafiles:
   staticfiles:

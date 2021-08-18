@@ -1,50 +1,38 @@
-from django.shortcuts import render
-from django.views import generic
-from django.contrib.auth.mixins import LoginRequiredMixin
+import json
+import logging
+import os
+import uuid
+from fractions import Fraction
+from urllib.parse import urljoin, urlparse
+
+import requests
+from django import forms, template
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login, authenticate
-from django.forms.models import modelformset_factory
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
-from django.db.models import Sum
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Group
-#from django.shortcuts import get_object_or_404
-from django.http import Http404
-from django.http import HttpResponseRedirect
-from django.http import HttpResponse
-from django.urls import reverse
-from django.utils.deconstruct import deconstructible
-from django.template.defaultfilters import filesizeformat
 from django.core.exceptions import ValidationError
-from django import forms
-from dndtools.settings import STATIC_URL
-from django.utils.encoding import smart_str
-from django.views.static import serve
 from django.db import connection
-import os
-import json
-from fractions import Fraction
-import uuid
-import logging
-import requests
-from urllib.parse import urlparse, urljoin
+from django.db.models import Sum
+from django.forms.models import modelformset_factory
+#from django.shortcuts import get_object_or_404
+from django.http import (FileResponse, Http404, HttpResponse,
+                         HttpResponseRedirect)
+from django.shortcuts import render
+from django.template.defaultfilters import filesizeformat
+from django.urls import reverse, reverse_lazy
+from django.utils.deconstruct import deconstructible
+from django.utils.encoding import smart_str
+from django.views import generic
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from dndtools.settings import STATIC_URL
 
-from django import template
-from django.contrib.auth.models import Group
-
-from .models import User
-from .models import Creature
-from .models import Bestiary
-from .models import CreatureQuantity
-from .models import PrintSettings
+from .forms import (DDBEncounterBestiaryCreate, PrintForm, QuantityForm,
+                    SignUpForm, UploadFileForm)
 from .generate_minis import MiniBuilder
-from .forms import QuantityForm
-from .forms import UploadFileForm
-from .forms import SignUpForm
-from .forms import PrintForm
-from .forms import DDBEncounterBestiaryCreate
+from .models import Bestiary, Creature, CreatureQuantity, PrintSettings, User
 
 register = template.Library()
 
@@ -243,16 +231,6 @@ class BestiaryDetailView(LoginRequiredMixin, generic.DetailView):
         # get sum of creatures in there
         return Bestiary.objects.filter(owner=self.request.user).annotate(total_creatures=Sum('creaturequantity__quantity'))
 
-
-def bestiary_serve_minis(request, minis):
-    """Serve zip file to browser."""
-    response = HttpResponse(content_type='application/force-download')  # mimetype is replaced by content_type for django 1.7
-    response['Content-Disposition'] = 'attachment; filename="{}"'.format(minis.zip_fn)
-    response['X-Accel-Redirect'] = smart_str(minis.nginx_url + "/" + minis.zip_fn)
-    #response = serve(request, os.path.basename(minis.zip_fn), os.path.dirname(minis.zip_path)) # for local testing!!
-    #print(minis.zip_static_path)
-    return response
-
 @login_required()
 def bestiary_print(request, pk):
     # validation and proper redirects
@@ -302,12 +280,15 @@ def bestiary_print(request, pk):
             # load creatures into the mini builder
             minis.add_bestiary(pk)
             # build minis
-            minis.build_all_and_zip()
+            archive = minis.build_all_and_zip()
             # serve file
-            serve = bestiary_serve_minis(request, minis)
-            #context = {'pk': pk, 'file': minis.zip_path}
+            archive.seek(0)
             logger.info("Finished building, serving now.")
-            return serve
+
+            # Clean bestiary name
+            name = minis.sanitize.sub('',bestiary.name)
+            return FileResponse(archive, as_attachment=True, filename=name + "_forged.zip")
+
 
     # seed form with loaded settings
     form = PrintForm(initial=print_settings.__dict__)
@@ -383,8 +364,8 @@ class BestiaryListView(LoginRequiredMixin, generic.ListView):
 
 
 
-from .forms import CreatureModifyForm
-from .forms import BestiaryModifyForm
+from .forms import BestiaryModifyForm, CreatureModifyForm
+
 
 # Creature Forms
 class CreatureCreate(LoginRequiredMixin, CreateView):
