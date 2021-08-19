@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.1 (2021-08-19)
+
+### Improvements
+
+* Circular minis now have a rectangular guiding lines, this will help crafting it in the end. Cut the Mini and glue it then cut the circle out.
+
+### Other
+
+* Updated the Readme
+* Monsterforge is now it's own root
+
 ## 1.1.0 (2021-08-18)
 
 ### Improvements
