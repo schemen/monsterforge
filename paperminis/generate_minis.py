@@ -356,6 +356,8 @@ class MiniBuilder():
             cv.rectangle(b_img, (0, 0), (b_img.shape[1] - 1, demi_base - 1), bgr_color, thickness=-1)
             cv.rectangle(b_img, (0, 0), (b_img.shape[1] - 1, b_img.shape[0] - 1), (0,0,0), thickness=1)
         elif self.base_shape == 'circle':
+            cv.rectangle(b_img, (0, 0), (b_img.shape[1] - 1, demi_base - 1), bgr_color, thickness=-1)
+            cv.rectangle(b_img, (0, 0), (b_img.shape[1] - 1, b_img.shape[0] - 1), (0,0,0), thickness=1)
             cv.ellipse(b_img, (width//2, 0), (width//2, width//2), 0, 0, 180, bgr_color, -1)
             cv.ellipse(b_img, (width // 2, 0), (width // 2, width // 2), 0, 0, 180, (0,0,0), 2)
             if feet_mod >= 2:
