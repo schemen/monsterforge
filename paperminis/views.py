@@ -1,33 +1,25 @@
 import json
 import logging
-import os
-import requests
 import uuid
-from django import forms, template
+from fractions import Fraction
+from urllib.parse import urljoin, urlparse
+
+import requests
+from django import template
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
-from django.db import connection
 from django.db.models import Sum
-from django.forms.models import modelformset_factory
 # from django.shortcuts import get_object_or_404
-from django.http import (FileResponse, Http404, HttpResponse,
-                         HttpResponseRedirect)
+from django.http import (FileResponse, Http404, HttpResponseRedirect)
 from django.shortcuts import render
-from django.template.defaultfilters import filesizeformat
 from django.urls import reverse, reverse_lazy
-from django.utils.deconstruct import deconstructible
-from django.utils.encoding import smart_str
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from fractions import Fraction
-from urllib.parse import urljoin, urlparse
 
-from dndtools.settings import STATIC_URL
 from .forms import (DDBEncounterBestiaryCreate, PrintForm, QuantityForm,
                     SignUpForm, UploadFileForm)
 from .generate_minis import MiniBuilder
