@@ -7,7 +7,7 @@ from constrainedfilefield.fields import ConstrainedFileField
 # Create your models here.
 
 # New User without name
-from django.contrib.auth.models import AbstractUser, BaseUserManager ## A new class is imported. ##
+from django.contrib.auth.models import AbstractUser, BaseUserManager  ## A new class is imported. ##
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -55,7 +55,8 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
-    objects = UserManager() ## This is the new line in the User model. ##
+    objects = UserManager()  ## This is the new line in the User model. ##
+
 
 class Creature(models.Model):
     """Model for Creatures"""
@@ -68,7 +69,7 @@ class Creature(models.Model):
     HUGE = 'H'
     GARGANTUAN = 'G'
 
-    CREATURE_SIZE_CHOICES =(
+    CREATURE_SIZE_CHOICES = (
         (TINY, 'Tiny'),
         (SMALL, 'Small'),
         (MEDIUM, 'Medium'),
@@ -163,7 +164,6 @@ class Creature(models.Model):
     CR = models.FloatField(default=0)
     from_ddb = models.BooleanField(default=False)
 
-
     # Metadata
     class Meta:
         ordering = ['name']
@@ -178,7 +178,6 @@ class Creature(models.Model):
         return self.name
 
 
-
 class Bestiary(models.Model):
     """Bestiary Model"""
 
@@ -188,11 +187,11 @@ class Bestiary(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     from_ddb = models.BooleanField(default=False)
     creatures = models.ManyToManyField(Creature, through='CreatureQuantity',
-                                      help_text='A list of creatures belonging to this bestiary.')
+                                       help_text='A list of creatures belonging to this bestiary.')
+
     class Meta:
         ordering = ['name']
         verbose_name_plural = "Bestiaries"
-
 
     def get_absolute_url(self):
         """Returns the url to access a particular instance of Bestiary."""
@@ -201,6 +200,7 @@ class Bestiary(models.Model):
     def __str__(self):
         """String for representing the Bestiary object (in Admin site etc.)."""
         return self.name
+
 
 class CreatureQuantity(models.Model):
     """Model to link bestiary with a quantity of creatures. "owner" is technically not needed

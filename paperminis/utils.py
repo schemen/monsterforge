@@ -1,9 +1,8 @@
-from functools import lru_cache
-from urllib.request import Request, urlopen
-
 import cv2 as cv
 import numpy as np
 from fake_useragent import UserAgent
+from functools import lru_cache
+from urllib.request import Request, urlopen
 
 
 # Observe this, in case this breaks things. This cache gets cleared when Minibuilder() gets evoked.

@@ -4,7 +4,7 @@ from django.conf.urls import include
 
 urlpatterns = [
     path('', views.index, name='index'),
-    #path('creatures/', views.CreatureListView.as_view(), name='creatures'),
+    # path('creatures/', views.CreatureListView.as_view(), name='creatures'),
     path('creature/<int:pk>', views.CreatureDetailView.as_view(), name='creature-detail'),
     path('creatures/', views.CreatureByUserListView.as_view(), name='creatures'),
     path('bestiary/<int:pk>', views.BestiaryDetailView.as_view(), name='bestiary-detail'),
@@ -30,7 +30,7 @@ urlpatterns += [
     path('bestiary/<int:pk>/<int:ci>/unlink/', views.bestiary_unlink, name='bestiary-unlink'),
     path('bestiary/<int:pk>/unlink/', views.bestiary_unlink, name='bestiary-unlink'),
     path('bestiary/<int:pk>/print/', views.bestiary_print, name='bestiary-print'),
-    #path('bestiary/<int:pk>/serve/', views.bestiary_serve_file, name='bestiary-serve')
+    # path('bestiary/<int:pk>/serve/', views.bestiary_serve_file, name='bestiary-serve')
 ]
 
 # patreon

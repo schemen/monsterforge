@@ -1,11 +1,8 @@
 import json
 import logging
 import os
-import uuid
-from fractions import Fraction
-from urllib.parse import urljoin, urlparse
-
 import requests
+import uuid
 from django import forms, template
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -17,7 +14,7 @@ from django.core.exceptions import ValidationError
 from django.db import connection
 from django.db.models import Sum
 from django.forms.models import modelformset_factory
-#from django.shortcuts import get_object_or_404
+# from django.shortcuts import get_object_or_404
 from django.http import (FileResponse, Http404, HttpResponse,
                          HttpResponseRedirect)
 from django.shortcuts import render
@@ -27,8 +24,10 @@ from django.utils.deconstruct import deconstructible
 from django.utils.encoding import smart_str
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from dndtools.settings import STATIC_URL
+from fractions import Fraction
+from urllib.parse import urljoin, urlparse
 
+from dndtools.settings import STATIC_URL
 from .forms import (DDBEncounterBestiaryCreate, PrintForm, QuantityForm,
                     SignUpForm, UploadFileForm)
 from .generate_minis import MiniBuilder
@@ -38,11 +37,13 @@ register = template.Library()
 
 logger = logging.getLogger("django")
 
+
 @register.filter(name='has_group')
 def has_group(user, group_name):
     """Function to check Patreon status in templates."""
-    group =  Group.objects.get(name=group_name)
+    group = Group.objects.get(name=group_name)
     return group in user.groups.all()
+
 
 def signup(request):
     """To register new users."""
@@ -79,6 +80,7 @@ def temp_account(request):
 
     return reverse('signup')
 
+
 @login_required()
 def convert_account(request):
     """Convert temporary account to full account."""
@@ -103,6 +105,7 @@ def convert_account(request):
         form = SignUpForm()
     return render(request, 'convert.html', {'form': form})
 
+
 def handle_json(f, user):
     """Load and process .json file.
     This version will update creatures if the json has more/different information.
@@ -121,12 +124,12 @@ def handle_json(f, user):
     creature_type_map = {v: k for k, v in dict(Creature.CREATURE_TYPE_CHOICES).items()}
     skip = 0
     obj_list = []
-    for k,i in data.items():
+    for k, i in data.items():
         # mandatory fields
         try:
             name = i['name']
             img_url = i['img_url']
-            name_url = (name,img_url)
+            name_url = (name, img_url)
         except:
             skip += 1
             continue
@@ -160,14 +163,16 @@ def handle_json(f, user):
             else:
                 # updated attributes
                 # this is kinda slow :(
-                Creature.objects.filter(owner=user, name=name, img_url=img_url).update(size=short_size, CR=cr, creature_type=short_type)
+                Creature.objects.filter(owner=user, name=name, img_url=img_url).update(size=short_size, CR=cr,
+                                                                                       creature_type=short_type)
                 current_full.append(full_tup)
                 continue
 
         current_name_url.append(name_url)
 
         # if everything is ok, generate the object and store it
-        obj = Creature(owner=user, name=i['name'], size=short_size, img_url=i['img_url'], CR=cr, creature_type=short_type)
+        obj = Creature(owner=user, name=i['name'], size=short_size, img_url=i['img_url'], CR=cr,
+                       creature_type=short_type)
         obj_list.append(obj)
 
     if len(obj_list) > 0:
@@ -175,12 +180,13 @@ def handle_json(f, user):
         Creature.objects.bulk_create(obj_list)
     return skip
 
+
 @login_required()
 def json_upload(request):
     """Upload view and form handling."""
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid(): # validation happens in forms.py
+        if form.is_valid():  # validation happens in forms.py
             result = int(handle_json(request.FILES, request.user))
             if result == -1:
                 request.session['upload_error'] = 'Invalid File'
@@ -192,6 +198,7 @@ def json_upload(request):
     else:
         form = UploadFileForm()
     return render(request, 'json_form.html', {'form': form})
+
 
 def index(request):
     """View function for home page."""
@@ -211,7 +218,8 @@ class CreatureDetailView(LoginRequiredMixin, generic.DetailView):
 class CreatureByUserListView(LoginRequiredMixin, generic.ListView):
     """Generic creatures by user list view."""
     model = Creature
-    #paginate_by = 2 # pagination doesn't work with the current filter system and is not needed anyways
+
+    # paginate_by = 2 # pagination doesn't work with the current filter system and is not needed anyways
 
     def get_queryset(self):
         return Creature.objects.filter(owner=self.request.user).order_by('name')
@@ -223,13 +231,16 @@ class CreatureByUserListView(LoginRequiredMixin, generic.ListView):
         context['success'] = self.request.session.pop('success', None)
         return context
 
+
 class BestiaryDetailView(LoginRequiredMixin, generic.DetailView):
     """Generic bestiary detail view."""
     model = Bestiary
 
     def get_queryset(self):
         # get sum of creatures in there
-        return Bestiary.objects.filter(owner=self.request.user).annotate(total_creatures=Sum('creaturequantity__quantity'))
+        return Bestiary.objects.filter(owner=self.request.user).annotate(
+            total_creatures=Sum('creaturequantity__quantity'))
+
 
 @login_required()
 def bestiary_print(request, pk):
@@ -238,7 +249,7 @@ def bestiary_print(request, pk):
     if not bestiary:
         return HttpResponseRedirect(reverse('bestiaries'))
     elif bestiary.creatures.count() <= 0:
-        return HttpResponseRedirect(reverse('bestiary-detail', kwargs={'pk':pk}))
+        return HttpResponseRedirect(reverse('bestiary-detail', kwargs={'pk': pk}))
 
     # load print settings
     print_settings = PrintSettings.objects.filter(user=request.user)
@@ -271,12 +282,12 @@ def bestiary_print(request, pk):
             print_settings.save()
             # load settings into the mini builder
             minis.load_settings(paper_format=print_settings.paper_format,
-                            grid_size=print_settings.grid_size,
-                            base_shape=print_settings.base_shape,
-                            enumerate=print_settings.enumerate,
-                            force_name=print_settings.force_name,
-                            fixed_height = print_settings.base_shape,
-                            darken= print_settings.darken)
+                                grid_size=print_settings.grid_size,
+                                base_shape=print_settings.base_shape,
+                                enumerate=print_settings.enumerate,
+                                force_name=print_settings.force_name,
+                                fixed_height=print_settings.base_shape,
+                                darken=print_settings.darken)
             # load creatures into the mini builder
             minis.add_bestiary(pk)
             # build minis
@@ -286,14 +297,14 @@ def bestiary_print(request, pk):
             logger.info("Finished building, serving now.")
 
             # Clean bestiary name
-            name = minis.sanitize.sub('',bestiary.name)
+            name = minis.sanitize.sub('', bestiary.name)
             return FileResponse(archive, as_attachment=True, filename=name + "_forged.zip")
-
 
     # seed form with loaded settings
     form = PrintForm(initial=print_settings.__dict__)
 
-    return render(request, 'bestiary_print.html', {'form':form})
+    return render(request, 'bestiary_print.html', {'form': form})
+
 
 @login_required()
 def bestiary_unlink(request, pk, ci=None):
@@ -322,8 +333,9 @@ def bestiary_link(request, pk):
     if request.method == 'POST':
         formset = QuantityForm(request.POST)
         bestiary = Bestiary.objects.filter(owner=request.user, id=pk).first()
-        mgmt = ['csrfmiddlewaretoken', 'form-TOTAL_FORMS', 'form-INITIAL_FORMS', 'form-MIN_NUM_FORMS', 'form-MAX_NUM_FORMS']
-        for id,q in request.POST.items():
+        mgmt = ['csrfmiddlewaretoken', 'form-TOTAL_FORMS', 'form-INITIAL_FORMS', 'form-MIN_NUM_FORMS',
+                'form-MAX_NUM_FORMS']
+        for id, q in request.POST.items():
             if id in mgmt:
                 continue
             try:
@@ -335,23 +347,26 @@ def bestiary_link(request, pk):
                 continue
 
             try:
-                creature = Creature.objects.filter(owner=request.user,id=id)[0]
+                creature = Creature.objects.filter(owner=request.user, id=id)[0]
             except:
                 continue
 
-            quantity_obj = CreatureQuantity.objects.filter(creature=creature, bestiary=bestiary, owner=request.user).first()
+            quantity_obj = CreatureQuantity.objects.filter(creature=creature, bestiary=bestiary,
+                                                           owner=request.user).first()
             # update or create
-            if quantity_obj: quantity_obj.quantity = q
-            else: quantity_obj = CreatureQuantity(creature=creature, bestiary=bestiary, owner=request.user, quantity=q)
+            if quantity_obj:
+                quantity_obj.quantity = q
+            else:
+                quantity_obj = CreatureQuantity(creature=creature, bestiary=bestiary, owner=request.user, quantity=q)
             # save
             quantity_obj.save()
-        logger.info("Expanded bestiary %s %s from user %s with new creatures!" % (bestiary.id, bestiary.name, bestiary.owner.id))
-        return HttpResponseRedirect(reverse('bestiary-detail', kwargs={'pk':pk}))
+        logger.info("Expanded bestiary %s %s from user %s with new creatures!" % (
+        bestiary.id, bestiary.name, bestiary.owner.id))
+        return HttpResponseRedirect(reverse('bestiary-detail', kwargs={'pk': pk}))
 
     else:
-        context = {'qs':qs, 'formset': formset, 'form': formset}
+        context = {'qs': qs, 'formset': formset, 'form': formset}
         return render(request, 'bestiary_link.html', context=context)
-
 
 
 class BestiaryListView(LoginRequiredMixin, generic.ListView):
@@ -359,9 +374,9 @@ class BestiaryListView(LoginRequiredMixin, generic.ListView):
     model = Bestiary
 
     def get_queryset(self):
-        #ok = Bestiary.objects.filter(owner=self.request.user).values('name', 'creaturequantity__quantity').aggregate(total_creatures=Sum('creaturequantity__quantity'))
-        return Bestiary.objects.filter(owner=self.request.user).values('name', 'id').annotate(total_creatures=Sum('creaturequantity__quantity'))
-
+        # ok = Bestiary.objects.filter(owner=self.request.user).values('name', 'creaturequantity__quantity').aggregate(total_creatures=Sum('creaturequantity__quantity'))
+        return Bestiary.objects.filter(owner=self.request.user).values('name', 'id').annotate(
+            total_creatures=Sum('creaturequantity__quantity'))
 
 
 from .forms import BestiaryModifyForm, CreatureModifyForm
@@ -371,13 +386,14 @@ from .forms import BestiaryModifyForm, CreatureModifyForm
 class CreatureCreate(LoginRequiredMixin, CreateView):
     """Generic create view."""
     model = Creature
-    initial={'size':Creature.MEDIUM,'color': Creature.DARKGRAY,'position': Creature.WALKING,'show_name': True}
+    initial = {'size': Creature.MEDIUM, 'color': Creature.DARKGRAY, 'position': Creature.WALKING, 'show_name': True}
     form_class = CreatureModifyForm
 
     def get_form_kwargs(self):
         kwargs = super(CreatureCreate, self).get_form_kwargs()
         kwargs.update({'user': self.request.user})
         return kwargs
+
     def form_valid(self, form):
         user = self.request.user
         form.instance.owner = user
@@ -386,14 +402,17 @@ class CreatureCreate(LoginRequiredMixin, CreateView):
         logger.info("Creature %s created for user %s" % (form.instance.name, user.id))
         return super(CreatureCreate, self).form_valid(form)
 
+
 class CreatureUpdate(LoginRequiredMixin, UpdateView):
     """Generic update view."""
     model = Creature
     form_class = CreatureModifyForm
+
     def get_form_kwargs(self):
         kwargs = super(CreatureUpdate, self).get_form_kwargs()
         kwargs.update({'user': self.request.user})
         return kwargs
+
     def get_object(self, queryset=None):
         """ Hook to ensure object is owned by request.user. """
         obj = super(CreatureUpdate, self).get_object()
@@ -407,16 +426,18 @@ class CreatureUpdate(LoginRequiredMixin, UpdateView):
         form_color = creature_form.color
         pk = creature_form.id
         db_color = Creature.objects.filter(owner=self.request.user, pk=pk).first().color
-        #print(form_color, db_color, self.request.user.groups.filter(name='Patrons').count())
+        # print(form_color, db_color, self.request.user.groups.filter(name='Patrons').count())
         # if db_color != form_color and self.request.user.groups.filter(name='Patrons').count() <= 0:
         #     creature_form.color = db_color
         logger.info("Creature %s updated for user %s" % (form.instance.name, self.request.user.id))
         return super(CreatureUpdate, self).form_valid(form)
 
+
 class CreatureDelete(LoginRequiredMixin, DeleteView):
     """Generic creature delete view."""
     model = Creature
     success_url = reverse_lazy('creatures')
+
     def get_object(self, queryset=None):
         """ Hook to ensure object is owned by request.user. """
         obj = super(CreatureDelete, self).get_object()
@@ -424,24 +445,27 @@ class CreatureDelete(LoginRequiredMixin, DeleteView):
             raise Http404
         return obj
 
+
 class CreatureAllDelete(LoginRequiredMixin, DeleteView):
     """Generic creature ALL delete view."""
     model = Creature
     success_url = reverse_lazy('creatures')
+
     def get_object(self, queryset=None):
         obj = Creature.objects.filter(owner=self.request.user)
         return obj
-        
+
+
 # Bestiary Forms
 class BestiaryCreate(LoginRequiredMixin, CreateView):
     """Generic bestiary create view."""
     form_class = BestiaryModifyForm
     model = Bestiary
+
     def form_valid(self, form):
         form.instance.owner = self.request.user
         logger.info("Bestiary %s created for user %s" % (form.instance.name, self.request.user.id))
         return super(BestiaryCreate, self).form_valid(form)
-
 
 
 @login_required()
@@ -454,7 +478,7 @@ def create_ddb_enc_bestiary(request):
             # DDB API Endpoints
             DDB_ENCOUTNER_ENDPOINT = "https://encounter-service.dndbeyond.com/v1/encounters/"
             DDB_MONSTER_ENDPOINT = "https://monster-service.dndbeyond.com/v1/Monster?"
-            
+
             # Try to get DDB Encounter data
             enc_url = form.cleaned_data.get('ddb_enc_url')
             enc_uuid = str(urlparse(enc_url).path).replace("/encounters/", "")
@@ -482,7 +506,6 @@ def create_ddb_enc_bestiary(request):
             except requests.RequestException as exception:
                 logger.error("Could not download DDB Monster Data, Error: \n %s" % exception)
 
-
             # Create a bestiary
             bestiary = Bestiary()
             bestiary.name = str(enc_dict["data"]["name"])
@@ -501,7 +524,6 @@ def create_ddb_enc_bestiary(request):
                     if i["isReleased"]:
                         # This is a monster of the SRD or Publicly available
                         if i["basicAvatarUrl"]:
-
                             # Seems DDB is publishing wrong URLs, fixing those here
                             if urlparse(i["basicAvatarUrl"]).netloc == "www.dndbeyond.com.com":
                                 creature.img_url = "https://www.dndbeyond.com" + urlparse(i["basicAvatarUrl"]).path
@@ -518,7 +540,7 @@ def create_ddb_enc_bestiary(request):
                         else:
                             creature.img_url = "https://media-waterdeep.cursecdn.com/avatars/4675/664/636747837303835953.jpeg"
 
-                    # Determin correct size. Be aware this might change on ddb side
+                    # Determine correct size. Be aware this might change on ddb side
                     if i["sizeId"] == 2:
                         creature.size = "T"
                     if i["sizeId"] == 3:
@@ -548,7 +570,7 @@ def create_ddb_enc_bestiary(request):
                             bestiary_monsters.quantity = var["quantity"]
 
                     bestiary_monsters.save()
-                
+
                 # If the create already exists, link it
                 else:
                     # Link monster
@@ -558,19 +580,20 @@ def create_ddb_enc_bestiary(request):
                     for var in enc_dict["data"]["monsters"]:
                         if i["id"] == var["id"]:
                             bestiary_monsters.quantity = var["quantity"]
-                    bestiary_monsters.owner = request.user                                                            
+                    bestiary_monsters.owner = request.user
                     bestiary_monsters.save()
             return HttpResponseRedirect(reverse('bestiaries'))
 
     else:
         form = DDBEncounterBestiaryCreate()
-    return render(request, 'ddb_enc_bestiary.html', {'form': form})        
+    return render(request, 'ddb_enc_bestiary.html', {'form': form})
 
 
 class BestiaryUpdate(LoginRequiredMixin, UpdateView):
     """Generic bestiary update view."""
     model = Bestiary
     form_class = BestiaryModifyForm
+
     def get_object(self, queryset=None):
         """ Hook to ensure object is owned by request.user. """
         obj = super(BestiaryUpdate, self).get_object()
@@ -578,16 +601,19 @@ class BestiaryUpdate(LoginRequiredMixin, UpdateView):
             raise Http404
         return obj
 
+
 class BestiaryDelete(LoginRequiredMixin, DeleteView):
     """Generic bestiary delete view."""
     model = Bestiary
     success_url = reverse_lazy('bestiaries')
+
     def get_object(self, queryset=None):
         """ Hook to ensure object is owned by request.user. """
         obj = super(BestiaryDelete, self).get_object()
         if not obj.owner == self.request.user:
             raise Http404
         return obj
+
 
 # patreon
 def patreon(request):
