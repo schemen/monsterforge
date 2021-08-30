@@ -2,7 +2,6 @@ import io
 import logging
 import re
 from collections import Counter
-from tempfile import TemporaryDirectory
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import cv2 as cv
@@ -446,8 +445,6 @@ class MiniBuilder():
 
     def save_and_zip(self, sheets):
         sheet_nr = 1
-        temp_dir = TemporaryDirectory()
-        # zip_fn = temp_dir.name + "/forged.zip"
         zip_memory = io.BytesIO()
         zipfile = ZipFile(zip_memory, mode='a', compression=ZIP_DEFLATED)
 
@@ -455,7 +452,6 @@ class MiniBuilder():
             img_buffer = io.BytesIO()
             RGB_img = cv.cvtColor(sheet, cv.COLOR_BGR2RGB)
             im_pil = Image.fromarray(RGB_img)
-            sheet_fn = temp_dir.name + '/sheet_' + str(sheet_nr) + '.png'
             im_pil.save(img_buffer, dpi=(25.4 * self.dpmm, 25.4 * self.dpmm), format='PNG')
             img_buffer.seek(0)
             zipfile.writestr('sheet_' + str(sheet_nr) + '.png', img_buffer.getbuffer())
