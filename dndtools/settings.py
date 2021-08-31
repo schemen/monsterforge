@@ -10,11 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
-import os
-
 # import secret settings
 from .settings_secret import *
-
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -32,7 +29,7 @@ if os.getenv('PRODUCTION', False) == "True":
 else:
     DEBUG = True
 
-ALLOWED_HOSTS =  ['*']
+ALLOWED_HOSTS = ['*']
 
 # Email
 
@@ -52,11 +49,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',    
+    'django.contrib.sites',
     'paperminis.apps.PaperminisConfig',
     'widget_tweaks',
 ]
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -73,8 +69,8 @@ ROOT_URLCONF = 'dndtools.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'templates/paperminis'), os.path.join(BASE_DIR, 'templates/registration')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'templates/paperminis'),
+                 os.path.join(BASE_DIR, 'templates/registration')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -88,7 +84,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'dndtools.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
@@ -111,7 +106,6 @@ else:
         }
     }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
@@ -130,7 +124,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
@@ -143,7 +136,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 LOGGING = {
     'version': 1,
@@ -178,3 +170,6 @@ MAX_UPLOAD_SIZE = 2621440
 
 # Due to BestiaryLink we need to set this value higher
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 2500
+
+# Set the AUTO_FIELD globally for Django 3.2
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

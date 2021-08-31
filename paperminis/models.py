@@ -152,7 +152,7 @@ class Creature(models.Model):
     )
 
     # fields
-    id = models.AutoField(primary_key=True)
+    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100)
     img_url = models.TextField(max_length=500)
     size = models.CharField(max_length=1, choices=CREATURE_SIZE_CHOICES, default=MEDIUM)
@@ -182,7 +182,7 @@ class Bestiary(models.Model):
     """Bestiary Model"""
 
     # fields
-    id = models.AutoField(primary_key=True)
+    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=150)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     from_ddb = models.BooleanField(default=False)
