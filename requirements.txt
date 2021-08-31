@@ -1,4 +1,4 @@
-Django==2.2.24
+Django==3.2.6
 django-constrainedfilefield==4.0.0
 django-widget-tweaks==1.4.8
 fake-useragent==0.1.11

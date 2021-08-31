@@ -49,6 +49,7 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     """User model."""
 
+    id = models.AutoField(primary_key=True)
     username = None
     email = models.EmailField(_('email address'), unique=True)
 
@@ -205,6 +206,7 @@ class Bestiary(models.Model):
 class CreatureQuantity(models.Model):
     """Model to link bestiary with a quantity of creatures. "owner" is technically not needed
     (since it should be the same as owner of the bestiary), but adds another layer of security."""
+    id = models.AutoField(primary_key=True)
     creature = models.ForeignKey(Creature, on_delete=models.CASCADE)
     bestiary = models.ForeignKey(Bestiary, on_delete=models.CASCADE)
     quantity = models.IntegerField()
@@ -257,6 +259,7 @@ class PrintSettings(models.Model):
     )
 
     # fields
+    id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     paper_format = models.CharField(max_length=50, choices=PAPER_FORMAT_CHOICES, default=A4)
     grid_size = models.IntegerField(choices=GRID_SIZE_CHOICES, default=GRID24)
