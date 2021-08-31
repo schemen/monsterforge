@@ -465,8 +465,8 @@ class MiniBuilder:
 
         for sheet in sheets:
             img_buffer = io.BytesIO()
-            RGB_img = cv.cvtColor(sheet, cv.COLOR_BGR2RGB)
-            im_pil = Image.fromarray(RGB_img)
+            rgb_img = cv.cvtColor(sheet, cv.COLOR_BGR2RGB)
+            im_pil = Image.fromarray(rgb_img)
             im_pil.save(img_buffer, dpi=(25.4 * self.dpmm, 25.4 * self.dpmm), format='PNG')
             img_buffer.seek(0)
             zipfile.writestr('sheet_' + str(sheet_nr) + '.png', img_buffer.getbuffer())

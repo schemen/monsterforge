@@ -1,5 +1,13 @@
 # Changelog
 
+
+## 1.2.0 (Unreleased)
+
+### Improvements
+
+* Code refactoring and cleanup
+* Migrate to Django 3.2 (From Django 2.2)
+
 ## 1.1.1 (2021-08-19)
 
 ### Improvements
