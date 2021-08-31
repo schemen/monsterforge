@@ -16,7 +16,7 @@ from .items import Item
 logger = logging.getLogger("django")
 
 
-class MiniBuilder():
+class MiniBuilder:
 
     def __init__(self, user):
 
@@ -28,7 +28,23 @@ class MiniBuilder():
         # TODO Clear this var
         self.file_name_body = self.clean_email
         self.creatures = []
+        self.creature_counter = None
+        self.minis = []
+        self.sheets = None
+        self.zip_container = None
+
+        # Settings Containers
+        self.print_margin = None
+        self.dpmm = None  # not fully supported setting yet, leave at 10
+        self.grid_size = None
         self.enumerate = False
+        self.force_name = None
+        self.base_shape = None
+        self.fixed_height = False
+        self.darken = None
+        self.font = cv.FONT_HERSHEY_SIMPLEX
+        self.paper_format = None
+        self.canvas = None
 
         # clear download cache for each run
         download_image.cache_clear()
@@ -77,14 +93,13 @@ class MiniBuilder():
         self.base_shape = base_shape
         self.fixed_height = fixed_height
         self.darken = darken
-        self.font = cv.FONT_HERSHEY_SIMPLEX
         self.paper_format = paper_format
         paper = {'a3': np.array([297, 420]),
                  'a4': np.array([210, 297]),
                  'letter': np.array([216, 279]),
                  'legal': np.array([216, 356]),
                  'tabloid': np.array([279, 432])}
-        self.canvas = (paper[paper_format] - 2 * print_margin) * self.dpmm
+        self.canvas = (paper[paper_format] - 2 * self.print_margin) * self.dpmm
 
     def build_all_and_zip(self):
         if self.enumerate:
@@ -101,9 +116,9 @@ class MiniBuilder():
                 print('{} skipped with error: {}'.format(creature.name, mini))
 
         self.sheets = self.build_sheets(self.minis)
-        self.zip_path = self.save_and_zip(self.sheets)
+        self.zip_container = self.save_and_zip(self.sheets)
         logger.info(download_image.cache_info())
-        return self.zip_path
+        return self.zip_container
 
     def build_mini(self, creature):
         if not hasattr(self, 'grid_size'):
