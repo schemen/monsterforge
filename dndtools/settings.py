@@ -178,3 +178,6 @@ MAX_UPLOAD_SIZE = 2621440
 
 # Due to BestiaryLink we need to set this value higher
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 2500
+
+# Set the AUTO_FIELD globaly for Django 3.2
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
