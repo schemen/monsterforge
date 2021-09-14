@@ -26,6 +26,7 @@ class UserAdmin(DjangoUserAdmin):
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('email',)
 
+
 class BestiaryInline(admin.TabularInline):
     model = CreatureQuantity
     extra = 1
@@ -34,7 +35,6 @@ class BestiaryInline(admin.TabularInline):
     def get_formset(self, request, obj=None, **kwargs):
         self.parent_obj = obj
         return super(BestiaryInline, self).get_formset(request, obj, **kwargs)
-
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         parent = self.parent_obj
@@ -49,11 +49,13 @@ class CreatureAdmin(admin.ModelAdmin):
     list_filter = ['size']
     fields = ['owner', 'name', 'img_url', 'size']
 
+
 @admin.register(Bestiary)
 class CreatureAdmin(admin.ModelAdmin):
     list_display = ('owner', 'id', 'name')
     fields = ['owner', 'name']
     inlines = [BestiaryInline]
+
 
 @admin.register(CreatureQuantity)
 class CreatureQuantityAdmin(admin.ModelAdmin):

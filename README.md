@@ -23,6 +23,8 @@ The website at [forge.dice.quest](https://forge.dice.quest) provides tools for t
 The website is free and contains no ads.
 Feel free to contribute anything from commenting to design or new options and tools. If you plan something bigger, please contact me beforehand.
 
+This project is supported by [JetBrains - PyCharm](https://www.jetbrains.com/pycharm/)!
+
 ### Fork
 
 I took over as maintainer for the project originally made by matnad. I have since made it more perfomand, slimmer as well as added new features to it.
