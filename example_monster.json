@@ -1,0 +1,16 @@
+{
+  "RPG Agnostic Creature": {
+        "img_url": "https://www.dndbeyond.com/avatars/thumbnails/0/301/1000/1000/636252771691385727.jpeg",
+        "name": "Orc",
+        "creature_size": "Medium"
+  },
+  "A Dnd SRE Creature": {
+    "CR": "3",
+    "alignment": "chaotic evil",
+    "img_url": "https://www.dndbeyond.com/avatars/thumbnails/0/74/1000/1000/636252734224239957.jpeg",
+    "name": "Werewolf",
+    "creature_size": "Medium",
+    "source": "Basic Rules",
+    "creature_type": "Humanoid"
+  }
+}
