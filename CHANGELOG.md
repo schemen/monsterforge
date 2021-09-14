@@ -1,12 +1,15 @@
 # Changelog
 
 
-## 1.2.0 (Unreleased)
+## 1.2.0 (2021-09-14)
 
 ### Improvements
 
 * Code refactoring and cleanup
 * Migrate to Django 3.2 (From Django 2.2)
+* Enhance RPG Agnostic aspect 
+* Several bugfixes
+* Dependency updates
 
 ## 1.1.1 (2021-08-19)
 
