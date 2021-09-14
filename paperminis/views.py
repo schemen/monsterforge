@@ -1,7 +1,5 @@
-import json
 import logging
 import uuid
-from fractions import Fraction
 from urllib.parse import urljoin, urlparse
 
 import requests
@@ -20,10 +18,11 @@ from django.urls import reverse, reverse_lazy
 from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-from .forms import (DDBEncounterBestiaryCreate, PrintForm, QuantityForm,
-                    SignUpForm, UploadFileForm)
-from .generate_minis import MiniBuilder
-from .models import Bestiary, Creature, CreatureQuantity, PrintSettings, User
+from paperminis.forms import (DDBEncounterBestiaryCreate, PrintForm, QuantityForm,
+                              SignUpForm, UploadFileForm)
+from paperminis.generate_minis import MiniBuilder
+from paperminis.models import Bestiary, Creature, CreatureQuantity, PrintSettings, User
+from paperminis.utils import handle_json
 
 register = template.Library()
 
@@ -58,7 +57,7 @@ def temp_account(request):
     """Create temporary account."""
     if request.method == 'POST':
         # generate random username and password
-        password = make_password(uuid.uuid4())
+        password = make_password(str(uuid.uuid4()))
         email = uuid.uuid4()
         user = User(email=email, password=password)
         user.save()
@@ -96,81 +95,6 @@ def convert_account(request):
     else:
         form = SignUpForm()
     return render(request, 'convert.html', {'form': form})
-
-
-def handle_json(f, user):
-    """Load and process .json file.
-    This version will update creatures if the json has more/different information.
-    A creature is uniquely identified by the tuple (name, img_url).
-    The update is still kind of slow for large files, but I can't see a better way to do it currently."""
-
-    try:
-        data = json.loads(f['file'].read().decode('utf-8'))
-    except:
-        return -1
-
-    current = Creature.objects.filter(owner=user)
-    current_name_url = [(x.name, x.img_url) for x in current]
-    current_full = [(x.name, x.img_url, x.size, x.CR, x.creature_type) for x in current]
-    size_map = {v: k for k, v in dict(Creature.CREATURE_SIZE_CHOICES).items()}
-    creature_type_map = {v: k for k, v in dict(Creature.CREATURE_TYPE_CHOICES).items()}
-    skip = 0
-    obj_list = []
-    for k, i in data.items():
-        # mandatory fields
-        try:
-            name = i['name']
-            img_url = i['img_url']
-            name_url = (name, img_url)
-        except:
-            skip += 1
-            continue
-
-        # fix illegal size (default to medium)
-        try:
-            short_size = size_map[i['creature_size']]
-        except:
-            short_size = Creature.MEDIUM
-
-        # fix illegal types (default to undefined)
-        try:
-            short_type = creature_type_map[i['creature_type']]
-        except:
-            short_type = Creature.UNDEFINED
-
-        # fix illegal CRs (default to 0)
-        try:
-            cr = float(Fraction(i['CR']))
-            if cr < 0 or cr > 1000: cr = 0
-        except:
-            cr = 0
-
-        # check if unique
-        if name_url in current_name_url:
-            full_tup = (name, img_url, short_size, cr, short_type)
-            if full_tup in current_full:
-                # excact duplicate
-                skip += 1
-                continue
-            else:
-                # updated attributes
-                # this is kinda slow :(
-                Creature.objects.filter(owner=user, name=name, img_url=img_url).update(size=short_size, CR=cr,
-                                                                                       creature_type=short_type)
-                current_full.append(full_tup)
-                continue
-
-        current_name_url.append(name_url)
-
-        # if everything is ok, generate the object and store it
-        obj = Creature(owner=user, name=i['name'], size=short_size, img_url=i['img_url'], CR=cr,
-                       creature_type=short_type)
-        obj_list.append(obj)
-
-    if len(obj_list) > 0:
-        # MUCH faster than one query per entry!
-        Creature.objects.bulk_create(obj_list)
-    return skip
 
 
 @login_required()
@@ -353,7 +277,7 @@ def bestiary_link(request, pk):
             # save
             quantity_obj.save()
         logger.info("Expanded bestiary %s %s from user %s with new creatures!" % (
-        bestiary.id, bestiary.name, bestiary.owner.id))
+            bestiary.id, bestiary.name, bestiary.owner.id))
         return HttpResponseRedirect(reverse('bestiary-detail', kwargs={'pk': pk}))
 
     else:
