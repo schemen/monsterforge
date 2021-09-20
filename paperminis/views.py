@@ -408,43 +408,35 @@ def create_ddb_enc_bestiary(request):
             except requests.RequestException as exception:
                 logger.error("Could not download DDB Enc Data, Error: \n %s" % exception)
 
-            # Try to get monsters data
+            # Monster ID List
             raw_monster_list = []
             monster_params = {}
             for i in enc_dict["data"]["monsters"]:
                 raw_monster_list.append(str(i["id"]))
 
+            # Add their quantity for use later
             for i in raw_monster_list:
                 monster_params[i] = raw_monster_list.count(i)
 
-            monster_url_list = []
+            # Prepare the URL to get all monster data
             monster_url = DDB_MONSTER_ENDPOINT
-            counter = 0
             for i in monster_params:
-                counter += 1
-                if counter <= 10:
-                    monster_url = "".join(monster_url + "ids=" + i + "&")
-                else:
-                    counter = 0
-                    monster_url_list.append(monster_url)
-                    monster_url = DDB_MONSTER_ENDPOINT
-                    monster_url = "".join(monster_url + "ids=" + i + "&")
+                monster_url = "".join(monster_url + "ids=" + i + "&")
 
-            monster_url_list.append(monster_url)
-            logger.debug("DDB Monsters API URLs: %s" % str(monster_url_list))
+            logger.debug("DDB Monsters API URLs: %s" % str(monster_url))
 
             monsters_list = []
-            for i in monster_url_list:
-                try:
-                    response = requests.get(i)
-                except requests.RequestException as exception:
-                    logger.error("Could not download DDB Monster Data, Error: \n %s" % exception)
 
-                try:
-                    monster_data = response.json()["data"]
-                    monsters_list.extend(monster_data)
-                except json.decoder.JSONDecodeError as exception:
-                    logger.error("Could not download DDB Monster Data, Error: \n %s" % exception)
+            # Get monster data
+            try:
+                response = requests.get(monster_url)
+            except requests.RequestException as exception:
+                logger.error("Could not download DDB Monster Data, Error: \n %s" % exception)
+
+            try:
+                monsters_list = response.json()["data"]
+            except json.decoder.JSONDecodeError as exception:
+                logger.error("Could not download DDB Monster Data, Error: \n %s" % exception)
 
             # Create a bestiary
             bestiary = Bestiary()
@@ -508,7 +500,6 @@ def create_ddb_enc_bestiary(request):
                     for var in monster_params:
                         if str(i["id"]) == var:
                             bestiary_monsters.quantity = monster_params[var]
-                    bestiary_monsters
                     bestiary_monsters.save()
 
                 # If the create already exists, link it
