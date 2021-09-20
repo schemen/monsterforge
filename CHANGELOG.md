@@ -1,6 +1,13 @@
 # Changelog
 
 
+## 1.3.0(2021-09-20)
+
+### Improvements
+* Fixed many bugs with the DDB Importer (See #41)
+* DDB Importer can now handle homebrewed monsters
+* Log DDB URLs for better debugging
+
 ## 1.2.0 (2021-09-14)
 
 ### Improvements

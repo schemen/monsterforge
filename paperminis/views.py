@@ -1,3 +1,4 @@
+import json
 import logging
 import uuid
 from urllib.parse import urljoin, urlparse
@@ -399,6 +400,7 @@ def create_ddb_enc_bestiary(request):
             enc_url = form.cleaned_data.get('ddb_enc_url')
             enc_uuid = str(urlparse(enc_url).path).replace("/encounters/", "")
             enc_api_url = urljoin(DDB_ENCOUTNER_ENDPOINT, enc_uuid)
+            logger.info("DDB Enc URL: %s" % (enc_url))
             logger.debug("DDB Enc API URL: %s" % (enc_api_url))
             try:
                 response = requests.get(enc_api_url)
@@ -406,20 +408,34 @@ def create_ddb_enc_bestiary(request):
             except requests.RequestException as exception:
                 logger.error("Could not download DDB Enc Data, Error: \n %s" % exception)
 
-            # Try to get monsters data
-            monster_params = []
+            # Monster ID List
+            raw_monster_list = []
+            monster_params = {}
             for i in enc_dict["data"]["monsters"]:
-                monster_params.append("ids=" + str(i["id"]) + "&")
+                raw_monster_list.append(str(i["id"]))
 
+            # Add their quantity for use later
+            for i in raw_monster_list:
+                monster_params[i] = raw_monster_list.count(i)
+
+            # Prepare the URL to get all monster data
             monster_url = DDB_MONSTER_ENDPOINT
             for i in monster_params:
-                monster_url = "".join(monster_url + i)
-            logger.debug("DDB Monsters API URL: %s" % (monster_url))
+                monster_url = "".join(monster_url + "ids=" + i + "&")
 
+            logger.debug("DDB Monsters API URLs: %s" % str(monster_url))
+
+            monsters_list = []
+
+            # Get monster data
             try:
                 response = requests.get(monster_url)
-                monsters_dict = response.json()
             except requests.RequestException as exception:
+                logger.error("Could not download DDB Monster Data, Error: \n %s" % exception)
+
+            try:
+                monsters_list = response.json()["data"]
+            except json.decoder.JSONDecodeError as exception:
                 logger.error("Could not download DDB Monster Data, Error: \n %s" % exception)
 
             # Create a bestiary
@@ -431,7 +447,7 @@ def create_ddb_enc_bestiary(request):
             logger.info("Bestiary %s created for user %s via DDB Enc" % (bestiary.name, request.user.id))
 
             # Create monsters if they don't exist already and link
-            for i in monsters_dict["data"]:
+            for i in monsters_list:
                 if not Creature.objects.filter(owner=request.user, name=i["name"]).exists():
                     creature = Creature()
                     creature.name = i["name"]
@@ -481,10 +497,9 @@ def create_ddb_enc_bestiary(request):
                     bestiary_monsters.bestiary = bestiary
                     bestiary_monsters.owner = request.user
 
-                    for var in enc_dict["data"]["monsters"]:
-                        if i["id"] == var["id"]:
-                            bestiary_monsters.quantity = var["quantity"]
-
+                    for var in monster_params:
+                        if str(i["id"]) == var:
+                            bestiary_monsters.quantity = monster_params[var]
                     bestiary_monsters.save()
 
                 # If the create already exists, link it
@@ -493,9 +508,9 @@ def create_ddb_enc_bestiary(request):
                     bestiary_monsters = CreatureQuantity()
                     bestiary_monsters.creature = Creature.objects.filter(owner=request.user, name=i["name"]).first()
                     bestiary_monsters.bestiary = bestiary
-                    for var in enc_dict["data"]["monsters"]:
-                        if i["id"] == var["id"]:
-                            bestiary_monsters.quantity = var["quantity"]
+                    for var in monster_params:
+                        if str(i["id"]) == var:
+                            bestiary_monsters.quantity = monster_params[var]
                     bestiary_monsters.owner = request.user
                     bestiary_monsters.save()
             return HttpResponseRedirect(reverse('bestiaries'))
