@@ -1,3 +1,4 @@
+import json
 import logging
 import uuid
 from urllib.parse import urljoin, urlparse
@@ -399,6 +400,7 @@ def create_ddb_enc_bestiary(request):
             enc_url = form.cleaned_data.get('ddb_enc_url')
             enc_uuid = str(urlparse(enc_url).path).replace("/encounters/", "")
             enc_api_url = urljoin(DDB_ENCOUTNER_ENDPOINT, enc_uuid)
+            logger.info("DDB Enc URL: %s" % (enc_url))
             logger.debug("DDB Enc API URL: %s" % (enc_api_url))
             try:
                 response = requests.get(enc_api_url)
@@ -414,12 +416,16 @@ def create_ddb_enc_bestiary(request):
             monster_url = DDB_MONSTER_ENDPOINT
             for i in monster_params:
                 monster_url = "".join(monster_url + i)
-            logger.debug("DDB Monsters API URL: %s" % (monster_url))
+            logger.debug("DDB Monsters API URL: %s" % monster_url)
 
             try:
                 response = requests.get(monster_url)
-                monsters_dict = response.json()
             except requests.RequestException as exception:
+                logger.error("Could not download DDB Monster Data, Error: \n %s" % exception)
+
+            try:
+                monsters_dict = response.json()
+            except json.JSONDecoder as exception:
                 logger.error("Could not download DDB Monster Data, Error: \n %s" % exception)
 
             # Create a bestiary

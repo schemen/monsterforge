@@ -1,6 +1,12 @@
 # Changelog
 
 
+## 1.2.1 (2021-09-20)
+
+### Improvements
+
+* Log DDB URLs for better debugging
+
 ## 1.2.0 (2021-09-14)
 
 ### Improvements
