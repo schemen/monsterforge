@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.1(2021-09-21)
+
+### Improvements (So pretty!)
+* Added new images on the Index page that better show the results
+* Update sidebar image to better represent a forge
 
 ## 1.3.0(2021-09-20)
 
