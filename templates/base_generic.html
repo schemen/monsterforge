@@ -4,7 +4,9 @@
     {% load static %}
     {% load widget_tweaks %}
     {% load auth_extras %}
+    {% load plausible %}
     {% load version %}
+    {% load env %}
 
     {% block title %}<title>Monster Forge</title>{% endblock %}
     <meta charset="utf-8">
@@ -34,6 +36,12 @@
     <!-- Control Center for Light Bootstrap Dashboard: scripts for the example pages etc -->
     {#<script src="{% static 'assets/js/light-bootstrap-dashboard.js' %}" type="text/javascript"></script>#}
     <script src="{%  static 'assets/js/light-bootstrap-dashboard.js' %}" type="text/javascript"></script>
+
+    <!-- Plausible Insight -->
+    {% if 'ENABLE_PLAUSIBLE'|env == 'True' %}
+        {% plausible site_domain='PLAUSIBLE_SITE_DOMAIN'|env %}
+    {% endif %}
+
     <script>
         jQuery(document).ready(function($) {
             $(".clickable-row").click(function() {

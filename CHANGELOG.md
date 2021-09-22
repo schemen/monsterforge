@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.2(2021-09-22)
+
+### Improvements
+* Added Plausible Insights (Default=False)
+
 ## 1.3.1(2021-09-21)
 
 ### Improvements (So pretty!)
