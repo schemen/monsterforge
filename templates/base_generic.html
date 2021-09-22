@@ -39,7 +39,7 @@
 
     <!-- Plausible Insight -->
     {% if 'ENABLE_PLAUSIBLE'|env == 'True' %}
-        {% plausible %}
+        {% plausible site_domain='PLAUSIBLE_SITE_DOMAIN'|env %}
     {% endif %}
 
     <script>
