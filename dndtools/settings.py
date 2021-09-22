@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'paperminis.apps.PaperminisConfig',
     'widget_tweaks',
+    'plausible',
 ]
 
 MIDDLEWARE = [
@@ -174,3 +175,8 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 2500
 
 # Set the AUTO_FIELD globally for Django 3.2
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Plausible Insights
+if os.getenv('ENABLE_PLAUSIBLE', False) == "True":
+    PLAUSIBLE_DOMAIN = os.getenv('PLAUSIBLE_DOMAIN', 'plausible.io')
+    PLAUSIBLE_SCRIPT_NAME = os.getenv('PLAUSIBLE_SCRIPT_NAME', 'plausible.js')
