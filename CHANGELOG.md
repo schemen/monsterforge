@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.3(2022-01-13)
+
+### Improvements
+* Update several dependencies
+
+
 ## 1.3.2(2021-09-22)
 
 ### Improvements
