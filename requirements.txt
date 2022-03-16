@@ -1,9 +1,9 @@
 Django==3.2.12
 django-constrainedfilefield==4.0.0
-django-widget-tweaks==1.4.11
+django-widget-tweaks==1.4.12
 # fake-useragent==0.1.11
 https://github.com/schemen/fake-useragent/archive/refs/tags/0.1.12.zip # Use this fork until it's fixed
-opencv-python==4.5.5.62
+opencv-python==4.5.5.64
 Pillow==9.0.1
 sortedcontainers==2.4.0
 psycopg2-binary==2.9.3
