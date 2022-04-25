@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3.6(2022-04-25)
+
+### Improvements
+* Bump Django to fix CVE #55
+
 ## 1.3.5(2022-03-16)
 
 ### Improvements
