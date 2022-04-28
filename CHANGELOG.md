@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.4.0(2022-04-29)
+
+### Features
+* First iteration of account management via profile page
+  * You can change your password
+  * You can delete your account which will delete all of your data
+
 ## 1.3.6(2022-04-25)
 
 ### Improvements
