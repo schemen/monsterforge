@@ -44,4 +44,7 @@ urlpatterns += [
     path('signup/', paperminis_view.signup, name='signup'),
     path('convert/', paperminis_view.convert_account, name='convert-account'),
     path('tempaccount/', paperminis_view.temp_account, name='temp-account'),
+    path('profile/', paperminis_view.profile, name='profile'),
+    path('accounts/delete/', paperminis_view.delete_account, name='delete-account'),
+
 ]

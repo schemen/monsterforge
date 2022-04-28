@@ -1,0 +1,45 @@
+{% extends "base_generic.html" %}
+{% block content %}
+<br>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card col-md-8 bg-light mx-auto pull-right">
+            <div class="card-header bg-light bg-light">
+                <h3 class="card-title bg-light">Hello, {{ user.get_username }}</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mt-2">
+                        <form name="change_password" action="{% url 'password_change' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-basic btn-fill btn-block">Change my Password</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card col-md-8 bg-light mx-auto pull-left">
+            <div class="card-header bg-light bg-light">
+                <h3 class="card-title bg-light">Danger Zone</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 mt-2">
+                        <form name="delete_account" action="{% url 'delete-account' %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger btn-fill btn-block">Delete my account</button>
+                        </form>
+                    </div>
+                </div>
+                &nbsp;
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
