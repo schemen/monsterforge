@@ -18,8 +18,12 @@ User = get_user_model()
 
 class UserDeleteForm(forms.Form):
 
-    def __init__(self, user, *args, **kwargs):
-        self.user = user
+    error_messages = {
+        'password_incorrect': _("Your password was entered incorrectly. Please enter it again."),
+    }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
         super().__init__(*args, **kwargs)
 
     password = forms.CharField(
@@ -28,9 +32,9 @@ class UserDeleteForm(forms.Form):
         widget=forms.PasswordInput(attrs={'autocomplete': 'current-password', 'autofocus': True}),
     )
 
-    def validate(self):
+    def clean_password(self):
         """
-        Validate that the old_password field is correct.
+        Validate that the password field is correct.
         """
         password = self.cleaned_data["password"]
         if not self.user.check_password(password):

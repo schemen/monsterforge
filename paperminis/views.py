@@ -5,7 +5,7 @@ from urllib.parse import urljoin, urlparse
 
 import requests
 from django import template
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -53,6 +53,7 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
 
+
 def temp_account(request):
     """Create temporary account."""
     if request.method == 'POST':
@@ -77,18 +78,19 @@ def profile(request):
     """A user profile view"""
     return render(request, 'profile.html')
 
+
 @login_required()
 def delete_account(request):
     if request.method == 'POST':
-        form = UserDeleteForm(request.POST)
+        form = UserDeleteForm(request.POST, user=request.user)
         if form.is_valid():
-            form.save()
             user = request.user
             logger.info("User deleted it's account! Email: %s" % user.email)
             user.delete()
+            logout(request)
             return render(request, 'delete_account_done.html')
     else:
-        form = UserDeleteForm()
+        form = UserDeleteForm(user=request.user)
     """A user profile view"""
     return render(request, 'delete_account_confirm.html', {'form': form})
 
