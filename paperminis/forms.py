@@ -16,6 +16,37 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
+class UserDeleteForm(forms.Form):
+
+    error_messages = {
+        'password_incorrect': _("Your password was entered incorrectly. Please enter it again."),
+    }
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+
+    password = forms.CharField(
+        label=_("Password"),
+        strip=False,
+        widget=forms.PasswordInput(attrs={'autocomplete': 'current-password', 'autofocus': True}),
+    )
+
+    def clean_password(self):
+        """
+        Validate that the password field is correct.
+        """
+        password = self.cleaned_data["password"]
+        if not self.user.check_password(password):
+            raise ValidationError(
+                self.error_messages['password_incorrect'],
+                code='password_incorrect',
+            )
+        return password
+
+    class Meta:
+        fields = ['password']
+
 class SignUpForm(UserCreationForm):
     """Used to register new users"""
     # email

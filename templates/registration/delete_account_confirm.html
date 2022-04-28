@@ -1,0 +1,50 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    {% load widget_tweaks %}
+    <script>
+        {% for type, error_text in form.errors.items %}
+
+            $.notify({
+                message: '{{ error_text }}'
+            },{
+                type: 'danger',
+                delay: 6000
+            },{
+                animate: {
+                    enter: 'animated fadeInRight',
+                    exit: 'animated fadeOutRight'
+                }
+            });
+        {% endfor %}
+    </script>
+    <div class="col-md-12">
+        <div class="card col-md-6 bg-light mx-auto">
+            <div class="card-header bg-light bg-light">
+                <h3 class="card-title bg-light">Account deletion</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" action="">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p>Please confirm with your password</p>
+                            <div class="form-group">
+                                {{ form.password.label_tag }}
+                                {{ form.password|add_class:"form-control" }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mt-2">
+                            <p>Do you want to delete your Monsterforge account? All your Creatures and Bestiaries will be deleted.</p>
+                            <button type="submit" class="btn btn-danger btn-fill btn-block">Yes, delete my account.</button>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
