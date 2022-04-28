@@ -122,6 +122,15 @@
                                 {% endif %}
                             {% endif %}
                         </li>
+                        {% if user.is_authenticated %}
+                        <li class="nav-item">
+                                <span class="no-icon">
+                                        {% if not user|has_group:"temp" %}
+                                            <a class="nav-link" href="{% url 'profile'%}">Profile</a>
+                                        {% endif %}
+                                </span>
+                        </li>
+                        {% endif %}
                         <li class="nav-item">
                                 <span class="no-icon">
                                     {% if user.is_authenticated %}

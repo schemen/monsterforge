@@ -20,7 +20,7 @@ from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from paperminis.forms import (DDBEncounterBestiaryCreate, PrintForm, QuantityForm,
-                              SignUpForm, UploadFileForm)
+                              SignUpForm, UploadFileForm, UserDeleteForm)
 from paperminis.generate_minis import MiniBuilder
 from paperminis.models import Bestiary, Creature, CreatureQuantity, PrintSettings, User
 from paperminis.utils import handle_json
@@ -53,7 +53,6 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
 
-
 def temp_account(request):
     """Create temporary account."""
     if request.method == 'POST':
@@ -71,6 +70,27 @@ def temp_account(request):
         return render(request, 'temp_account.html')
 
     return reverse('signup')
+
+
+@login_required()
+def profile(request):
+    """A user profile view"""
+    return render(request, 'profile.html')
+
+@login_required()
+def delete_account(request):
+    if request.method == 'POST':
+        form = UserDeleteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            user = request.user
+            logger.info("User deleted it's account! Email: %s" % user.email)
+            user.delete()
+            return render(request, 'delete_account_done.html')
+    else:
+        form = UserDeleteForm()
+    """A user profile view"""
+    return render(request, 'delete_account_confirm.html', {'form': form})
 
 
 @login_required()
