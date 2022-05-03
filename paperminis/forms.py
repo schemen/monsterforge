@@ -77,7 +77,6 @@ class CreatureModifyForm(forms.ModelForm):
         if self.user:
             name = cleaned_data.get("name")
             img_url = cleaned_data.get("img_url")
-            cr = cleaned_data.get("CR")
             # name + img_url must be unique. Otherwise raise a ValidationError
             count = Creature.objects.filter(owner=self.user, name=name, img_url=img_url).exclude(
                 id=self.instance.id).count()
@@ -89,10 +88,6 @@ class CreatureModifyForm(forms.ModelForm):
             # if self.user.groups.filter(name='Patrons').count() <= 0:
             #     cleaned_data['show_name'] = True
             #     cleaned_data['position'] = Creature.WALKING
-
-            # validate CR
-            if not isinstance(cr, float) or cr < 0 or cr > 1000:
-                raise forms.ValidationError(('CR must a number be between 0 and 1000.'), code='value error', )
 
         return cleaned_data
 
