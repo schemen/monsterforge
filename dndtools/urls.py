@@ -20,15 +20,7 @@ from paperminis import views as paperminis_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('minis/', include('paperminis.urls'))
-]
-
-#Add URL maps to redirect the base URL to our application
-
-from django.views.generic import RedirectView
-
-urlpatterns += [
-    path('', RedirectView.as_view(url='/minis/')),
+    path('', include('paperminis.urls'))
 ]
 
 # Use static() to add url mapping to serve static files during development (only)

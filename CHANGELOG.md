@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.1(2022-05-03)
+
+### Improvements
+* Remove "minis/" sub-url for cleaner urls
+
 ## 1.4.0(2022-04-29)
 
 ### Features
