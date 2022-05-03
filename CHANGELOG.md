@@ -5,6 +5,7 @@
 ### Improvements
 * Change some descriptions
 * Smaller UI improvements
+* Prevent signed in users from signup and temp account creation
 * Remove D&D Agnostic data from creatures, this tool serves all
   * Create CR is no longer available as setting
   * Creature Type is no longer available as setting
