@@ -39,38 +39,44 @@ def has_group(user, group_name):
 
 def signup(request):
     """To register new users."""
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()
-            email = form.cleaned_data.get('email')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(email=email, password=raw_password)
-            login(request, user)
-            logger.info("New user created! Email: %s" % email)
-            return HttpResponseRedirect(reverse('index'))
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('index'))
     else:
-        form = SignUpForm()
-    return render(request, 'signup.html', {'form': form})
+        if request.method == 'POST':
+            form = SignUpForm(request.POST)
+            if form.is_valid():
+                form.save()
+                email = form.cleaned_data.get('email')
+                raw_password = form.cleaned_data.get('password1')
+                user = authenticate(email=email, password=raw_password)
+                login(request, user)
+                logger.info("New user created! Email: %s" % email)
+                return HttpResponseRedirect(reverse('index'))
+        else:
+            form = SignUpForm()
+        return render(request, 'signup.html', {'form': form})
 
 
 def temp_account(request):
     """Create temporary account."""
-    if request.method == 'POST':
-        # generate random username and password
-        password = make_password(str(uuid.uuid4()))
-        email = uuid.uuid4()
-        user = User(email=email, password=password)
-        user.save()
-        # add to group 'temp'
-        temp_grp = Group.objects.get(name='temp')
-        temp_grp.user_set.add(user)
-        # log the user in (this can never be done manually)
-        login(request, user)
-        logger.info("New temp user created! Email: %s" % email)
-        return render(request, 'temp_account.html')
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('index'))
+    else:
+        if request.method == 'POST':
+            # generate random username and password
+            password = make_password(str(uuid.uuid4()))
+            email = uuid.uuid4()
+            user = User(email=email, password=password)
+            user.save()
+            # add to group 'temp'
+            temp_grp = Group.objects.get(name='temp')
+            temp_grp.user_set.add(user)
+            # log the user in (this can never be done manually)
+            login(request, user)
+            logger.info("New temp user created! Email: %s" % email)
+            return render(request, 'temp_account.html')
 
-    return reverse('signup')
+        return reverse('signup')
 
 
 @login_required()
@@ -206,10 +212,6 @@ def bestiary_print(request, pk):
             minis = MiniBuilder(user=request.user)
             # update settings
             new_settings = formset.save(commit=False)
-
-            # patreon early access backend validation
-            if user.groups.filter(name='Patrons').count() < 1:
-                new_settings.darken = 0
 
             print_settings.paper_format = new_settings.paper_format
             print_settings.grid_size = new_settings.grid_size

@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.4.4(2022-05-03)
+
+### Improvements
+* Change some descriptions
+* Smaller UI improvements
+* Prevent signed in users from signup and temp account creation
+* Remove D&D Agnostic data from creatures, this tool serves all
+  * Create CR is no longer available as setting
+  * Creature Type is no longer available as setting
+  * This allows Monsterforge to be slimmer
+
+
 ## 1.4.3(2022-05-03)
 
 ### Improvements

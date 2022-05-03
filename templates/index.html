@@ -16,9 +16,9 @@
                                 Here is what it can do:</p>
                             <ul>
                                 <li>Create, upload and modify your creatures</li>
-                                <li>Import a Dndbeyond encounter into a bestiary, ready to print</li>
                                 <li>Gather the creatures you need for a session in a bestiary</li>
                                 <li>Print minis for all the creatures in your bestiaries with a single click</li>
+                                <li>Import a Dndbeyond encounter into a bestiary, ready to print</li>
                                 <li>The Base color and shape can be customized</li>
                                 <li>Miniatures of the same type can be numbered</li>
                                 <li>The minis have a foldable base that can be reinforced with a coin to make them wind-resistant</li>
@@ -28,7 +28,11 @@
                                 <li>You can adjust the brightness of the mini's backside to create a silhouette effect</li>
                                 <li>The minis are nicely arranged on a sheet in a way to minimize wasted space</li>
                             </ul>
-                            <a href="{% url 'signup' %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Get started now!</a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'bestiaries' %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Get started! Check out your bestiaries!</a>
+                            {% else %}
+                                <a href="{% url 'signup' %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Get started now!</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
