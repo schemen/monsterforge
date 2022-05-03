@@ -56,7 +56,7 @@
                                         <input name="{{ q.id }}" id="n_{{ q.id }}" type="number" class="form-control creature-quantity">
                                     </div>
                                     <div class="col col-md-10">
-                                        <input onclick="var nf = document.getElementById('n_{{ q.id }}'); if (!nf.value){nf.value = 0;}; nf.value = parseInt(nf.value) + 1;" type="text" readonly class="form-control-plaintext creature-name" value="{{ q.name }} ({{ q.size }})" data-search="{{ q.name }} ({{ q.size }}) {{ q.get_creature_type_display }} CR:{{ q.CR }} {{ q.get_position_display }}">
+                                        <input onclick="var nf = document.getElementById('n_{{ q.id }}'); if (!nf.value){nf.value = 0;}; nf.value = parseInt(nf.value) + 1;" type="text" readonly class="form-control-plaintext creature-name" value="{{ q.name }} ({{ q.size }})" data-search="{{ q.name }} ({{ q.size }}) {{ q.get_position_display }}">
                                     </div>
                                 </div>
                             {% empty %}

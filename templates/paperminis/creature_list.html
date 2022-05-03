@@ -44,7 +44,7 @@
                             <tbody>
                             {% for creature in creature_list %}
                                 <tr class="clickable-row" data-href="{% url 'creature-detail' pk=creature.id %}" onmouseover="creature_preview(event,'{{ creature.img_url }}')">
-                                    <td data-search="{{ creature.name }} ({{ creature.size }}) {{ creature.get_creature_type_display }} CR:{{ creature.CR }} {{ creature.get_position_display }}" class="creature-name">{{ creature.name }}</td>
+                                    <td data-search="{{ creature.name }} ({{ creature.size }}) {{ creature.get_position_display }}" class="creature-name">{{ creature.name }}</td>
                                     <td>{{ creature.size }}</td>
                                 </tr>
                             {% endfor %}
