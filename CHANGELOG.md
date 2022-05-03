@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.2(2022-05-03)
+
+### Improvements
+* Redirect "minis/" to / for people that still the old url somewhere
+
 ## 1.4.1(2022-05-03)
 
 ### Improvements
