@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.6(2022-05-03)
+
+### Hotfix
+* More CR/CreatureType hotfixes
+
 ## 1.4.5(2022-05-03)
 
 ### Hotfix

@@ -40,9 +40,8 @@ def handle_json(f, user):
 
     current = Creature.objects.filter(owner=user)
     current_name_url = [(x.name, x.img_url) for x in current]
-    current_full = [(x.name, x.img_url, x.size, x.CR, x.creature_type) for x in current]
+    current_full = [(x.name, x.img_url, x.size) for x in current]
     size_map = {v: k for k, v in dict(Creature.CREATURE_SIZE_CHOICES).items()}
-    creature_type_map = {v: k for k, v in dict(Creature.CREATURE_TYPE_CHOICES).items()}
     skip = 0
     obj_list = []
     for k, i in data.items():
@@ -61,19 +60,6 @@ def handle_json(f, user):
         except:
             short_size = Creature.MEDIUM
 
-        # fix illegal types (default to undefined)
-        try:
-            short_type = creature_type_map[i['creature_type']]
-        except:
-            short_type = Creature.UNDEFINED
-
-        # fix illegal CRs (default to 0)
-        try:
-            cr = float(Fraction(i['CR']))
-            if cr < 0 or cr > 1000: cr = 0
-        except:
-            cr = 0
-
         # check if unique
         if name_url in current_name_url:
             full_tup = (name, img_url, short_size, cr, short_type)
@@ -84,16 +70,14 @@ def handle_json(f, user):
             else:
                 # updated attributes
                 # this is kinda slow :(
-                Creature.objects.filter(owner=user, name=name, img_url=img_url).update(size=short_size, CR=cr,
-                                                                                       creature_type=short_type)
+                Creature.objects.filter(owner=user, name=name, img_url=img_url).update(size=short_size)
                 current_full.append(full_tup)
                 continue
 
         current_name_url.append(name_url)
 
         # if everything is ok, generate the object and store it
-        obj = Creature(owner=user, name=i['name'], size=short_size, img_url=i['img_url'], CR=cr,
-                       creature_type=short_type)
+        obj = Creature(owner=user, name=i['name'], size=short_size, img_url=i['img_url'])
         obj_list.append(obj)
 
     if len(obj_list) > 0:
