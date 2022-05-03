@@ -96,15 +96,15 @@
                         </div>
                         <div class="row mt-3">
                             <div class="col-sm-6 text-center">
-                                <a href="{% url 'bestiary-link' pk=bestiary.id %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Link Creatures</a>
+                                <a href="{% url 'bestiary-link' pk=bestiary.id %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Add Creatures</a>
                             </div>
                             <div class="col-sm-6  text-center">
-                                <a href="{% url 'bestiary-unlink' pk=bestiary.id %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Unlink all Creatures</a>
+                                <a href="{% url 'bestiary-unlink' pk=bestiary.id %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Remove all Creatures</a>
                             </div>
                         </div>
                         <div class="row mt-4 mb-3">
                             <div class="col-sm-12 text-center">
-                                <a id="print_link" href="{% if bestiary.creatures.count > 0 %}{% url 'bestiary-print' pk=bestiary.id %}{% else %}javascript:empty_bestiary();{% endif %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Generate Minis for this Bestiary!</a>
+                                <a id="print_link" href="{% if bestiary.creatures.count > 0 %}{% url 'bestiary-print' pk=bestiary.id %}{% else %}javascript:empty_bestiary();{% endif %}" class="btn btn-success active btn-block" role="button" aria-pressed="true">Generate Minis for this Bestiary!</a>
                             </div>
                         </div>
                     </div>

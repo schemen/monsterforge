@@ -26,22 +26,6 @@
 
         </script>
     {% endif %}
-    <script>
-        function patreon_info() {
-            $.notify({
-                title: 'Beta Feature',
-                message: 'This feature is still under development and beta testing is reserved for Patreons. It will become available for everyone soon.'
-            }, {
-                type: 'info',
-                delay: 8000
-            }, {
-                animate: {
-                    enter: 'animated fadeInRight',
-                    exit: 'animated fadeOutRight'
-                }
-            });
-        };
-    </script>
     <form name="print" id="print_form" action="" method="post">
         {% csrf_token %}
         <div class="row">
@@ -91,13 +75,12 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="amount">{% if form.darken.value != None %} {{ form.darken.value|stringformat:'s' }}{% endif %}</span>
                                     </div>
-                                    <div {% if not request.user|has_group:"Patrons" %}onclick="patreon_info();"{% endif %} class="form-control">
+                                    <div class="form-control">
                                         <input type="range" name="{{ form.darken.name }}" class="form-control" id="{{ form.darken.auto_id }}"
                                                 {% if form.darken.value != None %} value="{{ form.darken.value|stringformat:'s' }}"{% endif %}
-                                               oninput="amount.innerHTML={{ form.darken.auto_id }}.value" {% if not request.user|has_group:"Patrons" %}style="pointer-events: none"{% endif %}/>
+                                               oninput="amount.innerHTML={{ form.darken.auto_id }}.value "/>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -107,15 +90,12 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header ">
-                        <h4 class="card-title">File Controls</h4>
-                        <p class="card-category">Pressing start will generate a .zip file with your minis and serve it to you. Please be patient!</p>
+                        <p class="card-category">Pressing generate will create a .zip file with your minis and serve it to you. Please be patient!</p>
                     </div>
                     <div class="card-body">
-                        <div class="row mt-4 mb-3">
                             <div class="col-sm-12 text-center">
-                                <input class="btn btn-fill btn-block mt-4 mb-3" type="submit" value="Start generating the Minis"/>
+                                <input class="btn btn-fill btn-block mt-4 mb-3" type="submit" value="Generate my Minis!"/>
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>

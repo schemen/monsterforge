@@ -42,7 +42,7 @@
         };
     </script>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="card">
                 <div class="card-header ">
                     <h4 class="card-title">{% if object %}Update Creature{% else %}Add new Creature{% endif %}</h4>
@@ -71,8 +71,9 @@
                             </div>
                             <div class="form-group">
                                 {{ form.img_url.errors }}
-                                <label for="{{ form.img_url.id_for_label }}">URL to your image:</label>
+                                <label for="{{ form.img_url.id_for_label }}">URL to your image: *</label>
                                 {% render_field form.img_url class+="form-control" rows="3" %}
+                                <label>*If you have local images, you can upload them to services like <a href="https://imgur.com">Imgur</a> and link them here!</label>
                             </div>
                             <div class="form-group">
                                 {{ form.creature_type.errors }}

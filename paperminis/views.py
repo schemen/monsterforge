@@ -207,10 +207,6 @@ def bestiary_print(request, pk):
             # update settings
             new_settings = formset.save(commit=False)
 
-            # patreon early access backend validation
-            if user.groups.filter(name='Patrons').count() < 1:
-                new_settings.darken = 0
-
             print_settings.paper_format = new_settings.paper_format
             print_settings.grid_size = new_settings.grid_size
             print_settings.base_shape = new_settings.base_shape
