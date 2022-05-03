@@ -36,10 +36,19 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header ">
-                        <h4 class="card-title">Add Creatures to Bestiary</h4>
+                        <h4 class="card-title">How many of which?</h4>
                         <p class="card-category">Type how many creatures you want to add.</p>
                     </div>
                     <div class="card-body">
+                        <label>Filter your creature collection with this search</label>
+                        <div class="input-group container mb-4">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                              </div>
+                            <input class="form-control" type="search" id="search_bar" onkeyup="live_search('div')" placeholder="Search for names..">
+                        </div>
                         <div class="container">
                             {%  for q in qs %}
                                 <div class="form-row" onmouseover="creature_preview(event, '{{ q.img_url }}')">
@@ -63,19 +72,11 @@
             <div class="col-md-6">
                 <div id="fixcard" class="card">
                     <div class="card-header ">
-                        <h4 class="card-title">Form Controls</h4>
-                        <p class="card-category">You can type creature types, creatures sizes, movement types or challenge ratings as filters (try for example 'CR:1')</p>
+                        <h4 class="card-title">Add the creatures to your Bestiary</h4>
                     </div>
                     <div class="card-body">
-                        <div class="input-group container">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon1">
-                                    <i class="fas fa-search"></i>
-                                </span>
-                              </div>
-                            <input class="form-control" type="search" id="search_bar" onkeyup="live_search('div')" placeholder="Search for names..">
-                        </div>
-                        <input class="btn btn-fill btn-block mt-4 mb-3" type="submit" value="Add Creatures" />
+                        <label>Once you added how many creatures you want of each, add them to your bestiary</label>
+                        <input class="btn btn-fill btn-block mt-1 mb-2" type="submit" value="Add Creatures" />
                     </div>
                 </div>
                 <div id="cpreview" class="card" style="visibility: hidden">

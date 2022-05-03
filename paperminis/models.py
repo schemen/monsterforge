@@ -108,49 +108,6 @@ class Creature(models.Model):
         (WALKING, 'Walking (Bottom)')
     )
 
-    # Creature Type
-    UNDEFINED = 'undefined'
-    ABERRATION = 'aberration'
-    BEAST = 'beast'
-    CELESTIAL = 'celestial'
-    CONSTRUCT = 'construct'
-    DRAGON = 'dragon'
-    ELEMENTAL = 'elemental'
-    FEY = 'fey'
-    FIEND = 'fiend'
-    GIANT = 'giant'
-    HUMANOID = 'humanoid'
-    MONSTROSITY = 'monstrosity'
-    OOZE = 'ooze'
-    PLANT = 'plant'
-    UNDEAD = 'undead'
-    TYPE1 = 'type1'
-    TYPE2 = 'type2'
-    TYPE3 = 'type3'
-    TYPE4 = 'type4'
-
-    CREATURE_TYPE_CHOICES = (
-        (UNDEFINED, 'Undefined'),
-        (ABERRATION, 'Aberration'),
-        (BEAST, 'Beast'),
-        (CELESTIAL, 'Celestial'),
-        (CONSTRUCT, 'Construct'),
-        (DRAGON, 'Dragon'),
-        (ELEMENTAL, 'Elemental'),
-        (FEY, 'Fey'),
-        (FIEND, 'Fiend'),
-        (GIANT, 'Giant'),
-        (HUMANOID, 'Humanoid'),
-        (MONSTROSITY, 'Monstrosity'),
-        (OOZE, 'Ooze'),
-        (PLANT, 'Plant'),
-        (UNDEAD, 'Undead'),
-        (TYPE1, 'Type 1'),
-        (TYPE2, 'Type 2'),
-        (TYPE3, 'Type 3'),
-        (TYPE4, 'Type 4'),
-    )
-
     # fields
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100)
@@ -160,8 +117,6 @@ class Creature(models.Model):
     color = models.CharField(max_length=6, choices=COLOR_CHOICES, default=DARKGRAY)
     position = models.CharField(max_length=50, choices=POSITION_CHOICES, default=WALKING)
     show_name = models.BooleanField(default=True)
-    creature_type = models.CharField(max_length=100, choices=CREATURE_TYPE_CHOICES, default=UNDEFINED)
-    CR = models.FloatField(default=0)
     from_ddb = models.BooleanField(default=False)
 
     # Metadata

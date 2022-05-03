@@ -76,16 +76,6 @@
                                 <label>*If you have local images, you can upload them to services like <a href="https://imgur.com">Imgur</a> and link them here!</label>
                             </div>
                             <div class="form-group">
-                                {{ form.creature_type.errors }}
-                                <label for="{{ form.creature_type.id_for_label }}">Creature Type:</label>
-                                {% render_field form.creature_type class+="form-control" %}
-                            </div>
-                            <div class="form-group">
-                                {{ form.CR.errors }}
-                                <label for="{{ form.CR.id_for_label }}">Challenge Rating:</label>
-                                {% render_field form.CR class+="form-control" %}
-                            </div>
-                            <div class="form-group">
                                 {{ form.size.errors }}
                                 <label for="{{ form.size.id_for_label }}">Creature Size:</label>
                                 {% render_field form.size class+="form-control" %}
