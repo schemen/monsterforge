@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.5(2022-05-03)
+
+### Hotfix
+* Fix the creature form
+
 ## 1.4.4(2022-05-03)
 
 ### Improvements
@@ -10,7 +15,6 @@
   * Create CR is no longer available as setting
   * Creature Type is no longer available as setting
   * This allows Monsterforge to be slimmer
-
 
 ## 1.4.3(2022-05-03)
 
