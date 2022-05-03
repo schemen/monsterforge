@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.3(2022-05-03)
+
+### Improvements
+* More descriptive title and meta description
+
+
 ## 1.4.2(2022-05-03)
 
 ### Improvements
