@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path
 from django.conf.urls import include
+from django.views.generic import RedirectView, TemplateView
 from paperminis import views as paperminis_view
 
 urlpatterns = [
@@ -24,9 +25,6 @@ urlpatterns = [
 ]
 
 #Add URL maps to redirect the base URL to our application
-
-from django.views.generic import RedirectView
-
 urlpatterns += [
     re_path('minis/(?P<path>.*)$', RedirectView.as_view(url='/%(path)s', permanent=True)),
 ]
@@ -46,5 +44,5 @@ urlpatterns += [
     path('tempaccount/', paperminis_view.temp_account, name='temp-account'),
     path('profile/', paperminis_view.profile, name='profile'),
     path('accounts/delete/', paperminis_view.delete_account, name='delete-account'),
-
+    path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
 ]
