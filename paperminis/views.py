@@ -232,14 +232,14 @@ def bestiary_print(request, pk):
             # load creatures into the mini builder
             minis.add_bestiary(pk)
             # build minis
-            archive = minis.build_all_and_zip()
+            archive = minis.build_all_and_pdf()
             # serve file
             archive.seek(0)
             logger.info("Finished building, serving now.")
 
             # Clean bestiary name
             name = minis.sanitize.sub('', bestiary.name)
-            return FileResponse(archive, as_attachment=True, filename=name + "_forged.zip")
+            return FileResponse(archive, as_attachment=True, filename=name + "_forged.pdf")
 
     # seed form with loaded settings
     form = PrintForm(initial=print_settings.__dict__)

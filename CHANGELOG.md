@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.0(2022-05-04)
+
+### New
+* Instead of a ZIP file containing images, Monsterforge generates a PDF to print directly
+
+### Improvements
+* English has been improved
+
 ## 1.4.7(2022-05-04)
 
 ### Improvements
