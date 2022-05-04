@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.7(2022-05-04)
+
+### Improvements
+* Improve the /minis/ redirect
+* Add robots.txt to protect authenticated views
+
 ## 1.4.6(2022-05-03)
 
 ### Hotfix

@@ -14,8 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from django.conf.urls import include
+from django.views.generic import RedirectView, TemplateView
 from paperminis import views as paperminis_view
 
 urlpatterns = [
@@ -24,11 +25,8 @@ urlpatterns = [
 ]
 
 #Add URL maps to redirect the base URL to our application
-
-from django.views.generic import RedirectView
-
 urlpatterns += [
-    path('minis/', RedirectView.as_view(url='/')),
+    re_path('minis/(?P<path>.*)$', RedirectView.as_view(url='/%(path)s', permanent=True)),
 ]
 
 # Use static() to add url mapping to serve static files during development (only)
@@ -46,5 +44,5 @@ urlpatterns += [
     path('tempaccount/', paperminis_view.temp_account, name='temp-account'),
     path('profile/', paperminis_view.profile, name='profile'),
     path('accounts/delete/', paperminis_view.delete_account, name='delete-account'),
-
+    path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
 ]
