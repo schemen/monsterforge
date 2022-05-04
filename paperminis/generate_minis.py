@@ -30,7 +30,6 @@ class MiniBuilder:
         self.creature_counter = None
         self.minis = []
         self.sheets = None
-        self.zip_container = None
 
         # Settings Containers
         self.print_margin = None
