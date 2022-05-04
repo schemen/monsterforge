@@ -2,7 +2,6 @@ import io
 import logging
 import re
 from collections import Counter
-from zipfile import ZIP_DEFLATED, ZipFile
 
 import cv2 as cv
 import numpy as np
@@ -101,7 +100,7 @@ class MiniBuilder:
                  'tabloid': np.array([279, 432])}
         self.canvas = (paper[paper_format] - 2 * self.print_margin) * self.dpmm
 
-    def build_all_and_zip(self):
+    def build_all_and_pdf(self):
         if self.enumerate:
             # if enumerate is true, settings are always loaded
             self.creature_counter = Counter([c.name for c in self.creatures])
@@ -116,9 +115,9 @@ class MiniBuilder:
                 print('{} skipped with error: {}'.format(creature.name, mini))
 
         self.sheets = self.build_sheets(self.minis)
-        self.zip_container = self.save_and_zip(self.sheets)
+        pdf_container = self.save_and_pdf(self.sheets)
         logger.info(download_image.cache_info())
-        return self.zip_container
+        return pdf_container
 
     def build_mini(self, creature):
         if not hasattr(self, 'grid_size'):
@@ -458,10 +457,9 @@ class MiniBuilder:
             cv.imshow('Img', img_small)
             cv.waitKey(0)
 
-    def save_and_zip(self, sheets):
-        sheet_nr = 1
-        zip_memory = io.BytesIO()
-        zipfile = ZipFile(zip_memory, mode='a', compression=ZIP_DEFLATED)
+    def save_and_pdf(self, sheets):
+        pages = []
+        pdf_buffer = io.BytesIO()
 
         for sheet in sheets:
             img_buffer = io.BytesIO()
@@ -469,8 +467,8 @@ class MiniBuilder:
             im_pil = Image.fromarray(rgb_img)
             im_pil.save(img_buffer, dpi=(25.4 * self.dpmm, 25.4 * self.dpmm), format='PNG')
             img_buffer.seek(0)
-            zipfile.writestr('sheet_' + str(sheet_nr) + '.png', img_buffer.getbuffer())
-            sheet_nr += 1
+            page = Image.open(img_buffer)
+            pages.append(page)
 
-        zipfile.close()
-        return zip_memory
+        pages[0].save(pdf_buffer, save_all=True, append_images=pages[1:], format="PDF")
+        return pdf_buffer
