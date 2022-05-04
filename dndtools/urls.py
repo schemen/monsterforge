@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from django.conf.urls import include
 from paperminis import views as paperminis_view
 
@@ -28,7 +28,7 @@ urlpatterns = [
 from django.views.generic import RedirectView
 
 urlpatterns += [
-    path('minis/', RedirectView.as_view(url='/')),
+    re_path('minis/(?P<path>.*)$', RedirectView.as_view(url='/%(path)s', permanent=True)),
 ]
 
 # Use static() to add url mapping to serve static files during development (only)
