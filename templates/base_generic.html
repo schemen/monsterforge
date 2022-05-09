@@ -72,6 +72,13 @@
                         <p>Home</p>
                     </a>
                 </li>
+                {% url 'quickbuild' as url %}
+                <li {% if request.path == url %} class="nav-item active"{% endif %}>
+                    <a class="nav-link" href="{{ url }}">
+                        <i class="fas fa-shipping-fast"></i>
+                        <p>Quick Build</p>
+                    </a>
+                </li>
                 {% url 'bestiaries' as url %}
                 <li {% if request.path == url %} class="nav-item active"{% endif %}>
                     <a class="nav-link" href="{{ url }}">

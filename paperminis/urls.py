@@ -33,7 +33,8 @@ urlpatterns += [
     # path('bestiary/<int:pk>/serve/', views.bestiary_serve_file, name='bestiary-serve')
 ]
 
-# patreon
+# other
 urlpatterns += [
     path('patreon/', views.patreon, name='patreon'),
+    path('quickbuild/', views.quickbuild, name='quickbuild'),
 ]
