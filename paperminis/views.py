@@ -85,6 +85,53 @@ def profile(request):
     return render(request, 'profile.html')
 
 
+def quickbuild(request):
+    """Quickbuilder"""
+
+    if request.user.is_authenticated:
+        qs = Creature.objects.filter(owner=request.user)
+    else:
+        qs = None
+
+    if request.method == 'POST':
+        formset = QuantityForm(request.POST)
+        bestiary = Bestiary.objects.filter(owner=request.user, id=pk).first()
+        mgmt = ['csrfmiddlewaretoken', 'form-TOTAL_FORMS', 'form-INITIAL_FORMS', 'form-MIN_NUM_FORMS',
+                'form-MAX_NUM_FORMS']
+        for id, q in request.POST.items():
+            if id in mgmt:
+                continue
+            try:
+                if not q: q = 0
+                q = int(q)
+            except:
+                raise ValidationError('Only use numbers please.')
+            if q <= 0:
+                continue
+
+            try:
+                creature = Creature.objects.filter(owner=request.user, id=id)[0]
+            except:
+                continue
+
+            quantity_obj = CreatureQuantity.objects.filter(creature=creature, bestiary=bestiary,
+                                                           owner=request.user).first()
+            # update or create
+            if quantity_obj:
+                quantity_obj.quantity = q
+            else:
+                quantity_obj = CreatureQuantity(creature=creature, bestiary=bestiary, owner=request.user, quantity=q)
+            # save
+            quantity_obj.save()
+        logger.info("Expanded bestiary %s %s from user %s with new creatures!" % (
+            bestiary.id, bestiary.name, bestiary.owner.id))
+        return HttpResponseRedirect(reverse('bestiary-detail', kwargs={'pk': pk}))
+
+    else:
+        context = {'qs': qs}
+        return render(request, 'quickbuild.html', context=context)
+
+
 @login_required()
 def delete_account(request):
     if request.method == 'POST':
