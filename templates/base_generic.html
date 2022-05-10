@@ -41,7 +41,7 @@
     {% if 'ENABLE_PLAUSIBLE'|env == 'True' %}
         {% plausible site_domain='PLAUSIBLE_SITE_DOMAIN'|env %}
     {% endif %}
-
+    {% block header %} {% endblock %}
     <script>
         jQuery(document).ready(function($) {
             $(".clickable-row").click(function() {
@@ -175,6 +175,7 @@
         </footer>
     </div>
 </div>
+{% block script %}{% endblock %}
 </body>
 
 
