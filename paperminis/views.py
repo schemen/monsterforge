@@ -108,7 +108,7 @@ def quickbuild(request):
             for form in creature_formset:
                 print(form.cleaned_data)
 
-        minis = MiniBuilder(request.user)
+        minis = MiniBuilder()
 
         return HttpResponseRedirect(reverse('quickbuild'))
 
@@ -263,7 +263,7 @@ def bestiary_print(request, pk):
                                 fixed_height=print_settings.base_shape,
                                 darken=print_settings.darken)
             # load creatures into the mini builder
-            minis.add_bestiary(pk)
+            minis.add_bestiary(request.user, pk)
             # build minis
             archive = minis.build_all_and_pdf()
             # serve file

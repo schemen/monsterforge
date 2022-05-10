@@ -20,12 +20,8 @@ class MiniBuilder:
     def __init__(self, user):
 
         # user
-        self.user = user
         self.sanitize = re.compile('[^a-zA-Z0-9\(\)\_@]', re.UNICODE)  # sanitize user input
-        self.clean_email = self.sanitize.sub('', self.user.email)
 
-        # TODO Clear this var
-        self.file_name_body = self.clean_email
         self.creatures = []
         self.creature_counter = None
         self.minis = []
@@ -47,14 +43,9 @@ class MiniBuilder:
         # clear download cache for each run
         download_image.cache_clear()
 
-    def add_bestiary(self, pk):
-        creature_quantities = CreatureQuantity.objects.filter(owner=self.user, bestiary=pk)
+    def add_bestiary(self, user, pk):
+        creature_quantities = CreatureQuantity.objects.filter(owner=user, bestiary=pk)
 
-        bestiary_name = self.sanitize.sub('', creature_quantities.first().bestiary.name)
-        if self.file_name_body == self.clean_email:
-            self.file_name_body = bestiary_name
-        else:
-            self.file_name_body += '_' + bestiary_name
         if creature_quantities:
             creatures = []
             for cq in creature_quantities:
