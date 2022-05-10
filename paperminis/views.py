@@ -24,7 +24,7 @@ from paperminis.forms import (DDBEncounterBestiaryCreate, PrintForm, QuantityFor
                               QuickCreateCreatureForm)
 from paperminis.generate_minis import MiniBuilder
 from paperminis.models import Bestiary, Creature, CreatureQuantity, PrintSettings, User
-from paperminis.utils import handle_json
+from paperminis.utils import handle_json, quick_validate_creature
 
 register = template.Library()
 
@@ -108,7 +108,29 @@ def quickbuild(request):
             for form in creature_formset:
                 print(form.cleaned_data)
 
-        minis = MiniBuilder()
+            creatures = []
+            failed_creatures = []
+            for form in creature_formset:
+                i = form.cleaned_data
+                try:
+                    creature = quick_validate_creature(i)
+                    creatures.append(creature)
+                except ValueError as e:
+                    failed_creatures.append(str(e))
+
+            minis = MiniBuilder()
+            minis.load_settings(paper_format=settings_form.cleaned_data["paper_format"],
+                                grid_size=int(settings_form.cleaned_data["grid_size"]),
+                                base_shape=settings_form.cleaned_data["base_shape"],
+                                enumerate=settings_form.cleaned_data["enumerate"],)
+            minis.add_quick_creatures(creatures)
+            archive = minis.build_all_and_pdf()
+            # serve file
+            archive.seek(0)
+            logger.info("Finished building, serving now.")
+
+            # Clean bestiary name
+            return FileResponse(archive, as_attachment=True, filename="Monsterforge_Quickbuilder.pdf")
 
         return HttpResponseRedirect(reverse('quickbuild'))
 
