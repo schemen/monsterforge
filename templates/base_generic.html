@@ -76,7 +76,7 @@
                 <li {% if request.path == url %} class="nav-item active"{% endif %}>
                     <a class="nav-link" href="{{ url }}">
                         <i class="fas fa-shipping-fast"></i>
-                        <p>Quick Build</p>
+                        <p>Quick Build(BETA)</p>
                     </a>
                 </li>
                 {% url 'bestiaries' as url %}
@@ -130,13 +130,13 @@
                             {% endif %}
                         </li>
                         {% if user.is_authenticated %}
-                        <li class="nav-item">
+                            <li class="nav-item">
                                 <span class="no-icon">
                                         {% if not user|has_group:"temp" %}
                                             <a class="nav-link" href="{% url 'profile'%}">Profile</a>
                                         {% endif %}
                                 </span>
-                        </li>
+                            </li>
                         {% endif %}
                         <li class="nav-item">
                                 <span class="no-icon">

@@ -4,7 +4,23 @@
 {% endblock %}
 
 {% block content %}
-    {{ form.errors }}
+    {% if form.non_field_errors %}
+        <script>
+            $.notify({
+                message: '{{ form.non_field_errors }}'
+            }, {
+                type: 'danger',
+                delay: 10000
+            }, {
+                animate: {
+                    enter: 'animated fadeInRight',
+                    exit: 'animated fadeOutRight'
+                }
+            });
+
+
+        </script>
+    {% endif %}
     {% load widget_tweaks %}
     <form action="" method="post">
         {% csrf_token %}
@@ -55,22 +71,78 @@
                         {{ creature_formset.management_form }}
                         <div id="formset_wrapper">
                             {% for form in creature_formset.forms %}
-                                {{form.non_field_errors}}
-                                {{form.errors}}
-                                <table class='no_error'>
-                                    {{ form.as_table }}
-                                </table>
+                                <div class="container-fluid mb-4 clearfix" id="creature_wrapper">
+                                    {{ form.non_field_errors }}
+                                    {{ form.errors }}
+                                    <div class="form-group">
+                                        {{ form.img_url.errors }}
+                                        <label for="{{ form.name.id_for_label }}">Name*</label>
+                                        {% render_field form.name class+="form-control" %}
+                                        <small id="nameHelp" class="form-text text-muted">*If no name is passed, no name will be printed :)</small>
+                                    </div>
+                                    <div class="form-group">
+                                        {{ form.img_url.errors }}
+                                        <label for="{{ form.img_url.id_for_label }}">Image URL:</label>
+                                        {% render_field form.img_url class+="form-control" %}
+                                    </div>
+                                    <div class="form-group form-inline">
+                                        <div class="d-inline-flex m-auto">
+                                            {{ form.img_url.errors }}
+                                            <label for="{{ form.position.id_for_label }}">Position: </label>
+                                            {% render_field form.position class+="form-control" %}
+                                        </div>
+                                        <div class="d-inline-flex m-auto">
+                                            {{ form.img_url.errors }}
+                                            <label for="{{ form.size.id_for_label }}">Size: </label>
+                                            {% render_field form.size class+="form-control" %}
+                                        </div>
+                                        <div class="d-inline-flex m-auto">
+                                            {{ form.img_url.errors }}
+                                            <label for="{{ form.quantity.id_for_label }}">Quantity: </label>
+                                            {% render_field form.quantity class+="form-control" value="1" %}
+                                        </div>
+                                    </div>
+                                </div>
                             {% endfor %}
                         </div>
                         <div id="emptyform_wrapper" style="display:none">
-                            <table class='no_error'>
-                                {{ creature_formset.empty_form.as_table }}
-                            </table>
+                            <hr>
+                            <div class="container-fluid mb-4 clearfix" id="creature_wrapper">
+                                {{ creature_formset.empty_form.non_field_errors }}
+                                {{ creature_formset.empty_form.errors }}
+                                <div class="form-group">
+                                    {{ creature_formset.empty_form.img_url.errors }}
+                                    <label for="{{ creature_formset.empty_form.name.id_for_label }}">Name</label>
+                                    {% render_field creature_formset.empty_form.name class+="form-control" %}
+                                </div>
+                                <div class="form-group">
+                                    {{ creature_formset.empty_form.img_url.errors }}
+                                    <label for="{{ creature_formset.empty_form.img_url.id_for_label }}">Image
+                                        URL:</label>
+                                    {% render_field creature_formset.empty_form.img_url class+="form-control" %}
+                                </div>
+                                <div class="form-group form-inline">
+                                    <div class="d-inline-flex m-auto">
+                                        {{ creature_formset.empty_form.img_url.errors }}
+                                        <label for="{{ creature_formset.empty_form.position.id_for_label }}">Position: </label>
+                                        {% render_field creature_formset.empty_form.position class+="form-control" %}
+                                    </div>
+                                    <div class="d-inline-flex m-auto">
+                                        {{ creature_formset.empty_form.img_url.errors }}
+                                        <label for="{{ creature_formset.empty_form.size.id_for_label }}">Size: </label>
+                                        {% render_field creature_formset.empty_form.size class+="form-control" %}
+                                    </div>
+                                    <div class="d-inline-flex m-auto">
+                                        {{ creature_formset.empty_form.img_url.errors }}
+                                        <label for="{{ creature_formset.empty_form.quantity.id_for_label }}">Quantity: </label>
+                                        {% render_field creature_formset.empty_form.quantity class+="form-control" placeholder="1" %}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
             <div class="col-md-6">
                 <div id="fixcard" class="card">
                     <div class="card-header ">
@@ -79,7 +151,7 @@
                     <div class="card-body">
                         <label>Once you added how many creatures you want of each, add them to your bestiary</label>
                         <div id="form">
-                                {% csrf_token %}
+                            {% csrf_token %}
                             <div class="form-group">
                                 {{ settings_form.paper_format.errors }}
                                 <label for="{{ settings_form.paper_format.id_for_label }}">Paper Format:</label>
@@ -97,7 +169,8 @@
                             </div>
                             <div class="form-group">
                                 {{ settings_form.enumerate.errors }}
-                                <label for="{{ settings_form.enumerate.id_for_label }}">Add numbers to the base of minis where you have more than one?</label>
+                                <label for="{{ settings_form.enumerate.id_for_label }}">Add numbers to the base of minis
+                                    where you have more than one?</label>
                                 {% render_field settings_form.enumerate class+="form-control" %}
                             </div>
                         </div>
@@ -119,36 +192,38 @@
 {% endblock %}
 
 {% block script %}
-<script>
-  $('#add_more').click(function () {
-    let total_form = $('#id_creatures-TOTAL_FORMS');
-    let form_idx = total_form.val();
+    <script>
+        $('#add_more').click(function () {
+            let total_form = $('#id_creatures-TOTAL_FORMS');
+            let form_idx = total_form.val();
 
-    $('#formset_wrapper').append($('#emptyform_wrapper').html().replace(/__prefix__/g, form_idx));
-    total_form.val(parseInt(form_idx)+1);
-  });
+            $('#formset_wrapper').append($('#emptyform_wrapper').html().replace(/__prefix__/g, form_idx));
+            total_form.val(parseInt(form_idx) + 1);
+        });
 
-function creature_preview(e, url) {
-    var topdiv = document.getElementById('fixcard');
-    var div = document.getElementById('cpreview');
-    var rect1 = topdiv.getBoundingClientRect();
-    var rect2 = div.getBoundingClientRect();
-    var overlap = !(rect1.right < rect2.left ||
-        rect1.left > rect2.right ||
-        rect1.bottom < rect2.top ||
-        rect1.top > rect2.bottom)
-    img = document.getElementById('ipreview');
-    img.src = url;
-    div.style.visibility = "visible";
-    var abs_top = div.getBoundingClientRect().top
-    var scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
-    if (abs_top <= 0 && !overlap) {
-        div.style.position = "fixed";
-        div.style.top = "0px";
-    } else if (overlap) {
-        div.style.position = "relative";
-    }
-}
+        function creature_preview(e, url) {
+            var topdiv = document.getElementById('fixcard');
+            var div = document.getElementById('cpreview');
+            var rect1 = topdiv.getBoundingClientRect();
+            var rect2 = div.getBoundingClientRect();
+            var overlap = !(rect1.right < rect2.left ||
+                rect1.left > rect2.right ||
+                rect1.bottom < rect2.top ||
+                rect1.top > rect2.bottom)
+            img = document.getElementById('ipreview');
+            img.src = url;
+            div.style.visibility = "visible";
+            var abs_top = div.getBoundingClientRect().top
+            var scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+            if (abs_top <= 0 && !overlap) {
+                div.style.position = "fixed";
+                div.style.top = "0px";
+            } else if (overlap) {
+                div.style.position = "relative";
+            }
+        }
 
-</script>
+    </script>
 {% endblock %}
+
+
