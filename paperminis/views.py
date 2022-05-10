@@ -88,7 +88,7 @@ def profile(request):
 
 def quickbuild(request):
     """Quickbuilder"""
-    QuickCreateCreatureFormSet = formset_factory(QuickCreateCreatureForm, max_num=1000)
+    creature_formset = formset_factory(QuickCreateCreatureForm, max_num=1000)
     settings_form = QuickCreateSettingsForm(prefix='settings')
 
     if request.user.is_authenticated:
@@ -97,7 +97,7 @@ def quickbuild(request):
         qs = None
 
     if request.method == 'POST':
-        creature_formset = QuickCreateCreatureFormSet(request.POST, prefix='creatures')
+        creature_formset = creature_formset(request.POST, prefix='creatures')
         settings_form = QuickCreateSettingsForm(request.POST, prefix='settings')
 
         print(settings_form.is_valid())
@@ -132,12 +132,9 @@ def quickbuild(request):
             # Clean bestiary name
             return FileResponse(archive, as_attachment=True, filename="Monsterforge_Quickbuilder.pdf")
 
-        return HttpResponseRedirect(reverse('quickbuild'))
-
-    else:
-        creature_formset = QuickCreateCreatureFormSet(prefix='creatures')
-        context = {'qs': qs, 'creature_formset': creature_formset, 'settings_form': settings_form}
-        return render(request, 'quickbuild.html', context=context)
+    creature = creature_formset(prefix='creatures')
+    context = {'qs': qs, 'creature_formset': creature, 'settings_form': settings_form}
+    return render(request, 'quickbuild.html', context=context)
 
 
 @login_required()
