@@ -2,6 +2,7 @@ import json
 from fractions import Fraction
 from functools import lru_cache
 from urllib.request import Request, urlopen
+from dataclasses import dataclass
 
 import cv2 as cv
 import numpy as np
@@ -84,3 +85,64 @@ def handle_json(f, user):
         # MUCH faster than one query per entry!
         Creature.objects.bulk_create(obj_list)
     return skip
+
+
+@dataclass(init=False)
+class QuickCreature:
+    """Class for a creature."""
+    name: str
+    size: float
+    quantity: int
+    position: str
+    img_url: str
+    color: str
+    show_name: bool = True
+
+def quick_validate_creature(var):
+    """Validates a creature and returns a dataclass"""
+
+    creature = QuickCreature()
+
+    # Name
+    name = var.get("name", "")
+    creature.name = name
+
+    # Size
+    size_options = ['T', 'S', 'M', 'L', 'H', 'G']
+    size = var.get("size", "M")
+    if size in size_options:
+        creature.size = size
+    else:
+        raise ValueError("size worngly defined.")
+
+    # quantity
+    quantity = var.get("quantity", 1)
+    creature.quantity = quantity
+
+    # position
+    position_options = ['top', 'center', 'bottom']
+    position = var.get("position", "bottom")
+    if position in position_options:
+        creature.position = position
+    else:
+        raise ValueError("size worngly defined.")
+
+    # img_url
+    # TODO Implement URL Validation
+    if var['img_url']:
+        creature.img_url = var['img_url']
+    else:
+        raise ValueError("Wrong or no URL Passed!")
+
+    # color
+    # TODO Implement color validation
+    color = var.get("color", "d3d3d3")
+    creature.color = color
+
+    # show_name
+    if creature.name:
+        creature.show_name = True
+    else:
+        creature.show_name = False
+
+    return creature

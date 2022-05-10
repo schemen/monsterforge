@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 from greedypacker import BinManager
 
 from paperminis.models import Creature, CreatureQuantity
-from paperminis.utils import download_image
+from paperminis.utils import download_image, QuickCreature
 from .items import Item
 
 logger = logging.getLogger("django")
@@ -17,7 +17,7 @@ logger = logging.getLogger("django")
 
 class MiniBuilder:
 
-    def __init__(self, user):
+    def __init__(self):
 
         # user
         self.sanitize = re.compile('[^a-zA-Z0-9\(\)\_@]', re.UNICODE)  # sanitize user input
@@ -63,6 +63,11 @@ class MiniBuilder:
             self.creatures.extend(creatures)
         else:
             return False
+
+    def add_quick_creatures(self, creatures):
+        for i in creatures:
+            for x in range(i.quantity):
+                self.creatures.append(i)
 
     def load_settings(self,
                       paper_format='a4',
@@ -114,7 +119,7 @@ class MiniBuilder:
             # check if settings loaded manually, otherwise load default settings
             self.load_settings()
 
-        if not isinstance(creature, Creature):
+        if not isinstance(creature, Creature) and not isinstance(creature, QuickCreature):
             return 'Object is not a Creature.'
 
         if creature.img_url == '':

@@ -192,23 +192,11 @@ class QuickCreateSettingsForm(forms.Form):
         (CIRCLE, 'Circle')
     )
 
-    # Name behaviour
-    NO_FORCE = 'no_force'
-    FORCE_NAME = 'force_name'
-    FORCE_BLANK = 'force_blank'
-    NAME_BEHAVIOUR_CHOICES = (
-        (NO_FORCE, 'Leave it to the Creature (default)'),
-        (FORCE_NAME, 'Force printing of all names'),
-        (FORCE_BLANK, 'Force printing no names')
-    )
-
     # Print Settings
     paper_format = forms.ChoiceField(choices=PAPER_FORMAT_CHOICES, required=True)
     grid_size = forms.ChoiceField(choices=GRID_SIZE_CHOICES, required=True)
     base_shape = forms.ChoiceField(choices=BASE_SHAPE_CHOICES, required=True)
     enumerate = forms.BooleanField(required=False)
-    force_name = forms.ChoiceField(choices=NAME_BEHAVIOUR_CHOICES, required=True)
-    fixed_height = forms.BooleanField(required=False)
 
 
 class QuickCreateCreatureForm(forms.Form):
@@ -261,7 +249,7 @@ class QuickCreateCreatureForm(forms.Form):
     # Creature Data
     img_url = forms.URLField(label='Image direct URL', required=True)
     position = forms.ChoiceField(choices=POSITION_CHOICES)
-    name = forms.CharField(max_length=100)
+    name = forms.CharField(max_length=100, required=False)
     size = forms.ChoiceField(choices=CREATURE_SIZE_CHOICES)
     quantity = forms.IntegerField(max_value=100, min_value=1)
 
