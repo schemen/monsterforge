@@ -98,6 +98,7 @@ class QuickCreature:
     color: str
     show_name: bool = True
 
+
 def quick_validate_creature(var):
     """Validates a creature and returns a dataclass"""
 

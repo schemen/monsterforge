@@ -88,35 +88,70 @@ def profile(request):
 
 def quickbuild(request):
     """Quickbuilder"""
-    creature_formset = formset_factory(QuickCreateCreatureForm, max_num=1000)
+    anon_max = 2
+    auth_max = 1000
     settings_form = QuickCreateSettingsForm(prefix='settings')
 
     if request.user.is_authenticated:
+        creature_formset = formset_factory(QuickCreateCreatureForm, max_num=1000, absolute_max=1000)
         qs = Creature.objects.filter(owner=request.user)
+        max_forms = auth_max
     else:
+        creature_formset = formset_factory(QuickCreateCreatureForm, max_num=10, absolute_max=10)
         qs = None
+        max_forms = anon_max
 
     if request.method == 'POST':
-        creature_formset = creature_formset(request.POST, prefix='creatures')
+        formset = creature_formset(request.POST, prefix='creatures')
         settings_form = QuickCreateSettingsForm(request.POST, prefix='settings')
 
         print(settings_form.is_valid())
-        print(creature_formset.is_valid())
+        print(formset.is_valid())
 
-        if settings_form.is_valid() and creature_formset.is_valid():
+        if settings_form.is_valid() and formset.is_valid():
             print(settings_form.cleaned_data)
-            for form in creature_formset:
+            for form in formset:
                 print(form.cleaned_data)
 
             creatures = []
             failed_creatures = []
-            for form in creature_formset:
+
+            if request.user.is_authenticated:
+                forms = formset[0:auth_max]
+            else:
+                forms = formset[0:anon_max]
+
+            for form in forms:
                 i = form.cleaned_data
-                try:
-                    creature = quick_validate_creature(i)
-                    creatures.append(creature)
-                except ValueError as e:
-                    failed_creatures.append(str(e))
+                if i:
+                    try:
+                        creature = quick_validate_creature(i)
+                        creatures.append(creature)
+                    except ValueError as e:
+                        failed_creatures.append(str(e))
+
+            # counter = 1
+            # for form in formset:
+            #     i = form.cleaned_data
+            #     if i:
+            #         if request.user.is_authenticated:
+            #             if counter <= auth_max:
+            #                 try:
+            #                     creature = quick_validate_creature(i)
+            #                     creatures.append(creature)
+            #                     counter += 1
+            #                 except ValueError as e:
+            #                     failed_creatures.append(str(e))
+            #                     counter += 1
+            #         else:
+            #             if counter <= anon_max:
+            #                 try:
+            #                     creature = quick_validate_creature(i)
+            #                     creatures.append(creature)
+            #                     counter += 1
+            #                 except ValueError as e:
+            #                     failed_creatures.append(str(e))
+            #                     counter += 1
 
             minis = MiniBuilder()
             minis.load_settings(paper_format=settings_form.cleaned_data["paper_format"],
@@ -133,7 +168,7 @@ def quickbuild(request):
             return FileResponse(archive, as_attachment=True, filename="Monsterforge_Quickbuilder.pdf")
 
     creature = creature_formset(prefix='creatures')
-    context = {'qs': qs, 'creature_formset': creature, 'settings_form': settings_form}
+    context = {'qs': qs, 'creature_formset': creature, 'settings_form': settings_form, 'max_forms': max_forms}
     return render(request, 'quickbuild.html', context=context)
 
 
