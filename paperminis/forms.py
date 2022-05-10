@@ -157,3 +157,111 @@ def validate_file_extension(value):
 class UploadFileForm(forms.Form):
     """Upload form with validator."""
     file = forms.FileField(validators=[validate_file_extension])
+
+
+class QuickCreateSettingsForm(forms.Form):
+    # paper format
+    A4 = 'a4'
+    A3 = 'a3'
+    LETTER = 'letter'
+    LEGAL = 'legal'
+    TABLOID = 'tabloid'
+    PAPER_FORMAT_CHOICES = (
+        (A4, 'A4'),
+        (A3, 'A3'),
+        (LETTER, 'Letter'),
+        (LEGAL, 'Legal'),
+        (TABLOID, 'Tabloid')
+    )
+    # grid size
+    GRID24 = 24
+    GRID18 = 18
+    GRID12 = 12
+    GRID_SIZE_CHOICES = (
+        (GRID24, '24 mm ~ 1 inch'),
+        (GRID18, '18 mm ~ 3/4 inch'),
+        (GRID12, '12 mm ~ 1/2 inch')
+    )
+    # base shape
+    SQUARE = 'square'
+    HEXAGONAL = 'hexagon'
+    CIRCLE = 'circle'
+    BASE_SHAPE_CHOICES = (
+        (SQUARE, 'Square'),
+        (HEXAGONAL, 'Hexagon'),
+        (CIRCLE, 'Circle')
+    )
+
+    # Name behaviour
+    NO_FORCE = 'no_force'
+    FORCE_NAME = 'force_name'
+    FORCE_BLANK = 'force_blank'
+    NAME_BEHAVIOUR_CHOICES = (
+        (NO_FORCE, 'Leave it to the Creature (default)'),
+        (FORCE_NAME, 'Force printing of all names'),
+        (FORCE_BLANK, 'Force printing no names')
+    )
+
+    # Print Settings
+    paper_format = forms.ChoiceField(choices=PAPER_FORMAT_CHOICES, required=True)
+    grid_size = forms.ChoiceField(choices=GRID_SIZE_CHOICES, required=True)
+    base_shape = forms.ChoiceField(choices=BASE_SHAPE_CHOICES, required=True)
+    enumerate = forms.BooleanField(required=False)
+    force_name = forms.ChoiceField(choices=NAME_BEHAVIOUR_CHOICES, required=True)
+    fixed_height = forms.BooleanField(required=False)
+
+
+class QuickCreateCreatureForm(forms.Form):
+    # Size
+    TINY = 'T'
+    SMALL = 'S'
+    MEDIUM = 'M'
+    LARGE = 'L'
+    HUGE = 'H'
+    GARGANTUAN = 'G'
+
+    CREATURE_SIZE_CHOICES = (
+        (TINY, 'Tiny'),
+        (SMALL, 'Small'),
+        (MEDIUM, 'Medium'),
+        (LARGE, 'Large'),
+        (HUGE, 'Huge'),
+        (GARGANTUAN, 'Gargantuan')
+    )
+
+    # Base Color
+    GREEN = '228b22'
+    RED = 'aa3939'
+    BLUE = '005b96'
+    LIGHTGRAY = 'd3d3d3'
+    DARKGRAY = 'a9a9a9'
+    BLACK = '000000'
+    WHITE = 'ffffff'
+
+    COLOR_CHOICES = (
+        (GREEN, 'Green'),
+        (RED, 'Red'),
+        (BLUE, 'Blue'),
+        (LIGHTGRAY, 'Light Gray'),
+        (DARKGRAY, 'Dark Gray'),
+        (BLACK, 'Black'),
+        (WHITE, 'White')
+    )
+
+    # Alignment
+    FLYING = 'top'
+    HOVERING = 'center'
+    WALKING = 'bottom'
+
+    POSITION_CHOICES = (
+        (FLYING, 'Flying (Top)'),
+        (HOVERING, 'Hovering (Middle)'),
+        (WALKING, 'Walking (Bottom)')
+    )
+    # Creature Data
+    img_url = forms.URLField(label='Image direct URL', required=True)
+    position = forms.ChoiceField(choices=POSITION_CHOICES)
+    name = forms.CharField(max_length=100)
+    size = forms.ChoiceField(choices=CREATURE_SIZE_CHOICES)
+    quantity = forms.IntegerField(max_value=100, min_value=1)
+

@@ -1,76 +1,13 @@
 {% extends "base_generic.html" %}
+
+{% block header %}
+{% endblock %}
+
 {% block content %}
     {{ form.errors }}
-    <script>
-        {#Script for the "scrolling image"#}
-        function creature_preview(e, url) {
-            var topdiv = document.getElementById('fixcard');
-            var div = document.getElementById('cpreview');
-            var rect1 = topdiv.getBoundingClientRect();
-            var rect2 = div.getBoundingClientRect();
-            var overlap = !(rect1.right < rect2.left ||
-                rect1.left > rect2.right ||
-                rect1.bottom < rect2.top ||
-                rect1.top > rect2.bottom)
-            img = document.getElementById('ipreview');
-            img.src = url;
-            div.style.visibility = "visible";
-            var abs_top = div.getBoundingClientRect().top
-            var scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
-            if (abs_top <= 0 && !overlap) {
-                div.style.position = "fixed";
-                div.style.top = "0px";
-            } else if (overlap){
-                div.style.position = "relative";
-            }
-        }
-        function collection_modal() {
-          console.log("I don't work yet :(")
-        }
-
-        let creature_data = [
-            {
-                name: "rogue mc rogue face",
-                size: "m",
-                url: "https://i.imgur.com/TOMvEpl.jpg",
-                position: "walking",
-                quantity: 5
-            },
-            {
-                name: "mage",
-                size: "m",
-                url: "https://i.imgur.com/rEayZ5J.jpg",
-                position: "walking",
-                quantity: 1
-            }
-        ];
-
-        function addDataToTbody(nl, data) { // nl -> NodeList, data -> array with objects
-          data.forEach((item) => {
-              let row = document.createElement('tr');
-              row.addEventListener('mouseover', creature_preview(event, item.url));
-              let table_data = [ item.name, item.url, item.quantity ]
-              Object.values(item).forEach(data => {
-                  let cell = document.createElement('td');
-                  let dataNode = document.createTextNode(data);
-                  cell.appendChild(dataNode);
-                  row.appendChild(cell)
-              })
-              let editcell = document.createElement('td')
-              let link = document.createElement('a')
-              link.href = "#"
-              link.innerText = "Edit"
-
-              editcell.appendChild(link)
-              row.appendChild(editcell)
-              nl.appendChild(row);
-          })
-        }
-    </script>
     {% load widget_tweaks %}
     <form action="" method="post">
         {% csrf_token %}
-        {{ formset.management_form }}
         <div class="row">
             <div class="col-md-6">
                 <div class="card">
@@ -79,151 +16,57 @@
                         <p class="card-category">Add creatures here to print them directly!</p>
                     </div>
                     <div class="card-body">
-                    <!-- Button trigger modal -->
-                    {% if request.user.is_authenticated %}
-                    <button type="button" class="btn btn-fill btn-block" id="btn_add_creature" data-toggle="modal" data-target="#CollectionOrNewModal">
-                      Add another creature
-                    </button>
-                    {% else %}
-                    <button type="button" class="btn btn-fill btn-block" id="btn_add_creature" data-toggle="modal" data-target="#CreatureModal">
-                      Add another creature
-                    </button>
-                    {% endif %}
+                        <!-- Button trigger modal -->
+                        {% if request.user.is_authenticated %}
+                            <button type="button" class="btn btn-fill btn-block"
+                                    data-toggle="modal" data-target="#CollectionOrNewModal">
+                                Add another creature
+                            </button>
+                        {% else %}
+                            <button type="button" class="btn btn-fill btn-block" id="add_more">
+                                Add another creature
+                            </button>
+                        {% endif %}
 
-                    <!-- CollectionOrNewModal -->
-                    <div class="modal fade bd-example-modal-sm" id="CollectionOrNewModal" tabindex="-1" role="dialog" aria-labelledby="CollectionOrNewModal" aria-hidden="true">
-                      <div class="modal-dialog ">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                          </div>
-                          <div class="modal-body">
-                        <button type="button" class="btn btn-fill btn-block" id="btn_add_creature" data-dismiss="modal" data-toggle="modal" data-target="#CreatureModal">
-                          Create a quick create
-                        </button>
-                        <button type="button" class="btn btn-fill btn-block" id="btn_collection_creature" data-dismiss="modal" runat="server" onclick="collection_modal();return false;" >
-                          Choose from your collection (DOES NOT WORK, YET)
-                        </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- Collection Modal -->
-                    <div class="modal fade" id="CollectionModal" tabindex="-1" role="dialog" aria-labelledby="CollectionModalLabel" aria-hidden="true">
-                      <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-body">
-                                <fieldset class="quickbuid_collection_form">
-                                <label>Filter your creature collection with this search</label>
-                                <div class="input-group container mb-4">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text" id="basic-addon1">
-                                            <i class="fas fa-search"></i>
-                                        </span>
-                                      </div>
-                                    <input class="form-control" type="search" id="search_bar" onkeyup="live_search('div')" placeholder="Search for names..">
+                        <!-- CollectionOrNewModal -->
+                        <div class="modal fade bd-example-modal-sm" id="CollectionOrNewModal" tabindex="-1"
+                             role="dialog" aria-labelledby="CollectionOrNewModal" aria-hidden="true">
+                            <div class="modal-dialog ">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    </div>
+                                    <div class="modal-body">
+                                        <button type="button" class="btn btn-fill btn-block" id="add_more"
+                                                data-dismiss="modal">
+                                            Create a quick create
+                                        </button>
+                                        <button type="button" class="btn btn-fill btn-block"
+                                                id="btn_collection_creature" data-dismiss="modal"
+                                                onclick="collection_modal();return false;">
+                                            Choose from your collection (DOES NOT WORK, YET)
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="container">
-                                    {%  for q in qs %}
-                                        <div class="form-row" >
-                                            <div class="col col-md-2">
-                                                <input name="{{ q.id }}" id="n_{{ q.id }}" type="number" class="form-control creature-quantity">
-                                            </div>
-                                        </div>
-                                    {% empty %}
-                                        <div class="form-row">
-                                            <p>No Creatures found.</p>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                                </fieldset>
                             </div>
                         </div>
-                      </div>
-                    </div>
-                    <!-- Creature Modal -->
-                    <div class="modal fade" id="CreatureModal" tabindex="-1" role="dialog" aria-labelledby="CreatureModalLabel" aria-hidden="true">
-                      <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h2 class="modal-title" id="CreatureModalLabel">Add a Creature</h2>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                            <fieldset class="quickbuid_creature_form">
-                                <div class="form-group">
-                                    <label for="name" class="col-3 col-form-label">Name</label>
-                                    <div class="col-9">
-                                      <input id="name" name="name" type="text" aria-describedby="nameHelpBlock" class="form-control">
-                                      <span id="nameHelpBlock" class="form-text text-muted">If empty, no name will be printed</span>
-                                    </div>
-                                  </div>
-                                  <div class="form-group">
-                                    <label for="url" class="col-3 col-form-label">URL*</label>
-                                    <div class="col-9">
-                                      <input id="url" name="url" type="text" aria-describedby="urlHelpBlock" required="required" class="form-control">
-                                      <span id="urlHelpBlock" class="form-text text-muted">Direct image url.</span>
-                                    </div>
-                                  </div>
-                                  <div class="form-group">
-                                    <label for="size" class="col-3 col-form-label">Creature Size</label>
-                                    <div class="col-9">
-                                      <select id="size" name="size" required="required" class="form-control">
-                                        <option value="m">Medium</option>
-                                        <option value="t">Tiny</option>
-                                        <option value="s">Small</option>
-                                        <option value="l">Large</option>
-                                        <option value="h">Huge</option>
-                                        <option value="g">Gargantuan</option>
-                                      </select>
-                                    </div>
-                                  </div>
-                                  <div class="form-group">
-                                    <label class="col-3">Position</label>
-                                    <div class="col-9">
-                                      <div class="form-check form-check-inline">
-                                        <input name="position" id="position_0" type="radio" required="required" class="form-check-input" value="walking">
-                                        <label for="position_0" class="form-check-label">Walking</label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                        <input name="position" id="position_1" type="radio" required="required" class="form-check-input" value="hovering">
-                                        <label for="position_1" class="form-check-label">Hovering</label>
-                                      </div>
-                                      <div class="form-check form-check-inline">
-                                        <input name="position" id="position_2" type="radio" required="required" class="form-check-input" value="flying">
-                                        <label for="position_2" class="form-check-label">Flying</label>
-                                      </div>
-                                    </div>
-                                  </div>
-                            </fieldset>
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                              <button name="submit" type="submit" class="btn btn-primary">Add Creature</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
 
                         <!-- All added Creatures sofar... -->
-                    <p></p>
-                    <table class="table table-hover table-responsive" id="creature-table">
-                      <thead>
-                        <tr>
-                          <th scope="col">Name</th>
-                          <th scope="col">Size</th>
-                          <th scope="col">URL</th>
-                          <th scope="col">Position</th>
-                          <th scope="col">Quantity</th>
-                          <th scope="col"></th>
-                        </tr>
-                      </thead>
-                      <tbody id="creature-tbody">
-
-                      </tbody>
-                    </table>
+                        <p></p>
+                        {{ creature_formset.management_form }}
+                        <div id="formset_wrapper">
+                            {% for form in creature_formset.forms %}
+                                {{form.non_field_errors}}
+                                {{form.errors}}
+                                <table class='no_error'>
+                                    {{ form.as_table }}
+                                </table>
+                            {% endfor %}
+                        </div>
+                        <div id="emptyform_wrapper" style="display:none">
+                            <table class='no_error'>
+                                {{ creature_formset.empty_form.as_table }}
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -235,13 +78,57 @@
                     </div>
                     <div class="card-body">
                         <label>Once you added how many creatures you want of each, add them to your bestiary</label>
-                        <input class="btn btn-success btn-fill btn-block mt-1 mb-2" type="submit" value="Print" />
+                        <div id="form">
+                                {% csrf_token %}
+                            <div class="form-group">
+                                {{ settings_form.paper_format.errors }}
+                                <label for="{{ settings_form.paper_format.id_for_label }}">Paper Format:</label>
+                                {% render_field settings_form.paper_format class+="form-control" %}
+                            </div>
+                            <div class="form-group">
+                                {{ settings_form.grid_size.errors }}
+                                <label for="{{ settings_form.grid_size.id_for_label }}">Grid Size:</label>
+                                {% render_field settings_form.grid_size class+="form-control" %}
+                            </div>
+                            <div class="form-group">
+                                {{ settings_form.base_shape.errors }}
+                                <label for="{{ settings_form.base_shape.id_for_label }}">Base Shape:</label>
+                                {% render_field settings_form.base_shape class+="form-control" %}
+                            </div>
+                            <div class="form-group">
+                                {{ settings_form.force_name.errors }}
+                                <label for="{{ settings_form.force_name.id_for_label }}">Print all names, print no names or leave it to the creature settings</label>
+                                {% render_field settings_form.force_name class+="form-control" %}
+                            </div>
+                            <div class="form-group">
+                                {{ settings_form.enumerate.errors }}
+                                <label for="{{ settings_form.enumerate.id_for_label }}">Add numbers to the base of minis where you have more than one?</label>
+                                {% render_field settings_form.enumerate class+="form-control" %}
+                            </div>
+                            <div class="form-group">
+                                {{ settings_form.fixed_height.errors }}
+                                <label for="{{ settings_form.fixed_height.id_for_label }}">Use fixed height for minis of the same size category?</label>
+                                {% render_field settings_form.fixed_height class+="form-control" %}
+                            </div>
+
+{% comment %}
+                            {% for form in settings_formset.forms %}
+                                {{form.non_field_errors}}
+                                {{form.errors}}
+                                <table class='no_error'>
+                                    {{ form }}
+                                </table>
+                            {% endfor %}
+{% endcomment %}
+                        </div>
+                        <input class="btn btn-success btn-fill btn-block mt-1 mb-2" type="submit" value="Print"/>
                     </div>
                 </div>
                 <div id="cpreview" class="card" style="visibility: hidden">
                     <div class="card-body">
                         <div class="container text-center">
-                            <img id="ipreview" src="" class="rounded img-fluid" alt="Creature preview." style="z-index: 999">
+                            <img id="ipreview" src="" class="rounded img-fluid" alt="Creature preview."
+                                 style="z-index: 999">
                         </div>
                     </div>
                 </div>
@@ -249,10 +136,39 @@
 
         </div>
     </form>
-                    <script>
-                        let creature_tbody = document.getElementById("creature-tbody");
+{% endblock %}
 
-                        addDataToTbody(creature_tbody, creature_data);
-                    </script>
+{% block script %}
+<script>
+  $('#add_more').click(function () {
+    let total_form = $('#id_creatures-TOTAL_FORMS');
+    let form_idx = total_form.val();
 
+    $('#formset_wrapper').append($('#emptyform_wrapper').html().replace(/__prefix__/g, form_idx));
+    total_form.val(parseInt(form_idx)+1);
+  });
+
+function creature_preview(e, url) {
+    var topdiv = document.getElementById('fixcard');
+    var div = document.getElementById('cpreview');
+    var rect1 = topdiv.getBoundingClientRect();
+    var rect2 = div.getBoundingClientRect();
+    var overlap = !(rect1.right < rect2.left ||
+        rect1.left > rect2.right ||
+        rect1.bottom < rect2.top ||
+        rect1.top > rect2.bottom)
+    img = document.getElementById('ipreview');
+    img.src = url;
+    div.style.visibility = "visible";
+    var abs_top = div.getBoundingClientRect().top
+    var scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+    if (abs_top <= 0 && !overlap) {
+        div.style.position = "fixed";
+        div.style.top = "0px";
+    } else if (overlap) {
+        div.style.position = "relative";
+    }
+}
+
+</script>
 {% endblock %}

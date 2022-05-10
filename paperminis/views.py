@@ -12,7 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from django.db.models import Sum
-# from django.shortcuts import get_object_or_404
+from django.forms import formset_factory
 from django.http import (FileResponse, Http404, HttpResponseRedirect)
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
@@ -20,7 +20,8 @@ from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from paperminis.forms import (DDBEncounterBestiaryCreate, PrintForm, QuantityForm,
-                              SignUpForm, UploadFileForm, UserDeleteForm)
+                              SignUpForm, UploadFileForm, UserDeleteForm, QuickCreateSettingsForm,
+                              QuickCreateCreatureForm)
 from paperminis.generate_minis import MiniBuilder
 from paperminis.models import Bestiary, Creature, CreatureQuantity, PrintSettings, User
 from paperminis.utils import handle_json
@@ -87,6 +88,8 @@ def profile(request):
 
 def quickbuild(request):
     """Quickbuilder"""
+    QuickCreateCreatureFormSet = formset_factory(QuickCreateCreatureForm, max_num=1000)
+    settings_form = QuickCreateSettingsForm(prefix='settings')
 
     if request.user.is_authenticated:
         qs = Creature.objects.filter(owner=request.user)
@@ -94,41 +97,24 @@ def quickbuild(request):
         qs = None
 
     if request.method == 'POST':
-        formset = QuantityForm(request.POST)
-        bestiary = Bestiary.objects.filter(owner=request.user, id=pk).first()
-        mgmt = ['csrfmiddlewaretoken', 'form-TOTAL_FORMS', 'form-INITIAL_FORMS', 'form-MIN_NUM_FORMS',
-                'form-MAX_NUM_FORMS']
-        for id, q in request.POST.items():
-            if id in mgmt:
-                continue
-            try:
-                if not q: q = 0
-                q = int(q)
-            except:
-                raise ValidationError('Only use numbers please.')
-            if q <= 0:
-                continue
+        creature_formset = QuickCreateCreatureFormSet(request.POST, prefix='creatures')
+        settings_form = QuickCreateSettingsForm(request.POST, prefix='settings')
 
-            try:
-                creature = Creature.objects.filter(owner=request.user, id=id)[0]
-            except:
-                continue
+        print(settings_form.is_valid())
+        print(creature_formset.is_valid())
 
-            quantity_obj = CreatureQuantity.objects.filter(creature=creature, bestiary=bestiary,
-                                                           owner=request.user).first()
-            # update or create
-            if quantity_obj:
-                quantity_obj.quantity = q
-            else:
-                quantity_obj = CreatureQuantity(creature=creature, bestiary=bestiary, owner=request.user, quantity=q)
-            # save
-            quantity_obj.save()
-        logger.info("Expanded bestiary %s %s from user %s with new creatures!" % (
-            bestiary.id, bestiary.name, bestiary.owner.id))
-        return HttpResponseRedirect(reverse('bestiary-detail', kwargs={'pk': pk}))
+        if settings_form.is_valid() and creature_formset.is_valid():
+            print(settings_form.cleaned_data)
+            for form in creature_formset:
+                print(form.cleaned_data)
+
+        minis = MiniBuilder(request.user)
+
+        return HttpResponseRedirect(reverse('quickbuild'))
 
     else:
-        context = {'qs': qs}
+        creature_formset = QuickCreateCreatureFormSet(prefix='creatures')
+        context = {'qs': qs, 'creature_formset': creature_formset, 'settings_form': settings_form}
         return render(request, 'quickbuild.html', context=context)
 
 
