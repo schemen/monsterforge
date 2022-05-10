@@ -248,7 +248,7 @@ class QuickCreateCreatureForm(forms.Form):
     )
     # Creature Data
     img_url = forms.URLField(label='Image direct URL', required=False)
-    position = forms.ChoiceField(choices=POSITION_CHOICES)
+    position = forms.ChoiceField(choices=POSITION_CHOICES, initial="bottom")
     name = forms.CharField(max_length=100, required=False)
-    size = forms.ChoiceField(choices=CREATURE_SIZE_CHOICES)
-    quantity = forms.IntegerField(max_value=100, min_value=1, required=False)
+    size = forms.ChoiceField(choices=CREATURE_SIZE_CHOICES, initial="M")
+    quantity = forms.IntegerField(max_value=100, min_value=1, required=False, initial=1)
