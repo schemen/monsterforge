@@ -28,11 +28,7 @@
                                 <li>You can adjust the brightness of the mini's backside to create a silhouette effect</li>
                                 <li>The minis are nicely arranged on a sheet in a way to minimize wasted space</li>
                             </ul>
-                            {% if user.is_authenticated %}
-                                <a href="{% url 'bestiaries' %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Get started! Check out your bestiaries!</a>
-                            {% else %}
-                                <a href="{% url 'signup' %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Get started now!</a>
-                            {% endif %}
+                            <a href="{% url 'quickbuild' %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Get started now!</a>
                         </div>
                     </div>
                 </div>
