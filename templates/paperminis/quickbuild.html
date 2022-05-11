@@ -90,7 +90,6 @@
                         {{ creature_formset.management_form }}
                         <div id="formset_wrapper">
                             {% for form in creature_formset.forms %}
-                                {{ form.management_form }}
                                 <div class="container-fluid mb-4 clearfix" id="creature_wrapper" onmouseover="creature_preview(event, document.getElementById('{{ form.img_url.id_for_label }}').value)">
                                     {{ form.non_field_errors }}
                                     {{ form.errors }}
