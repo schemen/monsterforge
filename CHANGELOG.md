@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.0(2022-05-11)
+
+### New
+* The Quickbuilder beta is released!
+  * Since this does not require an account, temporary accounts are deprecated and will be disabled in the future
+  * If you want to keep your collections, make sure you convert to a real account
+
 ## 1.5.0(2022-05-04)
 
 ### New

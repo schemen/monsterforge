@@ -4,9 +4,15 @@
 {% endblock %}
 
 {% block content %}
+    <div class="alert alert-warning" role="alert">
+      This Quickbuilder is still in beta. Please report bugs on Github or Reddit!
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
     {% if not request.user.is_authenticated %}
         <div class="alert alert-info" role="alert">
-          As unregistered user you are limited to 5 different creatures. Register to unlock (almost) unlimited!
+          As unregistered user you are limited to 5 different creatures. Register for free to unlock (almost) unlimited!
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -90,9 +96,9 @@
                                     {{ form.errors }}
                                     <div class="form-group">
                                         {{ form.img_url.errors }}
-                                        <label for="{{ form.name.id_for_label }}">Name*</label>
+                                        <label for="{{ form.name.id_for_label }}">Name</label>
                                         {% render_field form.name class+="form-control" %}
-                                        <small id="nameHelp" class="form-text text-muted">*You can leave it empty if you don't want a name printed on the mini :)</small>
+                                        <small id="nameHelp" class="form-text text-muted">You can leave it empty if you don't want a name printed on the mini :)</small>
                                     </div>
                                     <div class="form-group">
                                         {{ form.img_url.errors }}
@@ -129,7 +135,7 @@
                                     {{ creature_formset.empty_form.img_url.errors }}
                                     <label for="{{ creature_formset.empty_form.name.id_for_label }}">Name</label>
                                     {% render_field creature_formset.empty_form.name class+="form-control" %}
-                                    <small id="nameHelp" class="form-text text-muted">*You can leave it empty if you don't want a name printed on the mini :)</small>
+                                    <small id="nameHelp" class="form-text text-muted">You can leave it empty if you don't want a name printed on the mini :)</small>
                                 </div>
                                 <div class="form-group">
                                     {{ creature_formset.empty_form.img_url.errors }}

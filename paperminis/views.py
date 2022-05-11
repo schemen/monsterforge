@@ -105,13 +105,14 @@ def quickbuild(request):
         formset = creature_formset(request.POST, prefix='creatures')
         settings_form = QuickCreateSettingsForm(request.POST, prefix='settings')
 
-        print(settings_form.is_valid())
-        print(formset.is_valid())
+        logger.info("Received Quickbuild request!")
 
         if settings_form.is_valid() and formset.is_valid():
-            print(settings_form.cleaned_data)
+            logger.info("Settings:")
+            logger.info(settings_form.cleaned_data)
+            logger.info("Creatures:")
             for form in formset:
-                print(form.cleaned_data)
+                logger.info(form.cleaned_data)
 
             creatures = []
             failed_creatures = []
@@ -129,29 +130,7 @@ def quickbuild(request):
                         creatures.append(creature)
                     except ValueError as e:
                         failed_creatures.append(str(e))
-
-            # counter = 1
-            # for form in formset:
-            #     i = form.cleaned_data
-            #     if i:
-            #         if request.user.is_authenticated:
-            #             if counter <= auth_max:
-            #                 try:
-            #                     creature = quick_validate_creature(i)
-            #                     creatures.append(creature)
-            #                     counter += 1
-            #                 except ValueError as e:
-            #                     failed_creatures.append(str(e))
-            #                     counter += 1
-            #         else:
-            #             if counter <= anon_max:
-            #                 try:
-            #                     creature = quick_validate_creature(i)
-            #                     creatures.append(creature)
-            #                     counter += 1
-            #                 except ValueError as e:
-            #                     failed_creatures.append(str(e))
-            #                     counter += 1
+                        logger.warning(e)
 
             minis = MiniBuilder()
             minis.load_settings(paper_format=settings_form.cleaned_data["paper_format"],
@@ -162,7 +141,7 @@ def quickbuild(request):
             archive = minis.build_all_and_pdf()
             # serve file
             archive.seek(0)
-            logger.info("Finished building, serving now.")
+            logger.info("Finished Quickbuild, serving now.")
 
             # Clean bestiary name
             return FileResponse(archive, as_attachment=True, filename="Monsterforge_Quickbuilder.pdf")
