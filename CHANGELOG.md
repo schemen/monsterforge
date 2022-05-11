@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.2(2022-05-11)
+
+### New
+* Quickbuilder video added
+
+### Improvements
+* Small text tweaks and improvements
+
 ## 1.6.1(2022-05-11)
 
 ### Hotfix
