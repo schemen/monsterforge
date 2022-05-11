@@ -18,10 +18,10 @@
           </button>
         </div>
     {% endif %}
-    {% if creature_formset.non_field_errors %}
+    {% if creature_formset.errors %}
         <script>
             $.notify({
-                message: '{{ creature_formset.non_field_errors }}'
+                message: '{{ creature_formset.errors }}'
             }, {
                 type: 'danger',
                 delay: 10000
