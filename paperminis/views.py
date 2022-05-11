@@ -88,7 +88,7 @@ def profile(request):
 
 def quickbuild(request):
     """Quickbuilder"""
-    anon_max = 2
+    anon_max = 5
     auth_max = 1000
     settings_form = QuickCreateSettingsForm(prefix='settings')
 
