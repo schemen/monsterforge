@@ -6,33 +6,16 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header ">
-                    <h4 class="card-title">Welcome to the Monster Forge</h4>
-                    <p class="card-category">A free tool that allows you to print miniatures and not waste paper!</p>
+                    <h1 class="card-title">Welcome to the Monster Forge</h1>
                 </div>
                 <div class="card-body">
+                    <h3>Build, Print, Craft & Play!</h3>
+                    <small class="card-category">A free tool that allows you to print miniatures and not waste paper!</small>
                     <div class="container">
                         <div class="row mt-4 mb-3">
-                            <p>This tool is a quick, easy and powerful Paper Miniature Creator.
-                                Here is what it can do:</p>
-                            <ul>
-                                <li>Create, upload and modify your creatures</li>
-                                <li>Gather the creatures you need for a session in a bestiary</li>
-                                <li>Print minis for all the creatures in your bestiaries with a single click</li>
-                                <li>Import a Dndbeyond encounter into a bestiary, ready to print</li>
-                                <li>The Base color and shape can be customized</li>
-                                <li>Miniatures of the same type can be numbered</li>
-                                <li>The minis have a foldable base that can be reinforced with a coin to make them wind-resistant</li>
-                                <li>The optional name label on the miniature is sized to use all the space optimally</li>
-                                <li>The miniatures can be printed for 1-inch, 3/4-inch or 1/2-inch grids</li>
-                                <li>The height of the minis can be dynamically adjusted, based on creature size and source image</li>
-                                <li>You can adjust the brightness of the mini's backside to create a silhouette effect</li>
-                                <li>The minis are nicely arranged on a sheet in a way to minimize wasted space</li>
-                            </ul>
-                            {% if user.is_authenticated %}
-                                <a href="{% url 'bestiaries' %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Get started! Check out your bestiaries!</a>
-                            {% else %}
-                                <a href="{% url 'signup' %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Get started now!</a>
-                            {% endif %}
+                            <p>Get started immediately with the <strong>Quickbuilder</strong>, no account required! Do you need some more features, collections or maybe want to import your D&DBeyond Encounter?</p>
+                            <p>Simply sign on, create your collections and bestiaries. Don't worry, the account is <strong>free</strong>!</p>
+                            <a href="{% url 'quickbuild' %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Well take me to the Quickbuilder, please!</a>
                         </div>
                     </div>
                 </div>

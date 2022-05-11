@@ -1,0 +1,260 @@
+{% extends "base_generic.html" %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+    <div class="alert alert-warning" role="alert">
+      This Quickbuilder is still in beta. Please report bugs on Github or Reddit!
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% if not request.user.is_authenticated %}
+        <div class="alert alert-info" role="alert">
+          As unregistered user you are limited to 5 different creatures. Register for free to unlock (almost) unlimited!
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+    {% endif %}
+    {% if creature_formset.errors %}
+        <script>
+            $.notify({
+                message: '{{ creature_formset.errors }}'
+            }, {
+                type: 'danger',
+                delay: 10000
+            }, {
+                animate: {
+                    enter: 'animated fadeInRight',
+                    exit: 'animated fadeOutRight'
+                }
+            });
+
+
+        </script>
+    {% endif %}
+    {% load widget_tweaks %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header ">
+                        <h4 class="card-title">Creature List</h4>
+                        <p class="card-category">Add creatures here</p>
+                    </div>
+                    <div class="card-body">
+                        <!-- Button trigger modal -->
+                        {% if request.user.is_authenticated %}
+                        {% comment Currently disabled as there is Collection Input is not available yet %}
+                            <button type="button" class="btn btn-fill btn-block"
+                                    data-toggle="modal" data-target="#CollectionOrNewModal">
+                                Add another creature
+                            </button>
+                        {% endcomment %}
+                            <button type="button" class="btn btn-fill btn-block" id="add_more">
+                                Add another creature
+                            </button>
+                        {% else %}
+                            <button type="button" class="btn btn-fill btn-block" id="add_more">
+                                Add another creature
+                            </button>
+                        {% endif %}
+
+                        <!-- CollectionOrNewModal -->
+                        <div class="modal fade bd-example-modal-sm" id="CollectionOrNewModal" tabindex="-1"
+                             role="dialog" aria-labelledby="CollectionOrNewModal" aria-hidden="true">
+                            <div class="modal-dialog ">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    </div>
+                                    <div class="modal-body">
+                                        <button type="button" class="btn btn-fill btn-block" id="add_more"
+                                                data-dismiss="modal">
+                                            Create a quick create
+                                        </button>
+                                        <button type="button" class="btn btn-fill btn-block"
+                                                id="btn_collection_creature" data-dismiss="modal"
+                                                onclick="collection_modal();return false;">
+                                            Choose from your collection (DOES NOT WORK, YET)
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- All added Creatures sofar... -->
+                        <p></p>
+                        {{ creature_formset.management_form }}
+                        <div id="formset_wrapper">
+                            {% for form in creature_formset.forms %}
+                                <div class="container-fluid mb-4 clearfix" id="creature_wrapper" onmouseover="creature_preview(event, document.getElementById('{{ form.img_url.id_for_label }}').value)">
+                                    {{ form.non_field_errors }}
+                                    {{ form.errors }}
+                                    <div class="form-group">
+                                        {{ form.img_url.errors }}
+                                        <label for="{{ form.name.id_for_label }}">Name</label>
+                                        {% render_field form.name class+="form-control" %}
+                                        <small id="nameHelp" class="form-text text-muted">You can leave it empty if you don't want a name printed on the mini :)</small>
+                                    </div>
+                                    <div class="form-group">
+                                        {{ form.img_url.errors }}
+                                        <label for="{{ form.img_url.id_for_label }}">Image URL:</label>
+                                        {% render_field form.img_url class+="form-control" %}
+                                        <small id="urlHelp" class="form-text text-muted">Please ensure you use a URL directly pointing to a image, example: https://example.com/image.jpg</small>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-4">
+                                            {{ form.img_url.errors }}
+                                            <label for="{{ form.position.id_for_label }}">Position: </label>
+                                            {% render_field form.position class+="form-control" %}
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            {{ form.img_url.errors }}
+                                            <label for="{{ form.size.id_for_label }}">Size: </label>
+                                            {% render_field form.size class+="form-control" %}
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            {{ form.img_url.errors }}
+                                            <label for="{{ form.quantity.id_for_label }}">Quantity: </label>
+                                            {% render_field form.quantity class+="form-control" %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div id="emptyform_wrapper" style="display:none" >
+                            <hr>
+                            <div class="container-fluid mb-4 clearfix" id="creature_wrapper" onmouseover="creature_preview(event, document.getElementById('{{ creature_formset.empty_form.img_url.id_for_label }}').value)">
+                                {{ creature_formset.empty_form.non_field_errors }}
+                                {{ creature_formset.empty_form.errors }}
+                                <div class="form-group">
+                                    {{ creature_formset.empty_form.img_url.errors }}
+                                    <label for="{{ creature_formset.empty_form.name.id_for_label }}">Name</label>
+                                    {% render_field creature_formset.empty_form.name class+="form-control" %}
+                                    <small id="nameHelp" class="form-text text-muted">You can leave it empty if you don't want a name printed on the mini :)</small>
+                                </div>
+                                <div class="form-group">
+                                    {{ creature_formset.empty_form.img_url.errors }}
+                                    <label for="{{ creature_formset.empty_form.img_url.id_for_label }}">Image URL:</label>
+                                    {% render_field creature_formset.empty_form.img_url class+="form-control" %}
+                                    <small id="urlHelp" class="form-text text-muted">Please ensure you use a URL directly pointing to a image, example: https://example.com/image.jpg</small>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        {{ creature_formset.empty_form.img_url.errors }}
+                                        <label for="{{ creature_formset.empty_form.position.id_for_label }}">Position: </label>
+                                        {% render_field creature_formset.empty_form.position class+="form-control"  %}
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        {{ creature_formset.empty_form.img_url.errors }}
+                                        <label for="{{ creature_formset.empty_form.size.id_for_label }}">Size: </label>
+                                        {% render_field creature_formset.empty_form.size class+="form-control" %}
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        {{ creature_formset.empty_form.img_url.errors }}
+                                        <label for="{{ creature_formset.empty_form.quantity.id_for_label }}">Quantity: </label>
+                                        {% render_field creature_formset.empty_form.quantity class+="form-control " %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div id="fixcard" class="card">
+                    <div class="card-header ">
+                        <h4 class="card-title">Printing Settings</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="form">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                {{ settings_form.paper_format.errors }}
+                                <label for="{{ settings_form.paper_format.id_for_label }}">Paper Format:</label>
+                                {% render_field settings_form.paper_format class+="form-control" %}
+                            </div>
+                            <div class="form-group">
+                                {{ settings_form.grid_size.errors }}
+                                <label for="{{ settings_form.grid_size.id_for_label }}">Grid Size:</label>
+                                {% render_field settings_form.grid_size class+="form-control" %}
+                            </div>
+                            <div class="form-group">
+                                {{ settings_form.base_shape.errors }}
+                                <label for="{{ settings_form.base_shape.id_for_label }}">Base Shape:</label>
+                                {% render_field settings_form.base_shape class+="form-control" %}
+                            </div>
+                            <div class="form-group">
+                                {{ settings_form.enumerate.errors }}
+                                <label for="{{ settings_form.enumerate.id_for_label }}">Add numbers to the base of minis
+                                    where you have more than one?</label>
+                                {% render_field settings_form.enumerate class+="form-control" %}
+                            </div>
+                        </div>
+                        <input class="btn btn-success btn-fill btn-block mt-1 mb-2" type="submit" value="Generate my Minis!"/>
+                    </div>
+                </div>
+                <div id="cpreview" class="card" style="visibility: hidden">
+                    <div class="card-body">
+                        <div class="container text-center">
+                            <img id="ipreview" src="" class="rounded img-fluid" alt="Creature Preview"
+                                 style="z-index: 999">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $('#add_more').click(function () {
+            let total_form = $('#id_creatures-TOTAL_FORMS');
+            let form_idx = total_form.val();
+
+            // Don't worry, it's checked in the backend, too :)
+            if (total_form.val() < {{ max_forms }}){
+                $('#formset_wrapper').append($('#emptyform_wrapper').html().replace(/__prefix__/g, form_idx));
+                total_form.val(parseInt(form_idx) + 1);
+
+                // Disable button once you reached max
+                if (total_form.val() == {{ max_forms }}){
+                    console.log("MAX FORMS REACHED!")
+                    document.getElementById("add_more").disabled = true;
+                }
+            } else {
+                console.log("MAX FORMS REACHED!")
+            }
+        });
+
+        function creature_preview(e, url) {
+            let topdiv = document.getElementById('fixcard');
+            let div = document.getElementById('cpreview');
+            let rect1 = topdiv.getBoundingClientRect();
+            let rect2 = div.getBoundingClientRect();
+            let overlap = !(rect1.right < rect2.left ||
+                rect1.left > rect2.right ||
+                rect1.bottom < rect2.top ||
+                rect1.top > rect2.bottom)
+            img = document.getElementById('ipreview');
+            img.src = url;
+            div.style.visibility = "visible";
+            let abs_top = div.getBoundingClientRect().top
+            let scrollTop = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+            if (abs_top <= 0 && !overlap) {
+                div.style.position = "fixed";
+                div.style.top = "0px";
+            } else if (overlap) {
+                div.style.position = "relative";
+            }
+        }
+
+    </script>
+{% endblock %}
+
+

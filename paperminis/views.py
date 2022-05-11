@@ -12,7 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from django.db.models import Sum
-# from django.shortcuts import get_object_or_404
+from django.forms import formset_factory
 from django.http import (FileResponse, Http404, HttpResponseRedirect)
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
@@ -20,10 +20,11 @@ from django.views import generic
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from paperminis.forms import (DDBEncounterBestiaryCreate, PrintForm, QuantityForm,
-                              SignUpForm, UploadFileForm, UserDeleteForm)
+                              SignUpForm, UploadFileForm, UserDeleteForm, QuickCreateSettingsForm,
+                              QuickCreateCreatureForm)
 from paperminis.generate_minis import MiniBuilder
 from paperminis.models import Bestiary, Creature, CreatureQuantity, PrintSettings, User
-from paperminis.utils import handle_json
+from paperminis.utils import handle_json, quick_validate_creature
 
 register = template.Library()
 
@@ -83,6 +84,71 @@ def temp_account(request):
 def profile(request):
     """A user profile view"""
     return render(request, 'profile.html')
+
+
+def quickbuild(request):
+    """Quickbuilder"""
+    anon_max = 5
+    auth_max = 1000
+    settings_form = QuickCreateSettingsForm(prefix='settings')
+
+    if request.user.is_authenticated:
+        creature_formset = formset_factory(QuickCreateCreatureForm, max_num=1000, absolute_max=1000)
+        qs = Creature.objects.filter(owner=request.user)
+        max_forms = auth_max
+    else:
+        creature_formset = formset_factory(QuickCreateCreatureForm, max_num=10, absolute_max=10)
+        qs = None
+        max_forms = anon_max
+
+    if request.method == 'POST':
+        formset = creature_formset(request.POST, prefix='creatures')
+        settings_form = QuickCreateSettingsForm(request.POST, prefix='settings')
+
+        logger.info("Received Quickbuild request!")
+
+        if settings_form.is_valid() and formset.is_valid():
+            logger.info("Settings:")
+            logger.info(settings_form.cleaned_data)
+            logger.info("Creatures:")
+            for form in formset:
+                logger.info(form.cleaned_data)
+
+            creatures = []
+            failed_creatures = []
+
+            if request.user.is_authenticated:
+                forms = formset[0:auth_max]
+            else:
+                forms = formset[0:anon_max]
+
+            for form in forms:
+                i = form.cleaned_data
+                if i:
+                    try:
+                        creature = quick_validate_creature(i)
+                        creatures.append(creature)
+                    except ValueError as e:
+                        failed_creatures.append(str(e))
+                        logger.warning(e)
+
+            minis = MiniBuilder()
+            minis.load_settings(paper_format=settings_form.cleaned_data["paper_format"],
+                                grid_size=int(settings_form.cleaned_data["grid_size"]),
+                                base_shape=settings_form.cleaned_data["base_shape"],
+                                enumerate=settings_form.cleaned_data["enumerate"],)
+            minis.add_quick_creatures(creatures)
+            archive = minis.build_all_and_pdf()
+            # serve file
+            archive.seek(0)
+            logger.info("Finished Quickbuild, serving now.")
+
+            # Clean bestiary name
+            return FileResponse(archive, as_attachment=True, filename="Monsterforge_Quickbuilder.pdf")
+
+    creature = creature_formset(prefix='creatures')
+    context = {'qs': qs, 'creature_formset': creature, 'settings_form': settings_form, 'max_forms': max_forms}
+    return render(request, 'quickbuild.html', context=context)
 
 
 @login_required()
@@ -230,7 +296,7 @@ def bestiary_print(request, pk):
                                 fixed_height=print_settings.base_shape,
                                 darken=print_settings.darken)
             # load creatures into the mini builder
-            minis.add_bestiary(pk)
+            minis.add_bestiary(request.user, pk)
             # build minis
             archive = minis.build_all_and_pdf()
             # serve file

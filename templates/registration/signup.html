@@ -2,7 +2,14 @@
 
 {% block content %}
     {% load widget_tweaks %}
+        <div class="alert alert-warning" role="alert">
+      With the release of the Quickbuilder which is open to users without account, temporary Accounts are deprecated and will be removed in the future.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
     <br>
+
     <script>
         {% for type, error_text in form.errors.items %}
 
@@ -19,6 +26,7 @@
             });
         {% endfor %}
     </script>
+
     <div class="row">
         <div class="col-md-6">
             <div class="card col-md-8 bg-light mx-auto pull-right">
