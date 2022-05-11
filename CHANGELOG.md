@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.1(2022-05-11)
+
+### Hotfix
+* Hotfix for the classic minibuilder is released
+
 ## 1.6.0(2022-05-11)
 
 ### New
