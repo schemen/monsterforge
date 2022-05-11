@@ -14,7 +14,7 @@
                     <div class="container">
                         <div class="row mt-4 mb-3">
                             <p>Get started immediately with the <strong>Quickbuilder</strong>, no account required! Do you need some more features, collections or maybe want to import your D&DBeyond Encounter?</p>
-                            <p>Simply sign on, create your collections and bestiaries. Don't worry, the account is <strong>free</strong>!</p>
+                            <p>Sign up, create your collections and bestiaries. Don't worry, the account is <strong>free</strong>!</p>
                             <a href="{% url 'quickbuild' %}" class="btn btn-secondary active btn-block" role="button" aria-pressed="true">Well take me to the Quickbuilder, please!</a>
                         </div>
                     </div>
@@ -56,12 +56,26 @@
         </div>
     </div>
     <div class="row align-items-center">
-        <div class="col-md-2 h-100 align-items-center">
-        </div>
-        <div class="col-md-8 h-100 align-items-center">
+        <div class="col-md-6 h-100 align-items-center">
             <div class="card">
                 <div class="card-header ">
-                    <h4 class="card-title" style="text-align: center;">Monsterforge How To Basics</h4>
+                    <h4 class="card-title" style="text-align: center;">Using the Quickbuilder</h4>
+                </div>
+                <div class="card-body">
+                    <div class="container">
+                        <div class="embed-responsive embed-responsive-16by9">
+                            <video controls loop="loop" width="400" height="300">
+                                <source src="{% static 'assets/vid/quickbuild.mp4' %}" type="video/mp4" />
+                              </video>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 h-100 align-items-center">
+            <div class="card">
+                <div class="card-header ">
+                    <h4 class="card-title" style="text-align: center;">Using Creature and Collections</h4>
                 </div>                  
                 <div class="card-body">
                     <div class="container">
@@ -74,10 +88,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2 h-100 align-items-center">
-        </div>
     </div>
-
     <div class="row">
         <div class="col-md-4">
             <div class="card">
