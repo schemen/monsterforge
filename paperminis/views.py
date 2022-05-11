@@ -275,7 +275,7 @@ def bestiary_print(request, pk):
         formset = PrintForm(request.POST)
         if formset.is_valid():
             logger.info("Building minis from bestiary %s for user with ID %s..." % (pk, user.id))
-            minis = MiniBuilder(user=request.user)
+            minis = MiniBuilder()
             # update settings
             new_settings = formset.save(commit=False)
 
