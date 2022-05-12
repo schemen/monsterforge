@@ -1,12 +1,12 @@
 FROM python:3.9-slim
-RUN apt update; apt install -y libgl1 libglib2.0-0
+ENV PYTHONUNBUFFERED 1
+#RUN apt update; apt install -y --no-install-recommends libgl1 libglib2.0-0 && rm -rf /var/lib/apt/lists/*
 # Project Files and Settings
 RUN mkdir -p /app && mkdir -p /app/static
 VOLUME ["/app/static"]
 WORKDIR /app
 COPY requirements.txt ./
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 COPY . ./
 COPY dndtools/settings_secret.py.template ./dndtools/settings_secret.py
 # Server

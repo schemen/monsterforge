@@ -103,7 +103,7 @@
                                         {{ form.img_url.errors }}
                                         <label for="{{ form.img_url.id_for_label }}">Image URL:</label>
                                         {% render_field form.img_url class+="form-control" %}
-                                        <small id="urlHelp" class="form-text text-muted">Please ensure you use a URL directly pointing to a image, example: https://example.com/image.jpg</small>
+                                        <small id="urlHelp" class="form-text text-muted">Please ensure you use a URL directly pointing to a image, example: https://example.com/image.jpg. If you have local images, you can upload them to services like <a href="https://imgur.com">Imgur</a> and link them here!</small>
                                     </div>
                                     <div class="form-row">
                                         <div class="form-group col-md-4">
@@ -134,13 +134,11 @@
                                     {{ creature_formset.empty_form.img_url.errors }}
                                     <label for="{{ creature_formset.empty_form.name.id_for_label }}">Name</label>
                                     {% render_field creature_formset.empty_form.name class+="form-control" %}
-                                    <small id="nameHelp" class="form-text text-muted">You can leave it empty if you don't want a name printed on the mini :)</small>
                                 </div>
                                 <div class="form-group">
                                     {{ creature_formset.empty_form.img_url.errors }}
                                     <label for="{{ creature_formset.empty_form.img_url.id_for_label }}">Image URL:</label>
                                     {% render_field creature_formset.empty_form.img_url class+="form-control" %}
-                                    <small id="urlHelp" class="form-text text-muted">Please ensure you use a URL directly pointing to a image, example: https://example.com/image.jpg</small>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col-md-4">

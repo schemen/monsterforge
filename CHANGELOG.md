@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.3(2022-05-12)
+
+### Improvements
+* Improved english
+* Improved descriptions
+* Decreased docker image size by 200MB
+
 ## 1.6.2(2022-05-11)
 
 ### New
