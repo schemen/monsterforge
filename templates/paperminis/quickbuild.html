@@ -21,7 +21,7 @@
     {% if creature_formset.errors %}
         <script>
             $.notify({
-                message: '{{ creature_formset.errors }}'
+                message: '{{ creature_formset.errors|escape }}'
             }, {
                 type: 'danger',
                 delay: 10000

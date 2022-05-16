@@ -5,6 +5,8 @@ from urllib.parse import urljoin, urlparse
 
 import requests
 from django import template
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
@@ -52,6 +54,7 @@ def signup(request):
                 user = authenticate(email=email, password=raw_password)
                 login(request, user)
                 logger.info("New user created! Email: %s" % email)
+                messages.success(request, "Welcome to the Monsterforge!")
                 return HttpResponseRedirect(reverse('index'))
         else:
             form = SignUpForm()
@@ -114,9 +117,9 @@ def quickbuild(request):
             for form in formset:
                 logger.info(form.cleaned_data)
 
+            # Only process the maximum allowed creatures
             creatures = []
             failed_creatures = []
-
             if request.user.is_authenticated:
                 forms = formset[0:auth_max]
             else:
@@ -132,13 +135,25 @@ def quickbuild(request):
                         failed_creatures.append(str(e))
                         logger.warning(e)
 
+            # Check if there is any valid creatures, if not, return
+            if not creatures:
+                messages.error(request, "No valid creatures have been passed. Please pass at least 1 valid creature.")
+                return HttpResponseRedirect(reverse('quickbuild'))
+
             minis = MiniBuilder()
             minis.load_settings(paper_format=settings_form.cleaned_data["paper_format"],
                                 grid_size=int(settings_form.cleaned_data["grid_size"]),
                                 base_shape=settings_form.cleaned_data["base_shape"],
                                 enumerate=settings_form.cleaned_data["enumerate"],)
             minis.add_quick_creatures(creatures)
-            archive = minis.build_all_and_pdf()
+
+            try:
+                archive = minis.build_all_and_pdf()
+            except ValueError as error:
+                logger.warning(error)
+                messages.error(request, error)
+                return HttpResponseRedirect(reverse('quickbuild'))
+
             # serve file
             archive.seek(0)
             logger.info("Finished Quickbuild, serving now.")
@@ -298,7 +313,12 @@ def bestiary_print(request, pk):
             # load creatures into the mini builder
             minis.add_bestiary(request.user, pk)
             # build minis
-            archive = minis.build_all_and_pdf()
+            try:
+                archive = minis.build_all_and_pdf()
+            except ValueError as error:
+                logger.warning(error)
+                messages.error(request, error)
+                return HttpResponseRedirect(reverse('quickbuild'))
             # serve file
             archive.seek(0)
             logger.info("Finished building, serving now.")
@@ -390,11 +410,12 @@ from .forms import BestiaryModifyForm, CreatureModifyForm
 
 
 # Creature Forms
-class CreatureCreate(LoginRequiredMixin, CreateView):
+class CreatureCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     """Generic create view."""
     model = Creature
     initial = {'size': Creature.MEDIUM, 'color': Creature.DARKGRAY, 'position': Creature.WALKING, 'show_name': True}
     form_class = CreatureModifyForm
+    success_message = "Creature successfully created."
 
     def get_form_kwargs(self):
         kwargs = super(CreatureCreate, self).get_form_kwargs()
@@ -410,10 +431,11 @@ class CreatureCreate(LoginRequiredMixin, CreateView):
         return super(CreatureCreate, self).form_valid(form)
 
 
-class CreatureUpdate(LoginRequiredMixin, UpdateView):
+class CreatureUpdate(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     """Generic update view."""
     model = Creature
     form_class = CreatureModifyForm
+    success_message = "Creature successfully updated."
 
     def get_form_kwargs(self):
         kwargs = super(CreatureUpdate, self).get_form_kwargs()
@@ -440,10 +462,11 @@ class CreatureUpdate(LoginRequiredMixin, UpdateView):
         return super(CreatureUpdate, self).form_valid(form)
 
 
-class CreatureDelete(LoginRequiredMixin, DeleteView):
+class CreatureDelete(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
     """Generic creature delete view."""
     model = Creature
     success_url = reverse_lazy('creatures')
+    success_message = "Creature successfully deleted."
 
     def get_object(self, queryset=None):
         """ Hook to ensure object is owned by request.user. """
@@ -464,10 +487,11 @@ class CreatureAllDelete(LoginRequiredMixin, DeleteView):
 
 
 # Bestiary Forms
-class BestiaryCreate(LoginRequiredMixin, CreateView):
+class BestiaryCreate(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     """Generic bestiary create view."""
     form_class = BestiaryModifyForm
     model = Bestiary
+    success_message = "Bestiary successfully created."
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
@@ -603,6 +627,7 @@ def create_ddb_enc_bestiary(request):
                             bestiary_monsters.quantity = monster_params[var]
                     bestiary_monsters.owner = request.user
                     bestiary_monsters.save()
+            messages.success("Bestiary creatued!")
             return HttpResponseRedirect(reverse('bestiaries'))
 
     else:
