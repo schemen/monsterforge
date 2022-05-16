@@ -627,7 +627,7 @@ def create_ddb_enc_bestiary(request):
                             bestiary_monsters.quantity = monster_params[var]
                     bestiary_monsters.owner = request.user
                     bestiary_monsters.save()
-            messages.success("Bestiary creatued!")
+            messages.success(request, "Bestiary creatued!")
             return HttpResponseRedirect(reverse('bestiaries'))
 
     else:
