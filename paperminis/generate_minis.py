@@ -107,7 +107,10 @@ class MiniBuilder:
             if not isinstance(mini, str):
                 self.minis.append(mini)
             else:
-                print('{} skipped with error: {}'.format(creature.name, mini))
+                logger.warning('{} skipped with error: {}'.format(creature.name, mini))
+
+        if not self.minis:
+            raise ValueError("No valid minis are available to process.")
 
         self.sheets = self.build_sheets(self.minis)
         pdf_container = self.save_and_pdf(self.sheets)

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.4(2022-05-16)
+
+### Improvements
+* Added initial wave of unit tests
+* Improved error handling, messages
+
 ## 1.6.3(2022-05-12)
 
 ### Improvements
