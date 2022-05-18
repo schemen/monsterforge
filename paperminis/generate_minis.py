@@ -153,10 +153,7 @@ class MiniBuilder:
         elif creature.size == 'L':
             m_width = self.grid_size * 2
             # Use large papers full size
-            if self.paper_format == 'tabloid' or self.paper_format == 'a3':
-                max_height_mm = m_width * 2
-            else:
-                max_height_mm = 85 if not self.paper_format == 'letter' else 76
+            max_height_mm = m_width * 2 if not self.paper_format == 'letter' else m_width * 1.82
             n_height = 10
             font_size = 2
             font_height = 70
@@ -167,9 +164,9 @@ class MiniBuilder:
             m_width = self.grid_size * 3
             # Use large papers full size
             if self.paper_format == 'tabloid' or self.paper_format == 'a3':
-                max_height_mm = m_width * 1.5
+                max_height_mm = m_width * 1.859
             else:
-                max_height_mm = 60.5 if not self.paper_format == 'letter' else 51.5
+                max_height_mm = 72.5 if not self.paper_format == 'letter' else 63.5
             n_height = 12
             font_size = 2.5
             font_height = 80
@@ -180,9 +177,9 @@ class MiniBuilder:
             m_width = self.grid_size * 4
             # Use large papers full size
             if self.paper_format == 'tabloid' or self.paper_format == 'a3':
-                max_height_mm = m_width * 1.5
+                max_height_mm = m_width * 1.645
             else:
-                max_height_mm = 82.5 if not self.paper_format == 'letter' else 73.5
+                max_height_mm = 96.5 if not self.paper_format == 'letter' else 87.5
             n_height = 14
             font_size = 3
             font_height = 100
@@ -306,16 +303,21 @@ class MiniBuilder:
             color[mask] = 255
             m_img = color
 
+        # get Textbox height
+        namebox_height = n_img.shape[0]
+
         # find optimal size of image
         # leave 1 pixel on each side for black border
+        # Fit width
         if m_img.shape[1] > width - 2:
             f = (width - 2) / m_img.shape[1]
             m_img = cv.resize(m_img, (0, 0), fx=f, fy=f)
             white_vert = np.zeros((m_img.shape[0], 1, 3), np.uint8) + 255
             m_img = np.concatenate((white_vert, m_img, white_vert), axis=1)
 
-        if m_img.shape[0] > max_height - 2:
-            f = (max_height - 2) / m_img.shape[0]
+        # Fit height
+        if m_img.shape[0] > (max_height - 2 - namebox_height):
+            f = (max_height - 2 - namebox_height) / m_img.shape[0]
             m_img = cv.resize(m_img, (0, 0), fx=f, fy=f)
             white_horiz = np.zeros((1, m_img.shape[1], 3), np.uint8) + 255
             m_img = np.concatenate((white_horiz, m_img, white_horiz), axis=0)
@@ -329,8 +331,8 @@ class MiniBuilder:
                                     np.zeros((m_img.shape[0], right, 3), np.uint8) + 255), axis=1)
         # Handle creature positioning
         if self.fixed_height:
-            if m_img.shape[0] < min_height:
-                diff = min_height - m_img.shape[0]
+            if m_img.shape[0] < (min_height - namebox_height):
+                diff = (min_height - namebox_height) - m_img.shape[0]
                 top = np.floor_divide(diff, 2)
                 bottom = top
                 if diff % 2 == 1: bottom += 1
@@ -344,8 +346,8 @@ class MiniBuilder:
                 else:
                     return 'Position setting is invalid. Chose Walking, Hovering or Flying.'
         else:
-            if m_img.shape[0] < min_height:
-                diff = min_height - m_img.shape[0]
+            if m_img.shape[0] < (min_height - namebox_height):
+                diff = (min_height - namebox_height) - m_img.shape[0]
                 top = np.floor_divide(diff, 6)
                 bottom = np.floor_divide(diff, 3)
                 if diff % 2 == 1: bottom += 1
