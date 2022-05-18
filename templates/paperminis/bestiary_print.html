@@ -40,8 +40,9 @@
                             {% csrf_token %}
                             <div class="form-group">
                                 {{ form.paper_format.errors }}
-                                <label for="{{ form.paper_format.id_for_label }}">Paper Format:</label>
+                                <label for="{{ form.paper_format.id_for_label }}">Paper Format: </label>
                                 {% render_field form.paper_format class+="form-control" %}
+                                <small class="form-text text-muted"><strong>Note</strong>: If you have Huge or Gargantuan creatures, paper formats like A3 or Tabloid will print them larger and more appropriate.</small>
                             </div>
                             <div class="form-group">
                                 {{ form.grid_size.errors }}

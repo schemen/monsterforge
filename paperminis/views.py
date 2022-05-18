@@ -308,7 +308,7 @@ def bestiary_print(request, pk):
                                 base_shape=print_settings.base_shape,
                                 enumerate=print_settings.enumerate,
                                 force_name=print_settings.force_name,
-                                fixed_height=print_settings.base_shape,
+                                fixed_height=print_settings.fixed_height,
                                 darken=print_settings.darken)
             # load creatures into the mini builder
             minis.add_bestiary(request.user, pk)
@@ -318,7 +318,7 @@ def bestiary_print(request, pk):
             except ValueError as error:
                 logger.warning(error)
                 messages.error(request, error)
-                return HttpResponseRedirect(reverse('quickbuild'))
+                return HttpResponseRedirect(reverse('bestiary-print', kwargs={'pk': pk}))
             # serve file
             archive.seek(0)
             logger.info("Finished building, serving now.")
