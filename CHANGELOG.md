@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.0(2022-05-18)
+
+### New
+* Rearrange how images and nameboxes are sorted on a mini significantly increasing creature image size
+  * Before, the namebox size has always been substracted from max_height in any configuration. Now, it will use that space for the image to maximise the size. If a namebox is requested, it will use available space first (max_height) and if not, it'll shrink the image to fit. Now, all space is optimally used and the minis are standardized in size.
+
 ## 1.6.5(2022-05-18)
 
 ### Improvements
