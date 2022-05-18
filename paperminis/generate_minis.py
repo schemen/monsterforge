@@ -152,7 +152,11 @@ class MiniBuilder:
             enum_width = 3
         elif creature.size == 'L':
             m_width = self.grid_size * 2
-            max_height_mm = m_width * 2
+            # Use large papers full size
+            if self.paper_format == 'tabloid' or self.paper_format == 'a3':
+                max_height_mm = m_width * 2
+            else:
+                max_height_mm = 85 if not self.paper_format == 'letter' else 76
             n_height = 10
             font_size = 2
             font_height = 70
@@ -163,9 +167,9 @@ class MiniBuilder:
             m_width = self.grid_size * 3
             # Use large papers full size
             if self.paper_format == 'tabloid' or self.paper_format == 'a3':
-                max_height_mm = m_width * 2
+                max_height_mm = m_width * 1.5
             else:
-                max_height_mm = 60 if not self.paper_format == 'letter' else 51
+                max_height_mm = 60.5 if not self.paper_format == 'letter' else 51.5
             n_height = 12
             font_size = 2.5
             font_height = 80
@@ -176,9 +180,9 @@ class MiniBuilder:
             m_width = self.grid_size * 4
             # Use large papers full size
             if self.paper_format == 'tabloid' or self.paper_format == 'a3':
-                max_height_mm = m_width * 2
+                max_height_mm = m_width * 1.5
             else:
-                max_height_mm = 80 if not self.paper_format == 'letter' else 73
+                max_height_mm = 82.5 if not self.paper_format == 'letter' else 73.5
             n_height = 14
             font_size = 3
             font_height = 100
@@ -323,21 +327,37 @@ class MiniBuilder:
             if diff % 2 == 1: right += 1
             m_img = np.concatenate((np.zeros((m_img.shape[0], left, 3), np.uint8) + 255, m_img,
                                     np.zeros((m_img.shape[0], right, 3), np.uint8) + 255), axis=1)
-
-        if m_img.shape[0] < min_height:
-            diff = min_height - m_img.shape[0]
-            top = np.floor_divide(diff, 2)
-            bottom = top
-            if diff % 2 == 1: bottom += 1
-            if creature.position == Creature.WALKING:
-                m_img = np.concatenate((np.zeros((diff, m_img.shape[1], 3), np.uint8) + 255, m_img), axis=0)
-            elif creature.position == Creature.HOVERING:
-                m_img = np.concatenate((np.zeros((top, m_img.shape[1], 3), np.uint8) + 255, m_img,
-                                        np.zeros((bottom, m_img.shape[1], 3), np.uint8) + 255), axis=0)
-            elif creature.position == Creature.FLYING:
-                m_img = np.concatenate((m_img, np.zeros((diff, m_img.shape[1], 3), np.uint8) + 255), axis=0)
-            else:
-                return 'Position setting is invalid. Chose Walking, Hovering or Flying.'
+        # Handle creature positioning
+        if self.fixed_height:
+            if m_img.shape[0] < min_height:
+                diff = min_height - m_img.shape[0]
+                top = np.floor_divide(diff, 2)
+                bottom = top
+                if diff % 2 == 1: bottom += 1
+                if creature.position == Creature.WALKING:
+                    m_img = np.concatenate((np.zeros((diff, m_img.shape[1], 3), np.uint8) + 255, m_img), axis=0)
+                elif creature.position == Creature.HOVERING:
+                    m_img = np.concatenate((np.zeros((top, m_img.shape[1], 3), np.uint8) + 255, m_img,
+                                            np.zeros((bottom, m_img.shape[1], 3), np.uint8) + 255), axis=0)
+                elif creature.position == Creature.FLYING:
+                    m_img = np.concatenate((m_img, np.zeros((diff, m_img.shape[1], 3), np.uint8) + 255), axis=0)
+                else:
+                    return 'Position setting is invalid. Chose Walking, Hovering or Flying.'
+        else:
+            if m_img.shape[0] < min_height:
+                diff = min_height - m_img.shape[0]
+                top = np.floor_divide(diff, 6)
+                bottom = np.floor_divide(diff, 3)
+                if diff % 2 == 1: bottom += 1
+                if creature.position == Creature.WALKING:
+                    m_img = np.concatenate((np.zeros((top, m_img.shape[1], 3), np.uint8) + 255, m_img), axis=0)
+                elif creature.position == Creature.HOVERING:
+                    m_img = np.concatenate((np.zeros((top, m_img.shape[1], 3), np.uint8) + 255, m_img,
+                                            np.zeros((top, m_img.shape[1], 3), np.uint8) + 255), axis=0)
+                elif creature.position == Creature.FLYING:
+                    m_img = np.concatenate((m_img, np.zeros((bottom, m_img.shape[1], 3), np.uint8) + 255), axis=0)
+                else:
+                    return 'Position setting is invalid. Chose Walking, Hovering or Flying.'
 
         # draw border
         cv.rectangle(m_img, (0, 0), (m_img.shape[1] - 1, m_img.shape[0] - 1), (0, 0, 0), thickness=1)
