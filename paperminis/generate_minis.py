@@ -134,7 +134,7 @@ class MiniBuilder:
         min_height_mm = 40
         if creature.size in ['S', 'T']:
             m_width = int(self.grid_size / 2)
-            max_height_mm = 30
+            max_height_mm = m_width * 2
             n_height = 6
             font_size = 1.15  # opencv "height"
             font_height = 40  # PIL drawing max height for n_height = 8
@@ -143,7 +143,7 @@ class MiniBuilder:
             enum_width = 3
         elif creature.size == 'M':
             m_width = self.grid_size
-            max_height_mm = 40
+            max_height_mm = m_width * 2
             n_height = 8
             font_size = 1.15  # opencv "height"
             font_height = 50  # PIL drawing max height for n_height = 8
@@ -152,7 +152,7 @@ class MiniBuilder:
             enum_width = 3
         elif creature.size == 'L':
             m_width = self.grid_size * 2
-            max_height_mm = 50
+            max_height_mm = m_width * 2
             n_height = 10
             font_size = 2
             font_height = 70
@@ -161,7 +161,11 @@ class MiniBuilder:
             enum_width = 8 * self.grid_size / 24
         elif creature.size == 'H':
             m_width = self.grid_size * 3
-            max_height_mm = 60 if not self.paper_format == 'letter' else 51
+            # Use large papers full size
+            if self.paper_format == 'tabloid' or self.paper_format == 'a3':
+                max_height_mm = m_width * 2
+            else:
+                max_height_mm = 60 if not self.paper_format == 'letter' else 51
             n_height = 12
             font_size = 2.5
             font_height = 80
@@ -170,7 +174,11 @@ class MiniBuilder:
             enum_width = 16
         elif creature.size == 'G':
             m_width = self.grid_size * 4
-            max_height_mm = 80 if not self.paper_format == 'letter' else 73
+            # Use large papers full size
+            if self.paper_format == 'tabloid' or self.paper_format == 'a3':
+                max_height_mm = m_width * 2
+            else:
+                max_height_mm = 80 if not self.paper_format == 'letter' else 73
             n_height = 14
             font_size = 3
             font_height = 100

@@ -65,7 +65,7 @@
                             </div>
                             <div class="form-group">
                                 {{ form.fixed_height.errors }}
-                                <label for="{{ form.fixed_height.id_for_label }}">Use fixed height for minis of the same size category?</label>
+                                <label for="{{ form.fixed_height.id_for_label }}">Use fixed height for minis of the same size category? <strong>Note</strong>: Won't work if you have Huge or Gargantuan creatures!</label>
                                 {% render_field form.fixed_height class+="form-control" %}
                             </div>
                             <div class="form-group">
