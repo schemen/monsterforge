@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.6.5(2022-05-18)
+
+### Improvements
+* Image size and creature size are bigger now.
+* If you choose a bigger paper size (A4 or Tabloid), Large, Huge and Gargantuan Minis are full height sized. Width is always correct of course.
+* Improved the handling of creature position for cleaner minis and better size adjustments (Walking, Hovering, Flying)
+
 ## 1.6.4(2022-05-16)
 
 ### Improvements
