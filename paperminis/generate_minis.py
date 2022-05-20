@@ -362,6 +362,7 @@ class MiniBuilder:
                 else:
                     return 'Position setting is invalid. Chose Walking, Hovering or Flying.'
 
+        m_img = np.ascontiguousarray(m_img, dtype=np.uint8)
         # draw border, ensure there is a white border with black background
         if creature.background_color == Creature.BLACK:
             cv.rectangle(m_img, (0, 0), (m_img.shape[1] - 1, m_img.shape[0] - 1), (255, 255, 255), thickness=1)
