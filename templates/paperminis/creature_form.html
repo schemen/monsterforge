@@ -5,6 +5,10 @@
             var x = document.getElementById("id_color").value;
             document.getElementById("color_label").style.backgroundColor = "#"+x;
         }
+        function update_background_color() {
+            var x = document.getElementById("id_background_color").value;
+            document.getElementById("background_color_label").style.backgroundColor = "#"+x;
+        }
     </script>
     {% load widget_tweaks %}
     {% load auth_extras %}
@@ -91,6 +95,21 @@
                                     </select>
                                 </div>
 {#                            </div>#}
+                            <div class="form-group">
+                                {{ form.background_color.errors }}
+                                <label for="{{ form.background_color.id_for_label }}">Background Color:</label>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <label id="background_color_label" class="input-group-text" for="background_color_picker" style="background-color: #{{ form.background_color.initial }}">&nbsp;</label>
+                                    </div>
+                                    <select name="background_color" id="id_background_color" class="custom-select" onchange="update_background_color()">
+                                        {% for hex, col in form.background_color.field.choices %}
+                                            <option class="form-control" {% if hex == form.background_color.initial %}selected{% endif %} value="{{ hex }}">{{ col }}</option>
+                                        {% endfor %}
+                                    </select>
+
+                                </div>
+                            </div>
                             <div class="form-group">
                                 {{ form.color.errors }}
                                 <label for="{{ form.color.id_for_label }}">Base Color:</label>

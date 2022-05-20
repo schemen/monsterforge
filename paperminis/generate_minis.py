@@ -287,39 +287,40 @@ class MiniBuilder:
         m_img = download_image(creature.img_url)
 
         # fix grayscale images
-
         try:
             if len(m_img.shape) == 2:
                 m_img = cv.cvtColor(m_img, cv.COLOR_GRAY2RGB)
         except:
             return 'Image could not be found or loaded.'
 
-        # replace alpha channel with white for pngs (with fix for grayscale images)
+        # set the creature backrgound color
+        background_color = [int(creature.background_color[i:i + 2], 16) for i in (4, 2, 0)]
+
+        # replace alpha channel with backrgound color for pngs (with fix for grayscale images)
         if m_img.shape[2] == 4:
             alpha_channel = m_img[:, :, 3]
-            mask = (alpha_channel == 0)
-            mask = np.dstack((mask, mask, mask))
+            bmask = (alpha_channel == 0)
             color = m_img[:, :, :3]
-            color[mask] = 255
+            color[bmask] = background_color
             m_img = color
 
         # get Textbox height
         namebox_height = n_img.shape[0]
 
         # find optimal size of image
-        # leave 1 pixel on each side for black border
+        # leave 1 pixel on each side for border
         # Fit width
         if m_img.shape[1] > width - 2:
             f = (width - 2) / m_img.shape[1]
             m_img = cv.resize(m_img, (0, 0), fx=f, fy=f)
-            white_vert = np.zeros((m_img.shape[0], 1, 3), np.uint8) + 255
+            white_vert = np.zeros((m_img.shape[0], 1, 3), np.uint8) + background_color
             m_img = np.concatenate((white_vert, m_img, white_vert), axis=1)
 
         # Fit height
         if m_img.shape[0] > (max_height - 2 - namebox_height):
             f = (max_height - 2 - namebox_height) / m_img.shape[0]
             m_img = cv.resize(m_img, (0, 0), fx=f, fy=f)
-            white_horiz = np.zeros((1, m_img.shape[1], 3), np.uint8) + 255
+            white_horiz = np.zeros((1, m_img.shape[1], 3), np.uint8) + background_color
             m_img = np.concatenate((white_horiz, m_img, white_horiz), axis=0)
 
         if m_img.shape[1] < width:
@@ -327,8 +328,8 @@ class MiniBuilder:
             left = np.floor_divide(diff, 2)
             right = left
             if diff % 2 == 1: right += 1
-            m_img = np.concatenate((np.zeros((m_img.shape[0], left, 3), np.uint8) + 255, m_img,
-                                    np.zeros((m_img.shape[0], right, 3), np.uint8) + 255), axis=1)
+            m_img = np.concatenate((np.zeros((m_img.shape[0], left, 3), np.uint8) + background_color, m_img,
+                                    np.zeros((m_img.shape[0], right, 3), np.uint8) + background_color), axis=1)
         # Handle creature positioning
         if self.fixed_height:
             if m_img.shape[0] < (min_height - namebox_height):
@@ -337,12 +338,12 @@ class MiniBuilder:
                 bottom = top
                 if diff % 2 == 1: bottom += 1
                 if creature.position == Creature.WALKING:
-                    m_img = np.concatenate((np.zeros((diff, m_img.shape[1], 3), np.uint8) + 255, m_img), axis=0)
+                    m_img = np.concatenate((np.zeros((diff, m_img.shape[1], 3), np.uint8) + background_color, m_img), axis=0)
                 elif creature.position == Creature.HOVERING:
-                    m_img = np.concatenate((np.zeros((top, m_img.shape[1], 3), np.uint8) + 255, m_img,
-                                            np.zeros((bottom, m_img.shape[1], 3), np.uint8) + 255), axis=0)
+                    m_img = np.concatenate((np.zeros((top, m_img.shape[1], 3), np.uint8) + background_color, m_img,
+                                            np.zeros((bottom, m_img.shape[1], 3), np.uint8) + background_color), axis=0)
                 elif creature.position == Creature.FLYING:
-                    m_img = np.concatenate((m_img, np.zeros((diff, m_img.shape[1], 3), np.uint8) + 255), axis=0)
+                    m_img = np.concatenate((m_img, np.zeros((diff, m_img.shape[1], 3), np.uint8) + background_color), axis=0)
                 else:
                     return 'Position setting is invalid. Chose Walking, Hovering or Flying.'
         else:
@@ -352,17 +353,20 @@ class MiniBuilder:
                 bottom = np.floor_divide(diff, 3)
                 if diff % 2 == 1: bottom += 1
                 if creature.position == Creature.WALKING:
-                    m_img = np.concatenate((np.zeros((top, m_img.shape[1], 3), np.uint8) + 255, m_img), axis=0)
+                    m_img = np.concatenate((np.zeros((top, m_img.shape[1], 3), np.uint8) + background_color, m_img), axis=0)
                 elif creature.position == Creature.HOVERING:
-                    m_img = np.concatenate((np.zeros((top, m_img.shape[1], 3), np.uint8) + 255, m_img,
-                                            np.zeros((top, m_img.shape[1], 3), np.uint8) + 255), axis=0)
+                    m_img = np.concatenate((np.zeros((top, m_img.shape[1], 3), np.uint8) + background_color, m_img,
+                                            np.zeros((top, m_img.shape[1], 3), np.uint8) + background_color), axis=0)
                 elif creature.position == Creature.FLYING:
-                    m_img = np.concatenate((m_img, np.zeros((bottom, m_img.shape[1], 3), np.uint8) + 255), axis=0)
+                    m_img = np.concatenate((m_img, np.zeros((bottom, m_img.shape[1], 3), np.uint8) + background_color), axis=0)
                 else:
                     return 'Position setting is invalid. Chose Walking, Hovering or Flying.'
 
-        # draw border
-        cv.rectangle(m_img, (0, 0), (m_img.shape[1] - 1, m_img.shape[0] - 1), (0, 0, 0), thickness=1)
+        # draw border, ensure there is a white border with black background
+        if creature.background_color == Creature.BLACK:
+            cv.rectangle(m_img, (0, 0), (m_img.shape[1] - 1, m_img.shape[0] - 1), (255, 255, 255), thickness=1)
+        else:
+            cv.rectangle(m_img, (0, 0), (m_img.shape[1] - 1, m_img.shape[0] - 1), (0, 0, 0), thickness=1)
 
         ## flipped miniature image
         m_img_flipped = np.flip(m_img, 0)

@@ -140,6 +140,11 @@ def quick_validate_creature(var):
     color = var.get("color", "d3d3d3")
     creature.color = color
 
+    # background color
+    # TODO Implement color validation
+    background_color = var.get("background_color", "ffffff")
+    creature.background_color = background_color
+
     # show_name
     if creature.name:
         creature.show_name = True

@@ -115,6 +115,7 @@ class Creature(models.Model):
     size = models.CharField(max_length=1, choices=CREATURE_SIZE_CHOICES, default=MEDIUM)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     color = models.CharField(max_length=6, choices=COLOR_CHOICES, default=DARKGRAY)
+    background_color = models.CharField(max_length=6, choices=COLOR_CHOICES, default=WHITE)
     position = models.CharField(max_length=50, choices=POSITION_CHOICES, default=WALKING)
     show_name = models.BooleanField(default=True)
     from_ddb = models.BooleanField(default=False)
