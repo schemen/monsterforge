@@ -98,7 +98,7 @@ class MiniBuilder:
     def build_all_and_pdf(self):
         if self.enumerate:
             # if enumerate is true, settings are always loaded
-            self.creature_counter = Counter([c.name for c in self.creatures])
+            self.creature_counter = Counter([c.id for c in self.creatures])
             self.creature_counter = {key: val for key, val in self.creature_counter.items() if val > 1}
 
         self.minis = []
@@ -413,9 +413,9 @@ class MiniBuilder:
             return 'Invalid base shape. Choose square, hexagon or circle.'
 
         # enumerate
-        if self.enumerate and creature.name in self.creature_counter:
+        if self.enumerate and creature.id in self.creature_counter:
             # print(creature.name, self.creature_counter[creature.name])
-            text = str(self.creature_counter[creature.name])
+            text = str(self.creature_counter[creature.id])
             textsize = cv.getTextSize(text, self.font, enum_size, enum_width)[0]
             x_margin = b_img.shape[1] - textsize[0]
             y_margin = b_img.shape[0] - textsize[1]
@@ -430,7 +430,7 @@ class MiniBuilder:
             textY = np.floor_divide(demi_base + textsize[1], 2)
             cv.putText(b_img, text, (textX, textY), self.font, enum_size, enum_color, enum_width, cv.LINE_AA)
 
-            self.creature_counter[creature.name] -= 1
+            self.creature_counter[creature.id] -= 1
 
         ## construct full miniature
         img = np.concatenate((m_img, n_img, b_img), axis=0)
