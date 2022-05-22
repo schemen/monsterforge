@@ -63,13 +63,14 @@ class CreatureModifyForm(forms.ModelForm):
 
     class Meta:
         model = Creature
-        fields = ['name', 'show_name', 'img_url', 'size', 'position', 'color']
+        fields = ['name', 'show_name', 'img_url', 'size', 'position', 'background_color', 'color']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')  # To get request.user. Do not use kwargs.pop('user', None) due to potential security hole
         # self.method = kwargs.pop('method') # To get create or update
         super(CreatureModifyForm, self).__init__(*args, **kwargs)
         self.fields['color'].required = False
+        self.fields['background_color'].required = False
         self.fields['position'].required = False
 
     def clean(self):
@@ -252,3 +253,5 @@ class QuickCreateCreatureForm(forms.Form):
     name = forms.CharField(max_length=100, required=False)
     size = forms.ChoiceField(choices=CREATURE_SIZE_CHOICES, initial="M")
     quantity = forms.IntegerField(max_value=100, min_value=1, required=False, initial=1)
+    color = forms.ChoiceField(choices=COLOR_CHOICES, initial=DARKGRAY)
+    background_color = forms.ChoiceField(choices=COLOR_CHOICES, initial=WHITE)

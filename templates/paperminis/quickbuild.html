@@ -93,25 +93,38 @@
                                 <div class="container-fluid mb-4 clearfix" id="creature_wrapper" onmouseover="creature_preview(event, document.getElementById('{{ form.img_url.id_for_label }}').value)">
                                     {{ form.non_field_errors }}
                                     {{ form.errors }}
-                                    <div class="form-group">
-                                        {{ form.img_url.errors }}
-                                        <label for="{{ form.name.id_for_label }}">Name</label>
-                                        {% render_field form.name class+="form-control" %}
-                                        <small id="nameHelp" class="form-text text-muted">You can leave it empty if you don't want a name printed on the mini :)</small>
-                                    </div>
-                                    <div class="form-group">
-                                        {{ form.img_url.errors }}
-                                        <label for="{{ form.img_url.id_for_label }}">Image URL:</label>
-                                        {% render_field form.img_url class+="form-control" %}
-                                        <small id="urlHelp" class="form-text text-muted">Please ensure you use a URL directly pointing to a image, example: https://example.com/image.jpg. If you have local images, you can upload them to services like <a href="https://imgur.com">Imgur</a> and link them here!</small>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-7">
+                                            {{ form.img_url.errors }}
+                                            <label for="{{ form.name.id_for_label }}">Name: <span class="text-muted" data-toggle="tooltip" data-placement="top" title="You can leave it empty if you don't want a name printed on the mini :)">(?)</span></label>
+                                            {% render_field form.name class+="form-control" %}
+                                        </div>
+                                        <div class="form-group col-md-5">
+                                            {{ form.background_color.errors }}
+                                            <label for="{{ form.background_color.id_for_label }}">Background Color:</label>
+                                            {% render_field form.background_color class+="form-control" %}
+                                        </div>
                                     </div>
                                     <div class="form-row">
-                                        <div class="form-group col-md-4">
+                                        <div class="form-group col-md-7">
+                                            {{ form.img_url.errors }}
+                                            <label for="{{ form.img_url.id_for_label }}">Image URL: <span class="text-muted" data-toggle="tooltip" data-html="true"  data-placement="top" title='Please ensure you use a URL directly pointing to a image, example: <strong>https://example.com/image.jpg</strong>. If you have local images, you can upload them to services like <a href="https://imgur.com">Imgur</a> and link them here!'>(?)</span></label>
+                                            {% render_field form.img_url class+="form-control" %}
+                                            <small id="urlHelp" class="form-text text-muted"></small>
+                                        </div>
+                                        <div class="form-group col-md-5">
+                                            {{ form.color.errors }}
+                                            <label for="{{ form.color.id_for_label }}">Base Color:</label>
+                                            {% render_field form.color class+="form-control" %}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-6">
                                             {{ form.img_url.errors }}
                                             <label for="{{ form.position.id_for_label }}">Position: </label>
                                             {% render_field form.position class+="form-control" %}
                                         </div>
-                                        <div class="form-group col-md-3">
+                                        <div class="form-group col-md-4">
                                             {{ form.img_url.errors }}
                                             <label for="{{ form.size.id_for_label }}">Size: </label>
                                             {% render_field form.size class+="form-control" %}
@@ -130,23 +143,38 @@
                             <div class="container-fluid mb-4 clearfix" id="creature_wrapper" onmouseover="creature_preview(event, document.getElementById('{{ creature_formset.empty_form.img_url.id_for_label }}').value)">
                                 {{ creature_formset.empty_form.non_field_errors }}
                                 {{ creature_formset.empty_form.errors }}
-                                <div class="form-group">
-                                    {{ creature_formset.empty_form.img_url.errors }}
-                                    <label for="{{ creature_formset.empty_form.name.id_for_label }}">Name</label>
-                                    {% render_field creature_formset.empty_form.name class+="form-control" %}
-                                </div>
-                                <div class="form-group">
-                                    {{ creature_formset.empty_form.img_url.errors }}
-                                    <label for="{{ creature_formset.empty_form.img_url.id_for_label }}">Image URL:</label>
-                                    {% render_field creature_formset.empty_form.img_url class+="form-control" %}
-                                </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-7">
+                                            {{ creature_formset.empty_form.img_url.errors }}
+                                            <label for="{{ creature_formset.empty_form.name.id_for_label }}">Name:</label>
+                                            {% render_field creature_formset.empty_form.name class+="form-control" %}
+                                        </div>
+                                        <div class="form-group col-md-5">
+                                            {{ creature_formset.empty_form.background_color.errors }}
+                                            <label for="{{ creature_formset.empty_form.background_color.id_for_label }}">Background Color:</label>
+                                            {% render_field creature_formset.empty_form.background_color class+="form-control" %}
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-7">
+                                            {{ creature_formset.empty_form.img_url.errors }}
+                                            <label for="{{ creature_formset.empty_form.img_url.id_for_label }}">Image URL: </label>
+                                            {% render_field creature_formset.empty_form.img_url class+="form-control" %}
+                                            <small id="urlHelp" class="form-text text-muted"></small>
+                                        </div>
+                                        <div class="form-group col-md-5">
+                                            {{ creature_formset.empty_form.color.errors }}
+                                            <label for="{{ creature_formset.empty_form.color.id_for_label }}">Base Color:</label>
+                                            {% render_field creature_formset.empty_form.color class+="form-control" %}
+                                        </div>
+                                    </div>
                                 <div class="form-row">
-                                    <div class="form-group col-md-4">
+                                    <div class="form-group col-md-6">
                                         {{ creature_formset.empty_form.img_url.errors }}
                                         <label for="{{ creature_formset.empty_form.position.id_for_label }}">Position: </label>
                                         {% render_field creature_formset.empty_form.position class+="form-control"  %}
                                     </div>
-                                    <div class="form-group col-md-3">
+                                    <div class="form-group col-md-4">
                                         {{ creature_formset.empty_form.img_url.errors }}
                                         <label for="{{ creature_formset.empty_form.size.id_for_label }}">Size: </label>
                                         {% render_field creature_formset.empty_form.size class+="form-control" %}
@@ -211,6 +239,10 @@
 
 {% block script %}
     <script>
+        $(function () {
+          $('[data-toggle="tooltip"]').tooltip()
+        })
+
         $('#add_more').click(function () {
             let total_form = $('#id_creatures-TOTAL_FORMS');
             let form_idx = total_form.val();

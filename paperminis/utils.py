@@ -1,8 +1,10 @@
+from itertools import count
 import json
 from fractions import Fraction
 from functools import lru_cache
 from urllib.request import Request, urlopen
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+
 
 import cv2 as cv
 import numpy as np
@@ -87,16 +89,17 @@ def handle_json(f, user):
     return skip
 
 
-@dataclass(init=False)
+@dataclass()
 class QuickCreature:
     """Class for a creature."""
-    name: str
-    size: float
-    quantity: int
-    position: str
-    img_url: str
-    color: str
-    show_name: bool = True
+    name: str = field(init=False)
+    size: float = field(init=False)
+    quantity: int = field(init=False)
+    position: str = field(init=False)
+    img_url: str = field(init=False)
+    color: str = field(init=False)
+    show_name: bool = field(default=True, init=False)
+    id: int = field(default_factory=count().__next__, init=False)
 
 
 def quick_validate_creature(var):
@@ -139,6 +142,11 @@ def quick_validate_creature(var):
     # TODO Implement color validation
     color = var.get("color", "d3d3d3")
     creature.color = color
+
+    # background color
+    # TODO Implement color validation
+    background_color = var.get("background_color", "ffffff")
+    creature.background_color = background_color
 
     # show_name
     if creature.name:
