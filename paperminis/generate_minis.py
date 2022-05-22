@@ -296,9 +296,6 @@ class MiniBuilder:
         # set the creature backrgound color
         background_color = [int(creature.background_color[i:i + 2], 16) for i in (4, 2, 0)]
 
-        # Fix dtype
-        m_img = np.ascontiguousarray(m_img, dtype=np.uint8)
-
         # replace alpha channel with backrgound color for pngs (with fix for grayscale images)
         if m_img.shape[2] == 4:
             alpha_channel = m_img[:, :, 3]
@@ -318,13 +315,15 @@ class MiniBuilder:
             m_img = cv.resize(m_img, (0, 0), fx=f, fy=f)
             white_vert = np.zeros((m_img.shape[0], 1, 3), np.uint8) + background_color
             m_img = np.concatenate((white_vert, m_img, white_vert), axis=1)
+            m_img = np.array(m_img, dtype=np.uint8)
 
         # Fit height
         if m_img.shape[0] > (max_height - 2 - namebox_height):
-            f = (max_height - 2 - namebox_height) / m_img.shape[0]
+            f = ((max_height - 2 - namebox_height) / m_img.shape[0])
             m_img = cv.resize(m_img, (0, 0), fx=f, fy=f)
             white_horiz = np.zeros((1, m_img.shape[1], 3), np.uint8) + background_color
             m_img = np.concatenate((white_horiz, m_img, white_horiz), axis=0)
+            m_img = np.array(m_img, dtype=np.uint8)
 
         if m_img.shape[1] < width:
             diff = width - m_img.shape[1]
@@ -364,6 +363,9 @@ class MiniBuilder:
                     m_img = np.concatenate((m_img, np.zeros((bottom, m_img.shape[1], 3), np.uint8) + background_color), axis=0)
                 else:
                     return 'Position setting is invalid. Chose Walking, Hovering or Flying.'
+
+        # Fix dtype
+        m_img = np.ascontiguousarray(m_img, dtype=np.uint8)
 
         # draw border, ensure there is a white border with black background
         if creature.background_color == Creature.BLACK:
