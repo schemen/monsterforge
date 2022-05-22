@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.8.0(2022-05-18)
+
+### New
+* Add the possibility to change the creature background color. Default remains white.
+* Added color selection tools to the classic builder as well as the Quickbuilder
+
+### Improvements
+* Transparent PNGs have their transparency replaced with the chosen background color.
+* Applied a fix where enumeration doesn't apply correctly in the Quickbuilder and sometimes in the classic builder
+
 ## 1.7.0(2022-05-18)
 
 ### New
