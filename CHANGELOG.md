@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.8.1(2022-05-18)
+
+### Hotfix
+* Fix dtype issues when generating images
+
 ## 1.8.0(2022-05-18)
 
 ### New
