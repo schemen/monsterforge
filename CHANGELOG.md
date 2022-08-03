@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.8.2(2022-09-03)
+
+### Hotfix
+* PDF size is now handled correctly, including a print margin
+* Update django
+
+
 ## 1.8.1(2022-05-18)
 
 ### Hotfix
