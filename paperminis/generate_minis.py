@@ -507,5 +507,5 @@ class MiniBuilder:
             page = Image.open(img_buffer)
             pages.append(page)
 
-        pages[0].save(pdf_buffer, save_all=True, append_images=pages[1:], format="PDF")
+        pages[0].save(pdf_buffer, save_all=True, append_images=pages[1:], format="PDF", resolution=(25.4 * self.dpmm))
         return pdf_buffer
