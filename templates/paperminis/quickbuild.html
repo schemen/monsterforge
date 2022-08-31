@@ -119,7 +119,7 @@
                                         </div>
                                     </div>
                                     <div class="form-row">
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group col-md-4">
                                             {{ form.img_url.errors }}
                                             <label for="{{ form.position.id_for_label }}">Position: </label>
                                             {% render_field form.position class+="form-control" %}
@@ -133,6 +133,11 @@
                                             {{ form.img_url.errors }}
                                             <label for="{{ form.quantity.id_for_label }}">Quantity: </label>
                                             {% render_field form.quantity class+="form-control" %}
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            {{ form.cavalry_mode.errors }}
+                                            <label for="{{ form.cavalry_mode.id_for_label }}">Cavalry:<span class="text-muted" data-toggle="tooltip" data-html="true" data-placement="top" title="Mostly for War-Gaming. This will double the width of the mini creating a <strong>rectangular base</strong>, simulating a riding unit.">(?)</span></label>
+                                            {% render_field form.cavalry_mode class+="form-control" %}
                                         </div>
                                     </div>
                                 </div>
@@ -169,20 +174,25 @@
                                         </div>
                                     </div>
                                 <div class="form-row">
-                                    <div class="form-group col-md-6">
-                                        {{ creature_formset.empty_form.img_url.errors }}
+                                    <div class="form-group col-md-4">
+                                        {{ creature_formset.empty_form.position.errors }}
                                         <label for="{{ creature_formset.empty_form.position.id_for_label }}">Position: </label>
                                         {% render_field creature_formset.empty_form.position class+="form-control"  %}
                                     </div>
                                     <div class="form-group col-md-4">
-                                        {{ creature_formset.empty_form.img_url.errors }}
+                                        {{ creature_formset.empty_form.size.errors }}
                                         <label for="{{ creature_formset.empty_form.size.id_for_label }}">Size: </label>
                                         {% render_field creature_formset.empty_form.size class+="form-control" %}
                                     </div>
                                     <div class="form-group col-md-2">
-                                        {{ creature_formset.empty_form.img_url.errors }}
+                                        {{ creature_formset.empty_form.quantity.errors }}
                                         <label for="{{ creature_formset.empty_form.quantity.id_for_label }}">Quantity: </label>
                                         {% render_field creature_formset.empty_form.quantity class+="form-control " %}
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                        {{ creature_formset.empty_form.cavalry_mode.errors }}
+                                        <label for="{{ creature_formset.empty_form.cavalry_mode.id_for_label }}">Cavalry: </label>
+                                        {% render_field creature_formset.empty_form.cavalry_mode class+="form-control " %}
                                     </div>
                                 </div>
                             </div>

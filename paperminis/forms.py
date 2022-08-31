@@ -255,3 +255,4 @@ class QuickCreateCreatureForm(forms.Form):
     quantity = forms.IntegerField(max_value=100, min_value=1, required=False, initial=1)
     color = forms.ChoiceField(choices=COLOR_CHOICES, initial=DARKGRAY)
     background_color = forms.ChoiceField(choices=COLOR_CHOICES, initial=WHITE)
+    cavalry_mode = forms.BooleanField(required=False)

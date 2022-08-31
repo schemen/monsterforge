@@ -202,6 +202,10 @@ class MiniBuilder:
 
         text = creature.name
 
+        # For Cavalry, double the base width. Mostly for war-gaming, not TTRPGs
+        if creature.cavalry_mode:
+            width = width * 2
+
         # scale for grid size
         enum_size = int(np.ceil(enum_size * self.grid_size / 24))
         enum_width = int(np.ceil(enum_size * self.grid_size / 24))
