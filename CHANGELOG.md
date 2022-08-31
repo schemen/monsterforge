@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.9.0(2022-08-31)
+
+### New
+* Cavalry mode. This mode prints the creature on a rectangular base. Mostly for war-gaming.
+
 ## 1.8.2(2022-09-03)
 
 ### Hotfix
