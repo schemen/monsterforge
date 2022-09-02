@@ -53,13 +53,6 @@
     {% endif %}
 
     {% load widget_tweaks %}
-        <div class="alert alert-warning" role="alert">
-      With the release of the Quickbuilder which is open to users without account, temporary Accounts are deprecated and will be removed in the future.
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-
     <br>
     <div class="row">
         <div class="col-md-6">
@@ -97,30 +90,6 @@
                         &nbsp;&nbsp;
                         <div class="clearfix"></div>
                     </form>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card col-md-8 bg-light mx-auto pull-left">
-                <div class="card-header bg-light bg-light">
-                    <h3 class="card-title bg-light">Continue without a login?</h3>
-                </div>
-                <div class="card-body">
-                    <p>You can continue to use this website and all its tools for free without creating an account.<br><br>
-                        Click the button below to get started with a temporary account. You can convert the temporary account to
-                        a real account at any time by clicking on the link in the top right corner. If you don't, all your work will be lost permanently after a few days.
-                    </p>
-                    <div class="row">
-                        <div class="col-md-12 mt-2">
-                            <form name="temp_acc" action="{% url 'temp-account' %}" method="post">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-basic btn-fill btn-block">I understand, give me a temporary account.</button>
-                                <p><a class="text-secondary pull-right mt-1" href="{% url 'signup' %}" >Sign up for a real account right away!</a></p>
-                            </form>
-                        </div>
-                    </div>
-                    &nbsp;
-                    <div class="clearfix"></div>
                 </div>
             </div>
         </div>
