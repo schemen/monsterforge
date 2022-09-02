@@ -118,6 +118,7 @@ class Creature(models.Model):
     background_color = models.CharField(max_length=6, choices=COLOR_CHOICES, default=WHITE)
     position = models.CharField(max_length=50, choices=POSITION_CHOICES, default=WALKING)
     show_name = models.BooleanField(default=True)
+    cavalry_mode = models.BooleanField(default=False)
     from_ddb = models.BooleanField(default=False)
 
     # Metadata

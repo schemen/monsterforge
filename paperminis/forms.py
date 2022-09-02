@@ -63,7 +63,7 @@ class CreatureModifyForm(forms.ModelForm):
 
     class Meta:
         model = Creature
-        fields = ['name', 'show_name', 'img_url', 'size', 'position', 'background_color', 'color']
+        fields = ['name', 'show_name', 'img_url', 'size', 'position', 'background_color', 'color', 'cavalry_mode']
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')  # To get request.user. Do not use kwargs.pop('user', None) due to potential security hole
