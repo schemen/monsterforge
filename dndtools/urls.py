@@ -41,7 +41,6 @@ urlpatterns += [
     path('accounts/', include('django.contrib.auth.urls')),
     path('signup/', paperminis_view.signup, name='signup'),
     path('convert/', paperminis_view.convert_account, name='convert-account'),
-    path('tempaccount/', paperminis_view.temp_account, name='temp-account'),
     path('profile/', paperminis_view.profile, name='profile'),
     path('accounts/delete/', paperminis_view.delete_account, name='delete-account'),
     path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),

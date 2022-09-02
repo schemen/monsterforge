@@ -125,6 +125,11 @@
 
                                 </div>
                             </div>
+                            <div class="form-group">
+                                {{ form.cavalry_mode.errors }}
+                                <label for="{{ form.cavalry_mode.id_for_label }}">Print mini on rectangular base? This Cavalry Mode is mostly used for war-gaming miniatures.</label>
+                                {% render_field form.cavalry_mode class+="form-control" %}
+                            </div>
                             <input class="btn btn-fill btn-block mt-4 mb-3" type="submit" name="save_and_view" value="Save and view" />
                             {% if not object %}<input class="btn btn-fill btn-block mt-4 mb-3" type="submit" name="save_and_next" value="Save and add a new creature" />{% endif %}
                         </form>

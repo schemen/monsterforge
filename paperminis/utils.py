@@ -99,6 +99,7 @@ class QuickCreature:
     img_url: str = field(init=False)
     color: str = field(init=False)
     show_name: bool = field(default=True, init=False)
+    cavalry_mode: bool = field(init=False)
     id: int = field(default_factory=count().__next__, init=False)
 
 
@@ -153,5 +154,9 @@ def quick_validate_creature(var):
         creature.show_name = True
     else:
         creature.show_name = False
+
+    # Cavalry Mode
+    cavalry_mode = var.get("cavalry_mode", False)
+    creature.cavalry_mode = cavalry_mode
 
     return creature
