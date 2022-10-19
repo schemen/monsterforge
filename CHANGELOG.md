@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.1(2022-10-19)
+
+### Improvements
+* Dependency updates
+* Switch to Python 3.10
+
 ## 1.9.0(2022-08-31)
 
 ### New

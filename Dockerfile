@@ -1,4 +1,4 @@
-FROM python:3.9-slim
+FROM python:3.10-slim
 ENV PYTHONUNBUFFERED 1
 #RUN apt update; apt install -y --no-install-recommends libgl1 libglib2.0-0 && rm -rf /var/lib/apt/lists/*
 # Project Files and Settings
