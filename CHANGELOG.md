@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.2(2022-12-23)
+
+### Fix
+* Fix an issue with the fake user agent
+* Update some dependencies
+
 ## 1.9.1(2022-10-19)
 
 ### Improvements
