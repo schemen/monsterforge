@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.10.0(2023-02-28)
+
+### Feature
+* Add 28mm option as base (907e4e3 @indero)
+
+### Updates
+* Update dependencies
+
 ## 1.9.2(2022-12-23)
 
 ### Fix
