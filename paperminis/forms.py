@@ -175,10 +175,12 @@ class QuickCreateSettingsForm(forms.Form):
         (TABLOID, 'Tabloid')
     )
     # grid size
+    GRID28 = 28
     GRID24 = 24
     GRID18 = 18
     GRID12 = 12
     GRID_SIZE_CHOICES = (
+        (GRID28, '28 mm ~ 1.1 inch'),
         (GRID24, '24 mm ~ 1 inch'),
         (GRID18, '18 mm ~ 3/4 inch'),
         (GRID12, '12 mm ~ 1/2 inch')
@@ -195,7 +197,7 @@ class QuickCreateSettingsForm(forms.Form):
 
     # Print Settings
     paper_format = forms.ChoiceField(choices=PAPER_FORMAT_CHOICES, required=True)
-    grid_size = forms.ChoiceField(choices=GRID_SIZE_CHOICES, required=True)
+    grid_size = forms.ChoiceField(choices=GRID_SIZE_CHOICES, required=True, initial=GRID24)
     base_shape = forms.ChoiceField(choices=BASE_SHAPE_CHOICES, required=True)
     enumerate = forms.BooleanField(required=False)
 
