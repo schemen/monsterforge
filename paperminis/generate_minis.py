@@ -38,6 +38,7 @@ class MiniBuilder:
         self.darken = None
         self.font = cv.FONT_HERSHEY_SIMPLEX
         self.paper_format = None
+        self.paper = None
         self.canvas = None
 
         # clear download cache for each run
@@ -88,12 +89,13 @@ class MiniBuilder:
         self.fixed_height = fixed_height
         self.darken = darken
         self.paper_format = paper_format
-        paper = {'a3': np.array([297, 420]),
+        papers = {'a3': np.array([297, 420]),
                  'a4': np.array([210, 297]),
                  'letter': np.array([216, 279]),
                  'legal': np.array([216, 356]),
                  'tabloid': np.array([279, 432])}
-        self.canvas = (paper[paper_format] - 2 * self.print_margin) * self.dpmm
+        self.paper = papers[paper_format] * self.dpmm
+        self.canvas = (papers[paper_format] - 2 * self.print_margin) * self.dpmm
 
     def build_all_and_pdf(self):
         if self.enumerate:
@@ -503,10 +505,20 @@ class MiniBuilder:
         pdf_buffer = io.BytesIO()
 
         for sheet in sheets:
+            # Create the buffer and load the generated canva
             img_buffer = io.BytesIO()
             rgb_img = cv.cvtColor(sheet, cv.COLOR_BGR2RGB)
             im_pil = Image.fromarray(rgb_img)
-            im_pil.save(img_buffer, dpi=(25.4 * self.dpmm, 25.4 * self.dpmm), format='PNG')
+
+            # Ensure Print margins are respected by creating a blank Paper (defined by page_format)
+            # and then paste the canva in the center
+            background = Image.new("RGB", (int(self.paper[0]), int(self.paper[1])), (255,255,255))
+            bg_w, bg_h = background.size
+            img_w, img_h = im_pil.size
+            offset = ((bg_w - img_w) // 2, (bg_h - img_h) // 2)
+            background.paste(im_pil, offset)
+
+            background.save(img_buffer, dpi=(25.4 * self.dpmm, 25.4 * self.dpmm), format='PNG')
             img_buffer.seek(0)
             page = Image.open(img_buffer)
             pages.append(page)

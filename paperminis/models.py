@@ -224,3 +224,4 @@ class PrintSettings(models.Model):
     force_name = models.CharField(max_length=50, choices=NAME_BEHAVIOUR_CHOICES, default=NO_FORCE)
     fixed_height = models.BooleanField(default=False)
     darken = models.IntegerField(default=0)
+    print_margin = models.IntegerField(default=4)
