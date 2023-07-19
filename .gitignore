@@ -64,6 +64,7 @@ fabric.properties
 
 # VENV & VSCODE
 venv
+.venv
 .vscode
 *pycache*
 dndtools/settings_secret.py

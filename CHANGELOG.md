@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.10.1(2023-07-19)
+
+### Updates
+* Dependency updates and maintenance
+
 ## 1.10.0(2023-02-28)
 
 ### Feature
