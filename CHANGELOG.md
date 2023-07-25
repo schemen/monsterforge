@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.11.0(2023-07-25)
+
+### Improvement
+* Implement Caching and Cache Busting
+
+
 ## 1.10.1(2023-07-19)
 
 ### Updates
