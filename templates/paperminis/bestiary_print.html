@@ -70,6 +70,11 @@
                                 {% render_field form.fixed_height class+="form-control" %}
                             </div>
                             <div class="form-group">
+                                {{ form.crop_whitespace.errors }}
+                                <label for="{{ form.crop_whitespace.id_for_label }}">Crop empty border to minimize unused space?</label>
+                                {% render_field form.crop_whitespace class+="form-control" %}
+                            </div>
+                            <div class="form-group">
                                 {{ form.darken.errors }}
                                 <label for="{{ form.darken.id_for_label }}">How much darker should the backside of your mini be? The maximum gives you a black silhouette.</label>
                                 <div class="input-group mb-3">

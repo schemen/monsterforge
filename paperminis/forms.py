@@ -200,6 +200,7 @@ class QuickCreateSettingsForm(forms.Form):
     grid_size = forms.ChoiceField(choices=GRID_SIZE_CHOICES, required=True, initial=GRID24)
     base_shape = forms.ChoiceField(choices=BASE_SHAPE_CHOICES, required=True)
     enumerate = forms.BooleanField(required=False)
+    crop_whitespace = forms.BooleanField(required=False)
 
 
 class QuickCreateCreatureForm(forms.Form):

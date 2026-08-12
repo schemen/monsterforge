@@ -144,7 +144,8 @@ def quickbuild(request):
             minis.load_settings(paper_format=settings_form.cleaned_data["paper_format"],
                                 grid_size=int(settings_form.cleaned_data["grid_size"]),
                                 base_shape=settings_form.cleaned_data["base_shape"],
-                                enumerate=settings_form.cleaned_data["enumerate"],)
+                                enumerate=settings_form.cleaned_data["enumerate"],
+                                crop_whitespace=settings_form.cleaned_data["crop_whitespace"])
             minis.add_quick_creatures(creatures)
 
             try:
@@ -301,6 +302,7 @@ def bestiary_print(request, pk):
             print_settings.force_name = new_settings.force_name
             print_settings.fixed_height = new_settings.fixed_height
             print_settings.darken = new_settings.darken
+            print_settings.crop_whitespace = new_settings.crop_whitespace
             print_settings.save()
             # load settings into the mini builder
             minis.load_settings(paper_format=print_settings.paper_format,
@@ -309,7 +311,8 @@ def bestiary_print(request, pk):
                                 enumerate=print_settings.enumerate,
                                 force_name=print_settings.force_name,
                                 fixed_height=print_settings.fixed_height,
-                                darken=print_settings.darken)
+                                darken=print_settings.darken,
+                                crop_whitespace=print_settings.crop_whitespace)
             # load creatures into the mini builder
             minis.add_bestiary(request.user, pk)
             # build minis
