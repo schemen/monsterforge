@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.12.0(2026-10-28)
+
+### Updates
+* Upgrade to Django 5.2 LTS and Python 3.12
+* Update all dependencies to supported versions
+
+### Fix
+* Logout now uses POST, as required by Django 5
+* Fix name labels with Pillow 10+
+* Fix collectstatic failing on a missing chartist source map
+* Add missing migration for the 28mm base option
+
+
 ## 1.11.0(2023-07-25)
 
 ### Improvement
