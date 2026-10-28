@@ -273,7 +273,7 @@ class MiniBuilder:
                 # print(font_height)
                 unicode_font = ImageFont.truetype("paperminis/DejaVuSans.ttf", font_height)
                 font_height = round(font_height - 2, 2)
-                textsize = unicode_font.getsize(text)
+                textsize = unicode_font.getbbox(text)[2:]
                 im_w, im_h = n_img_pil.size
                 x_margin = im_w - textsize[0]
                 y_margin = im_h - textsize[1]
