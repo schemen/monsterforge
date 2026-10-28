@@ -33,6 +33,9 @@ else:
 
 ALLOWED_HOSTS = ['*']
 
+# Comma-separated, including scheme, e.g. "https://monsterforge.example.com"
+CSRF_TRUSTED_ORIGINS = [o for o in os.getenv('CSRF_TRUSTED_ORIGINS', '').split(',') if o]
+
 # Email
 
 EMAIL_HOST = os.getenv('EMAIL_HOST', "CHANGEME!")
