@@ -69,3 +69,4 @@ venv
 *pycache*
 dndtools/settings_secret.py
 db.sqlite3
+static/

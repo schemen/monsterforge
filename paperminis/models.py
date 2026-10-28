@@ -9,7 +9,7 @@ from constrainedfilefield.fields import ConstrainedFileField
 # New User without name
 from django.contrib.auth.models import AbstractUser, BaseUserManager  ## A new class is imported. ##
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 class UserManager(BaseUserManager):
