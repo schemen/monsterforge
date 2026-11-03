@@ -6,13 +6,11 @@ import cv2 as cv
 from paperminis.models import Creature
 
 
-
 def open_image(img_path):
     try:
         return cv.imread(img_path, cv.IMREAD_UNCHANGED)
     except:
         return 'Could not open image'
-
 
 
 def handle_json(f, user):
@@ -58,7 +56,9 @@ def handle_json(f, user):
             else:
                 # updated attributes
                 # this is kinda slow :(
-                Creature.objects.filter(owner=user, name=name, img_url=img_url).update(size=short_size)
+                Creature.objects.filter(owner=user, name=name, img_url=img_url).update(
+                    size=short_size
+                )
                 current_full.append(full_tup)
                 continue
 
@@ -77,6 +77,7 @@ def handle_json(f, user):
 @dataclass()
 class QuickCreature:
     """Class for a creature."""
+
     name: str = field(init=False)
     size: float = field(init=False)
     quantity: int = field(init=False)
@@ -94,44 +95,44 @@ def quick_validate_creature(var):
     creature = QuickCreature()
 
     # Name
-    name = var.get("name", "")
+    name = var.get('name', '')
     creature.name = name
 
     # Size
     size_options = ['T', 'S', 'M', 'L', 'H', 'G']
-    size = var.get("size", "M")
+    size = var.get('size', 'M')
     if size in size_options:
         creature.size = size
     else:
-        raise ValueError("size worngly defined.")
+        raise ValueError('size worngly defined.')
 
     # quantity
-    quantity = var.get("quantity", 1)
+    quantity = var.get('quantity', 1)
     creature.quantity = quantity
 
     # position
     position_options = ['top', 'center', 'bottom']
-    position = var.get("position", "bottom")
+    position = var.get('position', 'bottom')
     if position in position_options:
         creature.position = position
     else:
-        raise ValueError("size worngly defined.")
+        raise ValueError('size worngly defined.')
 
     # img_url
     # TODO Implement URL Validation
     if var['img_url']:
         creature.img_url = var['img_url']
     else:
-        raise ValueError("Wrong or no URL Passed!")
+        raise ValueError('Wrong or no URL Passed!')
 
     # color
     # TODO Implement color validation
-    color = var.get("color", "d3d3d3")
+    color = var.get('color', 'd3d3d3')
     creature.color = color
 
     # background color
     # TODO Implement color validation
-    background_color = var.get("background_color", "ffffff")
+    background_color = var.get('background_color', 'ffffff')
     creature.background_color = background_color
 
     # show_name
@@ -141,7 +142,7 @@ def quick_validate_creature(var):
         creature.show_name = False
 
     # Cavalry Mode
-    cavalry_mode = var.get("cavalry_mode", False)
+    cavalry_mode = var.get('cavalry_mode', False)
     creature.cavalry_mode = cavalry_mode
 
     return creature

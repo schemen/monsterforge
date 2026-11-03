@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import io
 import logging
 import re
@@ -5,22 +7,25 @@ from collections import Counter
 
 import cv2 as cv
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
 from greedypacker import BinManager
+from PIL import Image, ImageDraw, ImageFont
 
 from paperminis.models import Creature, CreatureQuantity
 from paperminis.utils import QuickCreature, open_image
+
 from .items import Item
 
-logger = logging.getLogger("django")
+
+logger = logging.getLogger('django')
 
 
 class MiniBuilder:
-
     def __init__(self):
 
         # user
-        self.sanitize = re.compile('[^a-zA-Z0-9\(\)\_@]', re.UNICODE)  # sanitize user input
+        self.sanitize = re.compile(
+            r'[^a-zA-Z0-9\(\)\_@]', re.UNICODE
+        )  # sanitize user input
 
         self.creatures = []
         self.creature_counter = None
@@ -66,15 +71,17 @@ class MiniBuilder:
             for x in range(i.quantity):
                 self.creatures.append(i)
 
-    def load_settings(self,
-                      paper_format='a4',
-                      print_margin=np.array([3.5, 4]),
-                      grid_size=24,
-                      base_shape='square',
-                      enumerate=False,
-                      force_name='no_force',
-                      fixed_height=False,
-                      darken=0):
+    def load_settings(
+        self,
+        paper_format='a4',
+        print_margin=np.array([3.5, 4]),
+        grid_size=24,
+        base_shape='square',
+        enumerate=False,
+        force_name='no_force',
+        fixed_height=False,
+        darken=0,
+    ):
 
         self.print_margin = print_margin
         self.dpmm = 10  # not fully supported setting yet, leave at 10
@@ -85,18 +92,22 @@ class MiniBuilder:
         self.fixed_height = fixed_height
         self.darken = darken
         self.paper_format = paper_format
-        paper = {'a3': np.array([297, 420]),
-                 'a4': np.array([210, 297]),
-                 'letter': np.array([216, 279]),
-                 'legal': np.array([216, 356]),
-                 'tabloid': np.array([279, 432])}
+        paper = {
+            'a3': np.array([297, 420]),
+            'a4': np.array([210, 297]),
+            'letter': np.array([216, 279]),
+            'legal': np.array([216, 356]),
+            'tabloid': np.array([279, 432]),
+        }
         self.canvas = (paper[paper_format] - 2 * self.print_margin) * self.dpmm
 
     def build_all_and_pdf(self):
         if self.enumerate:
             # if enumerate is true, settings are always loaded
             self.creature_counter = Counter([c.id for c in self.creatures])
-            self.creature_counter = {key: val for key, val in self.creature_counter.items() if val > 1}
+            self.creature_counter = {
+                key: val for key, val in self.creature_counter.items() if val > 1
+            }
 
         self.minis = []
         for creature in self.creatures:
@@ -107,7 +118,7 @@ class MiniBuilder:
                 logger.warning('{} skipped with error: {}'.format(creature.name, mini))
 
         if not self.minis:
-            raise ValueError("No valid minis are available to process.")
+            raise ValueError('No valid minis are available to process.')
 
         self.sheets = self.build_sheets(self.minis)
         pdf_container = self.save_and_pdf(self.sheets)
@@ -149,7 +160,9 @@ class MiniBuilder:
         elif creature.size == 'L':
             m_width = self.grid_size * 2
             # Use large papers full size
-            max_height_mm = m_width * 2 if not self.paper_format == 'letter' else m_width * 1.82
+            max_height_mm = (
+                m_width * 2 if not self.paper_format == 'letter' else m_width * 1.82
+            )
             n_height = 10
             font_size = 2
             font_height = 70
@@ -250,24 +263,26 @@ class MiniBuilder:
         #     # img = cv.circle(img, (100, 400), 20, (255,0,0), 3)
 
         ## nameplate
-        show_name = ""
+        show_name = ''
 
-        if self.force_name == "force_name":
+        if self.force_name == 'force_name':
             show_name = True
-        elif self.force_name == "force_blank":
+        elif self.force_name == 'force_blank':
             show_name = False
         else:
             show_name = creature.show_name
 
         if show_name:
             # PIL fix for utf-8 characters
-            n_img_pil = Image.new("RGB", (width, name_height), (255, 255, 255))
+            n_img_pil = Image.new('RGB', (width, name_height), (255, 255, 255))
             x_margin = 0
             y_margin = 0
             # find optimal font size
             while x_margin < 2 or y_margin < 10:
                 # print(font_height)
-                unicode_font = ImageFont.truetype("paperminis/DejaVuSans.ttf", font_height)
+                unicode_font = ImageFont.truetype(
+                    'paperminis/DejaVuSans.ttf', font_height
+                )
                 font_height = round(font_height - 2, 2)
                 textsize = unicode_font.getsize(text)
                 im_w, im_h = n_img_pil.size
@@ -279,7 +294,13 @@ class MiniBuilder:
             draw = ImageDraw.Draw(n_img_pil)
             draw.text((textX, textY), text, font=unicode_font, fill=(0, 0, 0))
             n_img = np.array(n_img_pil)
-            cv.rectangle(n_img, (0, 0), (n_img.shape[1] - 1, n_img.shape[0] - 1), (0, 0, 0), thickness=1)
+            cv.rectangle(
+                n_img,
+                (0, 0),
+                (n_img.shape[1] - 1, n_img.shape[0] - 1),
+                (0, 0, 0),
+                thickness=1,
+            )
         else:
             n_img = np.zeros((1, width, 3), np.uint8)
 
@@ -294,12 +315,14 @@ class MiniBuilder:
             return 'Image could not be found or loaded.'
 
         # set the creature backrgound color
-        background_color = [int(creature.background_color[i:i + 2], 16) for i in (4, 2, 0)]
+        background_color = [
+            int(creature.background_color[i : i + 2], 16) for i in (4, 2, 0)
+        ]
 
         # replace alpha channel with backrgound color for pngs (with fix for grayscale images)
         if m_img.shape[2] == 4:
             alpha_channel = m_img[:, :, 3]
-            bmask = (alpha_channel == 0)
+            bmask = alpha_channel == 0
             color = m_img[:, :, :3]
             color[bmask] = background_color
             m_img = color
@@ -319,7 +342,7 @@ class MiniBuilder:
 
         # Fit height
         if m_img.shape[0] > (max_height - 2 - namebox_height):
-            f = ((max_height - 2 - namebox_height) / m_img.shape[0])
+            f = (max_height - 2 - namebox_height) / m_img.shape[0]
             m_img = cv.resize(m_img, (0, 0), fx=f, fy=f)
             white_horiz = np.zeros((1, m_img.shape[1], 3), np.uint8) + background_color
             m_img = np.concatenate((white_horiz, m_img, white_horiz), axis=0)
@@ -329,49 +352,118 @@ class MiniBuilder:
             diff = width - m_img.shape[1]
             left = np.floor_divide(diff, 2)
             right = left
-            if diff % 2 == 1: right += 1
-            m_img = np.concatenate((np.zeros((m_img.shape[0], left, 3), np.uint8) + background_color, m_img,
-                                    np.zeros((m_img.shape[0], right, 3), np.uint8) + background_color), axis=1)
+            if diff % 2 == 1:
+                right += 1
+            m_img = np.concatenate(
+                (
+                    np.zeros((m_img.shape[0], left, 3), np.uint8) + background_color,
+                    m_img,
+                    np.zeros((m_img.shape[0], right, 3), np.uint8) + background_color,
+                ),
+                axis=1,
+            )
         # Handle creature positioning
         if self.fixed_height:
             if m_img.shape[0] < (min_height - namebox_height):
                 diff = (min_height - namebox_height) - m_img.shape[0]
                 top = np.floor_divide(diff, 2)
                 bottom = top
-                if diff % 2 == 1: bottom += 1
+                if diff % 2 == 1:
+                    bottom += 1
                 if creature.position == Creature.WALKING:
-                    m_img = np.concatenate((np.zeros((diff, m_img.shape[1], 3), np.uint8) + background_color, m_img), axis=0)
+                    m_img = np.concatenate(
+                        (
+                            np.zeros((diff, m_img.shape[1], 3), np.uint8)
+                            + background_color,
+                            m_img,
+                        ),
+                        axis=0,
+                    )
                 elif creature.position == Creature.HOVERING:
-                    m_img = np.concatenate((np.zeros((top, m_img.shape[1], 3), np.uint8) + background_color, m_img,
-                                            np.zeros((bottom, m_img.shape[1], 3), np.uint8) + background_color), axis=0)
+                    m_img = np.concatenate(
+                        (
+                            np.zeros((top, m_img.shape[1], 3), np.uint8)
+                            + background_color,
+                            m_img,
+                            np.zeros((bottom, m_img.shape[1], 3), np.uint8)
+                            + background_color,
+                        ),
+                        axis=0,
+                    )
                 elif creature.position == Creature.FLYING:
-                    m_img = np.concatenate((m_img, np.zeros((diff, m_img.shape[1], 3), np.uint8) + background_color), axis=0)
+                    m_img = np.concatenate(
+                        (
+                            m_img,
+                            np.zeros((diff, m_img.shape[1], 3), np.uint8)
+                            + background_color,
+                        ),
+                        axis=0,
+                    )
                 else:
-                    return 'Position setting is invalid. Chose Walking, Hovering or Flying.'
+                    return (
+                        'Position setting is invalid. Chose Walking, Hovering or Flying.'
+                    )
         else:
             if m_img.shape[0] < (min_height - namebox_height):
                 diff = (min_height - namebox_height) - m_img.shape[0]
                 top = np.floor_divide(diff, 6)
                 bottom = np.floor_divide(diff, 3)
-                if diff % 2 == 1: bottom += 1
+                if diff % 2 == 1:
+                    bottom += 1
                 if creature.position == Creature.WALKING:
-                    m_img = np.concatenate((np.zeros((top, m_img.shape[1], 3), np.uint8) + background_color, m_img), axis=0)
+                    m_img = np.concatenate(
+                        (
+                            np.zeros((top, m_img.shape[1], 3), np.uint8)
+                            + background_color,
+                            m_img,
+                        ),
+                        axis=0,
+                    )
                 elif creature.position == Creature.HOVERING:
-                    m_img = np.concatenate((np.zeros((top, m_img.shape[1], 3), np.uint8) + background_color, m_img,
-                                            np.zeros((top, m_img.shape[1], 3), np.uint8) + background_color), axis=0)
+                    m_img = np.concatenate(
+                        (
+                            np.zeros((top, m_img.shape[1], 3), np.uint8)
+                            + background_color,
+                            m_img,
+                            np.zeros((top, m_img.shape[1], 3), np.uint8)
+                            + background_color,
+                        ),
+                        axis=0,
+                    )
                 elif creature.position == Creature.FLYING:
-                    m_img = np.concatenate((m_img, np.zeros((bottom, m_img.shape[1], 3), np.uint8) + background_color), axis=0)
+                    m_img = np.concatenate(
+                        (
+                            m_img,
+                            np.zeros((bottom, m_img.shape[1], 3), np.uint8)
+                            + background_color,
+                        ),
+                        axis=0,
+                    )
                 else:
-                    return 'Position setting is invalid. Chose Walking, Hovering or Flying.'
+                    return (
+                        'Position setting is invalid. Chose Walking, Hovering or Flying.'
+                    )
 
         # Fix dtype
         m_img = np.ascontiguousarray(m_img, dtype=np.uint8)
 
         # draw border, ensure there is a white border with black background
         if creature.background_color == Creature.BLACK:
-            cv.rectangle(m_img, (0, 0), (m_img.shape[1] - 1, m_img.shape[0] - 1), (255, 255, 255), thickness=1)
+            cv.rectangle(
+                m_img,
+                (0, 0),
+                (m_img.shape[1] - 1, m_img.shape[0] - 1),
+                (255, 255, 255),
+                thickness=1,
+            )
         else:
-            cv.rectangle(m_img, (0, 0), (m_img.shape[1] - 1, m_img.shape[0] - 1), (0, 0, 0), thickness=1)
+            cv.rectangle(
+                m_img,
+                (0, 0),
+                (m_img.shape[1] - 1, m_img.shape[0] - 1),
+                (0, 0, 0),
+                thickness=1,
+            )
 
         ## flipped miniature image
         m_img_flipped = np.flip(m_img, 0)
@@ -386,7 +478,7 @@ class MiniBuilder:
             m_img_flipped = cv.cvtColor(final_hsv, cv.COLOR_HSV2BGR)
 
         ## base
-        bgr_color = tuple(int(creature.color[i:i + 2], 16) for i in (4, 2, 0))
+        bgr_color = tuple(int(creature.color[i : i + 2], 16) for i in (4, 2, 0))
         demi_base = base_height // 2
         if creature.size == 'G':
             feet_mod = 1
@@ -396,20 +488,62 @@ class MiniBuilder:
         b_img = np.zeros((base_height, width, 3), np.uint8) + 255
         # fill base
         if self.base_shape == 'square':
-            cv.rectangle(b_img, (0, 0), (b_img.shape[1] - 1, demi_base - 1), bgr_color, thickness=-1)
-            cv.rectangle(b_img, (0, 0), (b_img.shape[1] - 1, b_img.shape[0] - 1), (0, 0, 0), thickness=1)
+            cv.rectangle(
+                b_img,
+                (0, 0),
+                (b_img.shape[1] - 1, demi_base - 1),
+                bgr_color,
+                thickness=-1,
+            )
+            cv.rectangle(
+                b_img,
+                (0, 0),
+                (b_img.shape[1] - 1, b_img.shape[0] - 1),
+                (0, 0, 0),
+                thickness=1,
+            )
         elif self.base_shape == 'circle':
-            cv.rectangle(b_img, (0, 0), (b_img.shape[1] - 1, demi_base - 1), bgr_color, thickness=-1)
-            cv.rectangle(b_img, (0, 0), (b_img.shape[1] - 1, b_img.shape[0] - 1), (0, 0, 0), thickness=1)
-            cv.ellipse(b_img, (width // 2, 0), (width // 2, width // 2), 0, 0, 180, bgr_color, -1)
-            cv.ellipse(b_img, (width // 2, 0), (width // 2, width // 2), 0, 0, 180, (0, 0, 0), 2)
+            cv.rectangle(
+                b_img,
+                (0, 0),
+                (b_img.shape[1] - 1, demi_base - 1),
+                bgr_color,
+                thickness=-1,
+            )
+            cv.rectangle(
+                b_img,
+                (0, 0),
+                (b_img.shape[1] - 1, b_img.shape[0] - 1),
+                (0, 0, 0),
+                thickness=1,
+            )
+            cv.ellipse(
+                b_img, (width // 2, 0), (width // 2, width // 2), 0, 0, 180, bgr_color, -1
+            )
+            cv.ellipse(
+                b_img, (width // 2, 0), (width // 2, width // 2), 0, 0, 180, (0, 0, 0), 2
+            )
             if feet_mod >= 2:
-                cv.ellipse(b_img, (width // 2, base_height), (width // 2, width // 2), 0, 180, 360, (0, 0, 0), 2)
+                cv.ellipse(
+                    b_img,
+                    (width // 2, base_height),
+                    (width // 2, width // 2),
+                    0,
+                    180,
+                    360,
+                    (0, 0, 0),
+                    2,
+                )
                 cv.line(b_img, (0, base_height), (width, base_height), (0, 0, 0), 3)
         elif self.base_shape == 'hexagon':
             half = width // 2
-            hexagon_bottom = np.array([(0, 0), (width // 4, half), (width // 4 * 3, half), (width, 0)], np.int32)
-            hexagon_top = np.array([(0, width), (width // 4, half), (width // 4 * 3, half), (width, width)], np.int32)
+            hexagon_bottom = np.array(
+                [(0, 0), (width // 4, half), (width // 4 * 3, half), (width, 0)], np.int32
+            )
+            hexagon_top = np.array(
+                [(0, width), (width // 4, half), (width // 4 * 3, half), (width, width)],
+                np.int32,
+            )
             cv.fillConvexPoly(b_img, hexagon_bottom, bgr_color, 1)
             if feet_mod >= 2:
                 cv.polylines(b_img, [hexagon_top], True, (0, 0, 0), 2)
@@ -432,7 +566,16 @@ class MiniBuilder:
 
             textX = np.floor_divide(x_margin, 2)
             textY = np.floor_divide(demi_base + textsize[1], 2)
-            cv.putText(b_img, text, (textX, textY), self.font, enum_size, enum_color, enum_width, cv.LINE_AA)
+            cv.putText(
+                b_img,
+                text,
+                (textX, textY),
+                self.font,
+                enum_size,
+                enum_color,
+                enum_width,
+                cv.LINE_AA,
+            )
 
             self.creature_counter[creature.id] -= 1
 
@@ -451,8 +594,14 @@ class MiniBuilder:
         return img
 
     def build_sheets(self, minis):
-        M = BinManager(self.canvas[0], self.canvas[1], pack_algo='guillotine', heuristic='best_shortside',
-                       wastemap=True, rotation=True)
+        M = BinManager(
+            self.canvas[0],
+            self.canvas[1],
+            pack_algo='guillotine',
+            heuristic='best_shortside',
+            wastemap=True,
+            rotation=True,
+        )
         its = {}
         item_id = 0
         for m in minis:
@@ -481,7 +630,7 @@ class MiniBuilder:
                     m_img = np.rot90(m_img, axes=(1, 0))
                 shape = m_img.shape
                 # print('x',x,'y',y,'shape',m_img.shape)
-                img[y:y + shape[0], x:x + shape[1], :] = m_img
+                img[y : y + shape[0], x : x + shape[1], :] = m_img
             sheets.append(img)
 
         return sheets
@@ -490,7 +639,7 @@ class MiniBuilder:
         sheet_nr = 1
         for sheet in sheets:
             RGB_img = cv.cvtColor(sheet, cv.COLOR_BGR2RGB)
-            img_small = cv.resize(sheet, (0, 0), fx=.4, fy=.4)
+            img_small = cv.resize(sheet, (0, 0), fx=0.4, fy=0.4)
             cv.imshow('Img', img_small)
             cv.waitKey(0)
 
@@ -502,10 +651,18 @@ class MiniBuilder:
             img_buffer = io.BytesIO()
             rgb_img = cv.cvtColor(sheet, cv.COLOR_BGR2RGB)
             im_pil = Image.fromarray(rgb_img)
-            im_pil.save(img_buffer, dpi=(25.4 * self.dpmm, 25.4 * self.dpmm), format='PNG')
+            im_pil.save(
+                img_buffer, dpi=(25.4 * self.dpmm, 25.4 * self.dpmm), format='PNG'
+            )
             img_buffer.seek(0)
             page = Image.open(img_buffer)
             pages.append(page)
 
-        pages[0].save(pdf_buffer, save_all=True, append_images=pages[1:], format="PDF", resolution=(25.4 * self.dpmm))
+        pages[0].save(
+            pdf_buffer,
+            save_all=True,
+            append_images=pages[1:],
+            format='PDF',
+            resolution=(25.4 * self.dpmm),
+        )
         return pdf_buffer

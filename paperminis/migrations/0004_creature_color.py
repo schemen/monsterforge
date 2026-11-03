@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('paperminis', '0003_creaturequantity_owner'),
     ]
@@ -13,6 +12,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='creature',
             name='color',
-            field=models.CharField(choices=[('228b22', 'Green'), ('aa3939', 'Red'), ('005b96', 'Blue'), ('d3d3d3', 'Light Gray'), ('a9a9a9', 'Dark Gray'), ('000000', 'Black')], default='a9a9a9', max_length=6),
+            field=models.CharField(
+                choices=[
+                    ('228b22', 'Green'),
+                    ('aa3939', 'Red'),
+                    ('005b96', 'Blue'),
+                    ('d3d3d3', 'Light Gray'),
+                    ('a9a9a9', 'Dark Gray'),
+                    ('000000', 'Black'),
+                ],
+                default='a9a9a9',
+                max_length=6,
+            ),
         ),
     ]

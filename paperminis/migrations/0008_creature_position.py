@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('paperminis', '0007_creature_show_name'),
     ]
@@ -13,6 +12,14 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='creature',
             name='position',
-            field=models.CharField(choices=[('top', 'Flying (Top)'), ('center', 'Hovering (Middle)'), ('bottom', 'Walking (Bottom)')], default='bottom', max_length=50),
+            field=models.CharField(
+                choices=[
+                    ('top', 'Flying (Top)'),
+                    ('center', 'Hovering (Middle)'),
+                    ('bottom', 'Walking (Bottom)'),
+                ],
+                default='bottom',
+                max_length=50,
+            ),
         ),
     ]

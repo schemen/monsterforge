@@ -30,8 +30,18 @@ docker-shell:
 	$(DOCKER) /bin/bash
 
 
-# runDevenv:
-# 	docker compose build && docker compose up app
+# 
+# Linters
+# 
+format:
+	poetry run ruff format
 
-# stopDevenv:
-# 	docker compose down app
+ruff-check:
+	poetry run ruff check
+
+ruff-fix:
+	poetry run ruff check --fix
+
+lint:
+	make format
+	make ruff-check

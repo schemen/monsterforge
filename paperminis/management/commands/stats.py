@@ -20,7 +20,9 @@ class Command(BaseCommand):
         ddb_bestiary = Bestiary.objects.filter(from_ddb=True).count()
 
         self.stdout.write(self.style.SUCCESS('USER STATS'))
-        self.stdout.write(self.style.SUCCESS('Signed up users: %s' % str(total_users - temp_users)))
+        self.stdout.write(
+            self.style.SUCCESS('Signed up users: %s' % str(total_users - temp_users))
+        )
         self.stdout.write(self.style.SUCCESS('Temporary Users: %s' % str(temp_users)))
         self.stdout.write(self.style.SUCCESS('Total: %i\n' % total_users))
         self.stdout.write(self.style.SUCCESS('BESTIARY STATS'))

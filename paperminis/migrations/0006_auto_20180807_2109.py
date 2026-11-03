@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('paperminis', '0005_printsettings'),
     ]
@@ -13,6 +12,14 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='printsettings',
             name='base_shape',
-            field=models.CharField(choices=[('square', 'Square'), ('hexagon', 'Hexagon'), ('circle', 'Circle')], default='square', max_length=50),
+            field=models.CharField(
+                choices=[
+                    ('square', 'Square'),
+                    ('hexagon', 'Hexagon'),
+                    ('circle', 'Circle'),
+                ],
+                default='square',
+                max_length=50,
+            ),
         ),
     ]

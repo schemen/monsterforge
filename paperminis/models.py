@@ -5,7 +5,10 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 # New User without name
-from django.contrib.auth.models import AbstractUser, BaseUserManager  ## A new class is imported. ##
+from django.contrib.auth.models import (
+    AbstractUser,
+    BaseUserManager,
+)  ## A new class is imported. ##
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -73,7 +76,7 @@ class Creature(models.Model):
         (MEDIUM, 'Medium'),
         (LARGE, 'Large'),
         (HUGE, 'Huge'),
-        (GARGANTUAN, 'Gargantuan')
+        (GARGANTUAN, 'Gargantuan'),
     )
 
     # Base Color
@@ -92,7 +95,7 @@ class Creature(models.Model):
         (LIGHTGRAY, 'Light Gray'),
         (DARKGRAY, 'Dark Gray'),
         (BLACK, 'Black'),
-        (WHITE, 'White')
+        (WHITE, 'White'),
     )
 
     # Alignment
@@ -103,7 +106,7 @@ class Creature(models.Model):
     POSITION_CHOICES = (
         (FLYING, 'Flying (Top)'),
         (HOVERING, 'Hovering (Middle)'),
-        (WALKING, 'Walking (Bottom)')
+        (WALKING, 'Walking (Bottom)'),
     )
 
     # fields
@@ -113,7 +116,9 @@ class Creature(models.Model):
     size = models.CharField(max_length=1, choices=CREATURE_SIZE_CHOICES, default=MEDIUM)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     color = models.CharField(max_length=6, choices=COLOR_CHOICES, default=DARKGRAY)
-    background_color = models.CharField(max_length=6, choices=COLOR_CHOICES, default=WHITE)
+    background_color = models.CharField(
+        max_length=6, choices=COLOR_CHOICES, default=WHITE
+    )
     position = models.CharField(max_length=50, choices=POSITION_CHOICES, default=WALKING)
     show_name = models.BooleanField(default=True)
     cavalry_mode = models.BooleanField(default=False)
@@ -141,12 +146,15 @@ class Bestiary(models.Model):
     name = models.CharField(max_length=150)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     from_ddb = models.BooleanField(default=False)
-    creatures = models.ManyToManyField(Creature, through='CreatureQuantity',
-                                       help_text='A list of creatures belonging to this bestiary.')
+    creatures = models.ManyToManyField(
+        Creature,
+        through='CreatureQuantity',
+        help_text='A list of creatures belonging to this bestiary.',
+    )
 
     class Meta:
         ordering = ['name']
-        verbose_name_plural = "Bestiaries"
+        verbose_name_plural = 'Bestiaries'
 
     def get_absolute_url(self):
         """Returns the url to access a particular instance of Bestiary."""
@@ -160,6 +168,7 @@ class Bestiary(models.Model):
 class CreatureQuantity(models.Model):
     """Model to link bestiary with a quantity of creatures. "owner" is technically not needed
     (since it should be the same as owner of the bestiary), but adds another layer of security."""
+
     creature = models.ForeignKey(Creature, on_delete=models.CASCADE)
     bestiary = models.ForeignKey(Bestiary, on_delete=models.CASCADE)
     quantity = models.IntegerField()
@@ -180,7 +189,7 @@ class PrintSettings(models.Model):
         (A3, 'A3'),
         (LETTER, 'Letter'),
         (LEGAL, 'Legal'),
-        (TABLOID, 'Tabloid')
+        (TABLOID, 'Tabloid'),
     )
     # grid size
     GRID28 = 28
@@ -191,17 +200,13 @@ class PrintSettings(models.Model):
         (GRID28, '28 mm ~ 1.1 inch'),
         (GRID24, '24 mm ~ 1 inch'),
         (GRID18, '18 mm ~ 3/4 inch'),
-        (GRID12, '12 mm ~ 1/2 inch')
+        (GRID12, '12 mm ~ 1/2 inch'),
     )
     # base shape
     SQUARE = 'square'
     HEXAGONAL = 'hexagon'
     CIRCLE = 'circle'
-    BASE_SHAPE_CHOICES = (
-        (SQUARE, 'Square'),
-        (HEXAGONAL, 'Hexagon'),
-        (CIRCLE, 'Circle')
-    )
+    BASE_SHAPE_CHOICES = ((SQUARE, 'Square'), (HEXAGONAL, 'Hexagon'), (CIRCLE, 'Circle'))
 
     # Name behaviour
     NO_FORCE = 'no_force'
@@ -210,15 +215,21 @@ class PrintSettings(models.Model):
     NAME_BEHAVIOUR_CHOICES = (
         (NO_FORCE, 'Leave it to the Creature (default)'),
         (FORCE_NAME, 'Force printing of all names'),
-        (FORCE_BLANK, 'Force printing no names')
+        (FORCE_BLANK, 'Force printing no names'),
     )
 
     # fields
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    paper_format = models.CharField(max_length=50, choices=PAPER_FORMAT_CHOICES, default=A4)
+    paper_format = models.CharField(
+        max_length=50, choices=PAPER_FORMAT_CHOICES, default=A4
+    )
     grid_size = models.IntegerField(choices=GRID_SIZE_CHOICES, default=GRID24)
-    base_shape = models.CharField(max_length=50, choices=BASE_SHAPE_CHOICES, default=SQUARE)
+    base_shape = models.CharField(
+        max_length=50, choices=BASE_SHAPE_CHOICES, default=SQUARE
+    )
     enumerate = models.BooleanField(default=False)
-    force_name = models.CharField(max_length=50, choices=NAME_BEHAVIOUR_CHOICES, default=NO_FORCE)
+    force_name = models.CharField(
+        max_length=50, choices=NAME_BEHAVIOUR_CHOICES, default=NO_FORCE
+    )
     fixed_height = models.BooleanField(default=False)
     darken = models.IntegerField(default=0)

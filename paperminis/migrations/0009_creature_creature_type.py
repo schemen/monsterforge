@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('paperminis', '0008_creature_position'),
     ]
@@ -13,6 +12,30 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='creature',
             name='creature_type',
-            field=models.CharField(choices=[('undefined', 'Undefined'), ('aberration', 'Aberration'), ('beast', 'Beast'), ('celestial', 'Celestial'), ('construct', 'Construct'), ('dragon', 'Dragon'), ('elemental', 'Elemental'), ('fey', 'Fey'), ('fiend', 'Fiend'), ('giant', 'Giant'), ('humanoid', 'Humanoid'), ('monstrosity', 'Monstrosity'), ('ooze', 'Ooze'), ('plant', 'Plant'), ('undead', 'Undead'), ('type1', 'Type 1'), ('type2', 'Type 2'), ('type3', 'Type 3'), ('type4', 'Type 4')], default='undefined', max_length=100),
+            field=models.CharField(
+                choices=[
+                    ('undefined', 'Undefined'),
+                    ('aberration', 'Aberration'),
+                    ('beast', 'Beast'),
+                    ('celestial', 'Celestial'),
+                    ('construct', 'Construct'),
+                    ('dragon', 'Dragon'),
+                    ('elemental', 'Elemental'),
+                    ('fey', 'Fey'),
+                    ('fiend', 'Fiend'),
+                    ('giant', 'Giant'),
+                    ('humanoid', 'Humanoid'),
+                    ('monstrosity', 'Monstrosity'),
+                    ('ooze', 'Ooze'),
+                    ('plant', 'Plant'),
+                    ('undead', 'Undead'),
+                    ('type1', 'Type 1'),
+                    ('type2', 'Type 2'),
+                    ('type3', 'Type 3'),
+                    ('type4', 'Type 4'),
+                ],
+                default='undefined',
+                max_length=100,
+            ),
         ),
     ]

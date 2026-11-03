@@ -13,18 +13,16 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path, re_path
 from django.conf.urls import include
 from django.views.generic import RedirectView, TemplateView
 from paperminis import views as paperminis_view
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('paperminis.urls'))
-]
+urlpatterns = [path('admin/', admin.site.urls), path('', include('paperminis.urls'))]
 
-#Add URL maps to redirect the base URL to our application
+# Add URL maps to redirect the base URL to our application
 urlpatterns += [
     re_path('minis/(?P<path>.*)$', RedirectView.as_view(url='/%(path)s', permanent=True)),
 ]
@@ -36,12 +34,15 @@ from django.conf.urls.static import static
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 
-#Add Django site authentication urls (for login, logout, password management)
+# Add Django site authentication urls (for login, logout, password management)
 urlpatterns += [
     path('accounts/', include('django.contrib.auth.urls')),
     path('signup/', paperminis_view.signup, name='signup'),
     path('convert/', paperminis_view.convert_account, name='convert-account'),
     path('profile/', paperminis_view.profile, name='profile'),
     path('accounts/delete/', paperminis_view.delete_account, name='delete-account'),
-    path("robots.txt", TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
+    path(
+        'robots.txt',
+        TemplateView.as_view(template_name='robots.txt', content_type='text/plain'),
+    ),
 ]

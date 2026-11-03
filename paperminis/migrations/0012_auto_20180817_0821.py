@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('paperminis', '0011_auto_20180816_1356'),
     ]
@@ -13,6 +12,16 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='printsettings',
             name='paper_format',
-            field=models.CharField(choices=[('a4', 'A4'), ('a3', 'A3'), ('letter', 'Letter'), ('legeal', 'Legal'), ('tabloid', 'Tabloid')], default='a4', max_length=50),
+            field=models.CharField(
+                choices=[
+                    ('a4', 'A4'),
+                    ('a3', 'A3'),
+                    ('letter', 'Letter'),
+                    ('legeal', 'Legal'),
+                    ('tabloid', 'Tabloid'),
+                ],
+                default='a4',
+                max_length=50,
+            ),
         ),
     ]

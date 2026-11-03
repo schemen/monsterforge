@@ -10,9 +10,9 @@ class Item:
     Items class for rectangles inserted into sheets
     """
 
-    def __init__(self, width, height, item_id,
-                 CornerPoint: tuple = (0, 0),
-                 rotation: bool = True) -> None:
+    def __init__(
+        self, width, height, item_id, CornerPoint: tuple = (0, 0), rotation: bool = True
+    ) -> None:
         self.width = width
         self.height = height
         self.x = CornerPoint[0]
@@ -23,7 +23,13 @@ class Item:
         self.item_id = item_id
 
     def __repr__(self):
-        return 'Item(width=%r, height=%r, x=%r, y=%r, id=%r)' % (self.width, self.height, self.x, self.y, self.item_id)
+        return 'Item(width=%r, height=%r, x=%r, y=%r, id=%r)' % (
+            self.width,
+            self.height,
+            self.x,
+            self.y,
+            self.item_id,
+        )
 
     def rotate(self) -> None:
         self.width, self.height = self.height, self.width

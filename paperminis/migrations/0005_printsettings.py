@@ -6,7 +6,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('paperminis', '0004_creature_color'),
     ]
@@ -15,13 +14,53 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='PrintSettings',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('paper_format', models.CharField(choices=[('a4', 'A4'), ('a3', 'A3')], default='a4', max_length=50)),
-                ('grid_size', models.IntegerField(choices=[(24, '24 mm ~ 1 inch'), (18, '18 mm ~ 3/4 inch'), (12, '12 mm ~ 1/2 inch')], default=24)),
-                ('base_shape', models.CharField(choices=[('square', 'Square'), ('hexagonal', 'Hexagonal'), ('circle', 'Circle')], default='square', max_length=50)),
+                (
+                    'id',
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'paper_format',
+                    models.CharField(
+                        choices=[('a4', 'A4'), ('a3', 'A3')], default='a4', max_length=50
+                    ),
+                ),
+                (
+                    'grid_size',
+                    models.IntegerField(
+                        choices=[
+                            (24, '24 mm ~ 1 inch'),
+                            (18, '18 mm ~ 3/4 inch'),
+                            (12, '12 mm ~ 1/2 inch'),
+                        ],
+                        default=24,
+                    ),
+                ),
+                (
+                    'base_shape',
+                    models.CharField(
+                        choices=[
+                            ('square', 'Square'),
+                            ('hexagonal', 'Hexagonal'),
+                            ('circle', 'Circle'),
+                        ],
+                        default='square',
+                        max_length=50,
+                    ),
+                ),
                 ('enumerate', models.BooleanField(default=False)),
                 ('fixed_height', models.BooleanField(default=False)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    'user',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]
