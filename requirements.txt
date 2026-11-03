@@ -10,3 +10,4 @@ gunicorn==21.1.0
 https://github.com/ssbothwell/greedypacker/archive/f7219917d7b84ad59ee4ed1ab8019cccf4ca3b83.zip
 requests==2.31.0
 django-plausible==0.5.0
+numpy<2

@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   # Postgres
   db:
@@ -9,10 +9,12 @@ services:
       - POSTGRES_DB=postgres
   app:
     build: .
+    stdin_open: true
+    tty: true
     volumes:
       - staticfiles:/app/static
     environment:
-      - PRODUCTION=True
+      - PRODUCTION=False
       - DJANGO_SECRET_KEY=asdfmovie
     ports:
       - "8080:8080"

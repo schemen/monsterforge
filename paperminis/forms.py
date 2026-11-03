@@ -250,7 +250,7 @@ class QuickCreateCreatureForm(forms.Form):
         (WALKING, 'Walking (Bottom)')
     )
     # Creature Data
-    img_url = forms.URLField(label='Image direct URL', required=False)
+    img_url = forms.FilePathField(path='tokens/', label='Repo path', required=False)
     position = forms.ChoiceField(choices=POSITION_CHOICES, initial="bottom")
     name = forms.CharField(max_length=100, required=False)
     size = forms.ChoiceField(choices=CREATURE_SIZE_CHOICES, initial="M")

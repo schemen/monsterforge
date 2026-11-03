@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 from greedypacker import BinManager
 
 from paperminis.models import Creature, CreatureQuantity
-from paperminis.utils import download_image, QuickCreature
+from paperminis.utils import download_image, QuickCreature, open_image
 from .items import Item
 
 logger = logging.getLogger("django")
@@ -288,7 +288,8 @@ class MiniBuilder:
             n_img = np.zeros((1, width, 3), np.uint8)
 
         ## mimiature image
-        m_img = download_image(creature.img_url)
+        # m_img = download_image(creature.img_url)
+        m_img = open_image(creature.img_url)
 
         # fix grayscale images
         try:

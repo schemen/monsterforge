@@ -29,6 +29,13 @@ def download_image(url):
     except:
         return 'Image could not be found or loaded.'
 
+def open_image(img_path):
+    try:
+        return cv.imread(img_path, cv.IMREAD_UNCHANGED)
+    except:
+        return 'Could not open image'
+
+
 
 def handle_json(f, user):
     """Load and process .json file.
