@@ -4,7 +4,6 @@
     {% load static %}
     {% load widget_tweaks %}
     {% load auth_extras %}
-    {% load plausible %}
     {% load version %}
     {% load env %}
 
@@ -37,10 +36,6 @@
     <!-- Control Center for Light Bootstrap Dashboard: scripts for the example pages etc -->
     <script src="{%  static 'assets/js/light-bootstrap-dashboard.js' %}" type="text/javascript"></script>
 
-    <!-- Plausible Insight -->
-    {% if 'ENABLE_PLAUSIBLE'|env == 'True' %}
-        {% plausible site_domain='PLAUSIBLE_SITE_DOMAIN'|env %}
-    {% endif %}
     {% block header %} {% endblock %}
     <script>
         jQuery(document).ready(function($) {

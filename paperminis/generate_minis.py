@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 from greedypacker import BinManager
 
 from paperminis.models import Creature, CreatureQuantity
-from paperminis.utils import download_image, QuickCreature, open_image
+from paperminis.utils import QuickCreature, open_image
 from .items import Item
 
 logger = logging.getLogger("django")
@@ -39,9 +39,6 @@ class MiniBuilder:
         self.font = cv.FONT_HERSHEY_SIMPLEX
         self.paper_format = None
         self.canvas = None
-
-        # clear download cache for each run
-        download_image.cache_clear()
 
     def add_bestiary(self, user, pk):
         creature_quantities = CreatureQuantity.objects.filter(owner=user, bestiary=pk)
@@ -114,7 +111,6 @@ class MiniBuilder:
 
         self.sheets = self.build_sheets(self.minis)
         pdf_container = self.save_and_pdf(self.sheets)
-        logger.info(download_image.cache_info())
         return pdf_container
 
     def build_mini(self, creature):
@@ -287,8 +283,7 @@ class MiniBuilder:
         else:
             n_img = np.zeros((1, width, 3), np.uint8)
 
-        ## mimiature image
-        # m_img = download_image(creature.img_url)
+        # miniature image
         m_img = open_image(creature.img_url)
 
         # fix grayscale images

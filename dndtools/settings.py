@@ -9,11 +9,16 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
+
+from __future__ import annotations
+
 import os
+
 from django.contrib.messages import constants as messages
 
 # import secret settings
-from .settings_secret import *
+from dndtools.settings_secret import *
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,7 +31,7 @@ SITE_ID = 1
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.getenv('PRODUCTION', False) == "True":
+if os.getenv('PRODUCTION', False) == 'True':
     DEBUG = False
 else:
     DEBUG = True
@@ -35,12 +40,12 @@ ALLOWED_HOSTS = ['*']
 
 # Email
 
-EMAIL_HOST = os.getenv('EMAIL_HOST', "CHANGEME!")
-EMAIL_PORT = os.getenv('EMAIL_PORT', "CHANGEME!")
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', "CHANGEME!")
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', "CHANGEME!")
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'CHANGEME!')
+EMAIL_PORT = os.getenv('EMAIL_PORT', 'CHANGEME!')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'CHANGEME!')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'CHANGEME!')
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', "CHANGEME!")
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'CHANGEME!')
 
 # Application definition
 
@@ -54,7 +59,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'paperminis.apps.PaperminisConfig',
     'widget_tweaks',
-    'plausible',
 ]
 
 MIDDLEWARE = [
@@ -72,8 +76,11 @@ ROOT_URLCONF = 'dndtools.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'templates/paperminis'),
-                 os.path.join(BASE_DIR, 'templates/registration')],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, 'templates/paperminis'),
+            os.path.join(BASE_DIR, 'templates/registration'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -90,7 +97,7 @@ WSGI_APPLICATION = 'dndtools.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-if os.getenv('PRODUCTION', False) == "True":
+if os.getenv('PRODUCTION', False) == 'True':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -177,16 +184,11 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 2500
 # Set the AUTO_FIELD globally for Django 3.2
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Plausible Insights
-if os.getenv('ENABLE_PLAUSIBLE', False) == "True":
-    PLAUSIBLE_DOMAIN = os.getenv('PLAUSIBLE_DOMAIN', 'plausible.io')
-    PLAUSIBLE_SCRIPT_NAME = os.getenv('PLAUSIBLE_SCRIPT_NAME', 'plausible.js')
-
 
 MESSAGE_TAGS = {
-        messages.DEBUG: 'alert-secondary',
-        messages.INFO: 'alert-info',
-        messages.SUCCESS: 'alert-success',
-        messages.WARNING: 'alert-warning',
-        messages.ERROR: 'alert-danger',
- }
+    messages.DEBUG: 'alert-secondary',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}

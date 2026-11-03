@@ -2,13 +2,9 @@ import os
 from urllib.parse import urlparse
 from django import forms
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
-from django.utils.safestring import mark_safe
-from constrainedfilefield.fields import ConstrainedFileField
-from django.conf import settings
 from django.template.defaultfilters import filesizeformat
-from django.core.exceptions import ValidationError
-from .models import Creature, Bestiary, CreatureQuantity, PrintSettings
+from django.utils.translation import gettext_lazy as _
+
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
