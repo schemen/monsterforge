@@ -1,2 +1,3 @@
 [tools]
-python = "3.11"
+poetry = "2.5.1"
+python = "3.14"

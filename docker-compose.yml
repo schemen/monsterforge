@@ -1,23 +1,21 @@
-version: "3"
 services:
-  # Postgres
-  db:
-    image: postgres
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
-  app:
+  minimaker:
     build: .
-    stdin_open: true
-    tty: true
     volumes:
       - staticfiles:/app/static
+    stdin_open: true
+    tty: true
     environment:
       - PRODUCTION=False
       - DJANGO_SECRET_KEY=asdfmovie
     ports:
       - "8080:8080"
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
   web:
     image: nginx
     volumes:

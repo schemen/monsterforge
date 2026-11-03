@@ -1,0 +1,93 @@
+[project]
+name = "monsterforgelocal"
+readme = "README.md"
+requires-python = ">=3.14,<3.15"
+
+
+[tool.poetry]
+name = "paperminis"
+description = ""
+version = "0.1.0"
+authors = []
+package-mode = false
+
+
+[tool.poetry.dependencies]
+django = "^6.1.1"
+django-widget-tweaks = "^1.5.1"
+opencv-python-headless = "^5.0.0.93"
+pillow = "^12.3.0"
+psycopg2-binary = "^2.9.13"
+gunicorn = "^26.2.0"
+greedypacker = { url = "https://github.com/ssbothwell/greedypacker/archive/f7219917d7b84ad59ee4ed1ab8019cccf4ca3b83.zip" }
+requests = "^2.34.2"
+numpy = "^2.5.3"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "*"
+ruff = "*"
+mypy = "*"
+pytest-django = "*"
+ipdb = "*"
+django-stubs = "*"
+django-extensions = "*"
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 90
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "C90",  # mccabe (complexity)
+    "COM",  # flake8-commas
+    "DTZ",  # flake8-datetimez
+    "E",    # pycodestyle
+    "ERA",  # eradicate
+    "F",    # pyflakes
+    "FA",   # flake8-future-annotations
+    "FLY",  # flynt
+    "I",    # isort
+    "INP",  # flake8-no-pep420
+    "ISC",  # flake8-implicit-str-concat
+    "LOG",  # flake8-logging
+    "N",    # pep8-naming
+    "PERF", # perflint
+    "PIE",  # flake8-pie
+    "PL",   # pylint
+    "PTH",  # flake8-use-pathlib
+    "Q",    # flake8-quotes
+    "RET",  # flake8-return
+    "RUF",  # Ruff-specific rules
+    "S",    # flake8-bandit
+    "SIM",  # flake8-simplify
+    "T10",  # flake8-debugger
+    "UP",   # pyupgrade
+    "W",    # pycodestyle
+]
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+required-imports = ["from __future__ import annotations"]
+
+[tool.ruff.lint.isort.sections]
+"django" = ['django']
+
+[tool.ruff.lint.per-file-ignores]
+"**/migrations/**" = ['RUF012', 'E501']
+"**/test*/**" = ["S101", "S105", "S106", "PLR2004"]
+
+[tool.autopep8]
+max_line_length = 90
+aggressive = 3
+experimental = true
+
+
+[tool.pytest]
+testpaths = ["tests"]
